@@ -5,6 +5,7 @@ import 'package:real_estate_admin/Modules/Agent/agent_form_state.dart';
 import 'package:real_estate_admin/widgets/future_dialog.dart';
 import 'package:real_estate_admin/widgets/utils.dart';
 
+import '../../Providers/session.dart';
 import '../../widgets/formfield.dart';
 
 class AgentForm extends StatefulWidget {
@@ -73,7 +74,16 @@ class _AgentFormState extends State<AgentForm> {
               TileFormField(
                 controller: controller.panCardNumber,
                 title: "PAN NUMBER",
-                validator: requiredValidator,
+                validator: (val) {
+                  if (requiredValidator(val) != null) {
+                    return requiredValidator(val);
+                  }
+                  if (widget.agent == null) {
+                    if (AppSession().staffs.where((element) => element.panCardNumber!.toLowerCase() == val!.toLowerCase()).isNotEmpty) {
+                      return "Duplicate PAN Number";
+                    }
+                  }
+                },
               ),
               TileFormField(controller: controller.addressLine1, title: "ADDRESS LINE 1"),
               TileFormField(controller: controller.addressLine2, title: "ADDRESS LINE 2"),

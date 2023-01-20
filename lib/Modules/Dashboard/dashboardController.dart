@@ -42,6 +42,10 @@ class DashboardController extends GetxController {
   int beforeCount = 0;
   double beforeAmount = 0;
 
+  double get comissionAmount => overAllLeads.fold<double>(0,
+      ((previousValue, element) => previousValue + element.agentComissionAmount + element.staffComissionAmount + element.superAgentComissionAmount));
+  double get soldAmount => overAllLeads.fold<double>(0, ((previousValue, element) => previousValue + (element.sellingAmount ?? 0)));
+
   fillDateWiseLeads() {
     for (int i = 0; i < 31; i++) {
       var date = DateTime.now().subtract(Duration(days: i));

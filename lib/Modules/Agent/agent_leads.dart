@@ -29,18 +29,25 @@ class _LeadListState extends State<AgentLeads> {
         var lead = Lead.fromSnapshot(e);
         return lead;
       }).toList();
+    }).catchError((error) {
+      printError(info: 'ERROR OCCURED IN LEDAS');
+      return [];
     });
   }
 
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
     List<Lead> leads = await getLeads();
-    print(leads.length);
+    print(" LEAD LENGTH : ${leads.length}");
+    if (leads.isEmpty) {
+      return properties;
+    }
     Set<DocumentReference> propertyRefs = leads.map((e) => e.propertyRef).toSet();
     properties = await Future.wait(propertyRefs.map((e) => e.get().then((value) => Property.fromSnapshot(value))).toList());
     for (var element in properties) {
       element.leads = leads.where((lead) => lead.propertyRef == element.reference).toList();
     }
+    print(" lENGTH :${properties.length}");
     return properties;
   }
 
@@ -93,7 +100,7 @@ class _LeadListState extends State<AgentLeads> {
                                   .toList(),
                               isExpanded: true,
                               decoration: const InputDecoration(border: OutlineInputBorder()),
-                              onChanged: e.leadStatus == LeadStatus.sold
+                              onChanged: (e.leadStatus == LeadStatus.sold || !AppSession().isAdmin)
                                   ? null
                                   : (val) {
                                       if (val != null) {
@@ -119,6 +126,11 @@ class _LeadListState extends State<AgentLeads> {
           builder: (BuildContext context, AsyncSnapshot<List<Property>> snapshot) {
             if ((snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) && snapshot.hasData) {
               var list = snapshot.data!;
+              if (list.isEmpty) {
+                return const Center(
+                  child: Text("No Leads found"),
+                );
+              }
               var alllist = list.map((e) => e.leads).reduce((value, element) => value.followedBy(element).toList());
               var successlist = alllist.where((element) => element.leadStatus == LeadStatus.sold);
               var count = successlist.length;

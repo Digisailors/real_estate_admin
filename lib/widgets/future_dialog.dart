@@ -1,3 +1,4 @@
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import '../Model/Result.dart';
 
@@ -52,5 +53,23 @@ showFutureDialog(
                 child: CircularProgressIndicator(),
               );
             });
+      });
+}
+
+showAlertDialog({
+  required BuildContext context,
+  required String message,
+  required void Function() onPressed,
+}) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(message),
+          actions: [
+            TextButton(onPressed: onPressed, child: const Text("OKAY")),
+            TextButton(onPressed: onPressed, child: const Text("CANCEL")),
+          ],
+        );
       });
 }

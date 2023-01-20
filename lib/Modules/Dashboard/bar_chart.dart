@@ -45,21 +45,22 @@ class LeadChart extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24.0),
         ),
-        child: AspectRatio(
-            aspectRatio: 2,
-            child: Column(
-              children: [
-                Text(title),
-                Expanded(
-                  child: charts.TimeSeriesChart(
-                    getSeries(),
-                    defaultRenderer: charts.BarRendererConfig<DateTime>(),
-                    defaultInteractions: false,
-                    behaviors: [charts.SelectNearest(), charts.DomainHighlighter()],
-                  ),
-                ),
-              ],
-            )),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(title),
+            ),
+            Expanded(
+              child: charts.TimeSeriesChart(
+                getSeries(),
+                defaultRenderer: charts.BarRendererConfig<DateTime>(),
+                defaultInteractions: false,
+                behaviors: [charts.SelectNearest(), charts.DomainHighlighter()],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

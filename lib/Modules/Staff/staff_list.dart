@@ -72,43 +72,10 @@ class _StaffListState extends State<StaffList> {
                       child: Card(
                         child: SizedBox(
                           width: double.maxFinite,
-                          child: DataTable(
-                            columns: const [
-                              DataColumn(label: Text('Name')),
-                              DataColumn(label: Text('Phone')),
-                              DataColumn(label: Text('PAN')),
-                              DataColumn(label: Text('Email')),
-                              DataColumn(label: Text('Comission Earned')),
-                              DataColumn(label: Text('Lead count')),
-                              DataColumn(label: Text('Converted LeadCount')),
-                              DataColumn(label: Text('Edit')),
-                              DataColumn(label: Text('Delete')),
-                            ],
-                            rows: staffs
-                                .map((e) => DataRow(
-                                      cells: [
-                                        DataCell(TextButton(onPressed: () {}, child: Text("${e.firstName} ${e.lastName}"))),
-                                        DataCell(Text(e.phoneNumber)),
-                                        DataCell(Text(e.panCardNumber ?? '')),
-                                        DataCell(Text(e.email)),
-                                        DataCell(Text(NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
-                                        DataCell(Text(e.leadCount.toString())),
-                                        DataCell(Text(e.successfullLeadCount.toString())),
-                                        DataCell(IconButton(
-                                            onPressed: () {
-                                              Get.to(() => StaffForm(
-                                                    staff: e,
-                                                  ));
-                                            },
-                                            icon: const Icon(Icons.edit))),
-                                        DataCell(IconButton(
-                                            onPressed: () {
-                                              e.delete();
-                                            },
-                                            icon: const Icon(Icons.delete))),
-                                      ],
-                                    ))
-                                .toList(),
+                          child: PaginatedDataTable(
+                            rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 4,
+                            columns: StaffListSource.getColumns(),
+                            source: StaffListSource(staffs, context: context),
                           ),
                         ),
                       ),
@@ -129,5 +96,74 @@ class _StaffListState extends State<StaffList> {
         ),
       ),
     );
+  }
+}
+
+class StaffListSource extends DataTableSource {
+  final List<Staff> staffs;
+  final BuildContext context;
+  StaffListSource(this.staffs, {required this.context});
+
+  final _format = NumberFormat.currency(locale: 'en-IN');
+
+  @override
+  DataRow? getRow(int index) {
+    // TODO: implement getRow
+    final e = staffs[(index)];
+
+    return DataRow.byIndex(
+      index: index,
+      cells: [
+        // DataCell(Text((index + 1).toString())),
+        DataCell(TextButton(onPressed: () {}, child: Text("${e.firstName} ${e.lastName}"))),
+        DataCell(Text(e.phoneNumber)),
+        DataCell(Text(e.panCardNumber ?? '')),
+        DataCell(Text(e.email)),
+        DataCell(Text(NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
+        DataCell(Text(e.leadCount.toString())),
+        DataCell(Text(e.successfullLeadCount.toString())),
+        DataCell(IconButton(
+            onPressed: () {
+              Get.to(() => StaffForm(
+                    staff: e,
+                  ));
+            },
+            icon: const Icon(Icons.edit))),
+        DataCell(IconButton(
+            onPressed: () {
+              e.delete();
+            },
+            icon: const Icon(Icons.delete))),
+      ],
+    );
+  }
+
+  @override
+  // TODO: implement isRowCountApproximate
+  bool get isRowCountApproximate => false;
+
+  @override
+  // TODO: implement rowCount
+  int get rowCount => (staffs.length);
+
+  @override
+  // TODO: implement selectedRowCount
+  int get selectedRowCount => 0;
+
+  static List<DataColumn> getColumns() {
+    List<DataColumn> list = [];
+    list.addAll([
+      // const DataColumn(label: Text("S.No")),
+      const DataColumn(label: Text('Name')),
+      const DataColumn(label: Text('Phone')),
+      const DataColumn(label: Text('PAN')),
+      const DataColumn(label: Text('Email')),
+      const DataColumn(label: Text('Comission Earned')),
+      const DataColumn(label: Text('Lead count')),
+      const DataColumn(label: Text('Converted LeadCount')),
+      const DataColumn(label: Text('Edit')),
+      const DataColumn(label: Text('Delete')),
+    ]);
+    return list;
   }
 }

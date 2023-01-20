@@ -9,6 +9,7 @@ import 'package:real_estate_admin/Modules/Project/project_controller.dart';
 import 'package:real_estate_admin/Modules/Project/project_form_data.dart';
 import 'package:real_estate_admin/Modules/Project/property_form.dart';
 import 'package:real_estate_admin/Modules/Project/property_view.dart';
+import 'package:real_estate_admin/get_constants.dart';
 import 'package:real_estate_admin/widgets/formfield.dart';
 import 'package:real_estate_admin/widgets/future_dialog.dart';
 
@@ -35,33 +36,46 @@ class _PropertyListState extends State<PropertyList> {
     var controller = ProjectController(ProjectFormData.fromProject(widget.project));
     return ChangeNotifierProvider<ProjectController>(
       create: (context) => controller,
-      child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text(widget.project.name),
-        // ),
-        body: Row(
-          children: [
-            Expanded(
-                flex: 4,
-                child: Card(
-                  child: Column(
-                    children: [
-                      AppBar(
-                        elevation: 0,
-                        title: Text(
-                          "PROPERTY LIST",
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.black),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Scaffold(
+          floatingActionButtonLocation: constraints.maxWidth < 860 ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: (AppSession().isAdmin)
+              ? Padding(
+                  padding: constraints.maxWidth < 860 ? const EdgeInsets.all(8) : const EdgeInsets.only(right: 96, bottom: 16),
+                  child: SizedBox(
+                    height: 54,
+                    width: 60,
+                    child: FloatingActionButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                  content: SizedBox(height: 800, width: 600, child: PropertyForm(project: widget.project)),
+                                );
+                              });
+                        },
+                        child: const Icon(Icons.add)),
+                  ),
+                )
+              : null,
+          body: Row(
+            children: [
+              Expanded(
+                  flex: 4,
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(onPressed: Navigator.of(context).pop, child: const Text("<< GO BACK")),
                         ),
-                        centerTitle: true,
-                        backgroundColor: Colors.white,
-                      ),
-                      const Divider(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(child: TileFormField(controller: search, title: 'Search')),
-                          Expanded(
-                            child: ListTile(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ListTile(
                               title: const Text('Project Type'),
                               subtitle: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8),
@@ -89,110 +103,173 @@ class _PropertyListState extends State<PropertyList> {
                                 ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 14.0, right: 16),
-                            child: SizedBox(
-                              height: 54,
-                              width: 60,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {});
-                                  },
-                                  child: const Icon(Icons.search)),
+                            SizedBox(
+                              height: 72,
+                              child: TileFormField(
+                                controller: search,
+                                title: 'Search',
+                                suffix: IconButton(
+                                    onPressed: () {
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.search)),
+                              ),
                             ),
-                          ),
-                          (AppSession().isAdmin)
-                              ? Padding(
-                                  padding: const EdgeInsets.only(bottom: 14.0, right: 16),
-                                  child: SizedBox(
-                                    height: 54,
-                                    width: 60,
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                                  content: SizedBox(height: 800, width: 600, child: PropertyForm(project: widget.project)),
-                                                );
-                                              });
-                                        },
-                                        child: const Icon(Icons.add)),
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                      const Divider(),
-                      Expanded(
-                        child: StreamBuilder<List<Property>>(
-                            stream: controller.getPropertiesAsStream(search: search.text.toLowerCase(), isSold: isSold),
-                            builder: (context, AsyncSnapshot<List<Property>> snapshot) {
-                              if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
-                                if (snapshot.data!.isEmpty) {
-                                  return const Center(
-                                    child: Text("No Properties for this project"),
-                                  );
-                                } else {
-                                  // selectedProperty = snapshot.data!.first;
-                                  return StatefulBuilder(builder: (context, reload) {
-                                    return GridView.count(
-                                      crossAxisCount: 3,
-                                      padding: const EdgeInsets.all(8),
-                                      children: snapshot.data!
-                                          .map((e) => GestureDetector(
+                          ],
+                        ),
+                        const Divider(),
+                        Expanded(
+                          child: StreamBuilder<List<Property>>(
+                              stream: controller.getPropertiesAsStream(search: search.text.toLowerCase(), isSold: isSold),
+                              builder: (context, AsyncSnapshot<List<Property>> snapshot) {
+                                if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                                  if (snapshot.data!.isEmpty) {
+                                    return const Center(
+                                      child: Text("No Properties for this project"),
+                                    );
+                                  } else {
+                                    // selectedProperty = snapshot.data!.first;
+                                    return StatefulBuilder(builder: (context, reload) {
+                                      if (isDesktop(context)) {
+                                        return GridView.count(
+                                          crossAxisCount: 2,
+                                          padding: const EdgeInsets.all(8),
+                                          children: snapshot.data!
+                                              .map((e) => GestureDetector(
+                                                    onTap: () {
+                                                      reload(() {
+                                                        selectedProperty = e;
+                                                      });
+                                                      if (reloadPropertyView != null) {
+                                                        reloadPropertyView!(() {});
+                                                      }
+                                                    },
+                                                    child: PropertyTile(
+                                                      property: e,
+                                                      selected: e.reference == selectedProperty?.reference,
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        );
+                                      } else {
+                                        var list = snapshot.data ?? [];
+                                        return ListView.builder(
+                                            itemCount: list.length,
+                                            itemBuilder: (context, index) {
+                                              var property = list[index];
+                                              var projectController = Provider.of<ProjectController>(context);
+                                              return ListTile(
+                                                selected: selectedProperty?.reference == property.reference,
+                                                title: Text(property.title),
+                                                subtitle: Text(
+                                                  NumberFormat.currency(locale: 'en-IN').format(property.propertyAmount),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                                 onTap: () {
-                                                  reload(() {
-                                                    selectedProperty = e;
-                                                  });
-                                                  if (reloadPropertyView != null) {
-                                                    reloadPropertyView!(() {});
+                                                  if (constraints.maxWidth > 860) {
+                                                    reload(() {
+                                                      selectedProperty = property;
+                                                    });
+                                                    if (reloadPropertyView != null) {
+                                                      reloadPropertyView!(() {});
+                                                    }
+                                                  } else {
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(builder: (context) => PropertyView(property: property)));
                                                   }
                                                 },
-                                                child: PropertyTile(
-                                                  property: e,
-                                                  selected: e.reference == selectedProperty?.reference,
+                                                trailing: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    !AppSession().isAdmin
+                                                        ? Container()
+                                                        : IconButton(
+                                                            onPressed: () {
+                                                              showAlertDialog(
+                                                                context: context,
+                                                                message: "Do you really want to delete?",
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                  var future = property.reference
+                                                                      .delete()
+                                                                      .then((value) => Result.completed("Property Deleted Successfully"))
+                                                                      .onError((error, stcak) {
+                                                                    if (error is FirebaseException) {
+                                                                      return Result(tilte: error.code, message: error.message ?? '');
+                                                                    } else {
+                                                                      return Result(tilte: 'Failed', message: error.toString());
+                                                                    }
+                                                                  });
+                                                                  showFutureDialog(context, future: future);
+                                                                },
+                                                              );
+                                                            },
+                                                            icon: const Icon(Icons.delete, color: Colors.red)),
+                                                    const SizedBox(width: 8),
+                                                    !AppSession().isAdmin
+                                                        ? Container()
+                                                        : IconButton(
+                                                            onPressed: () {
+                                                              showDialog(
+                                                                  context: context,
+                                                                  builder: (context) {
+                                                                    return AlertDialog(
+                                                                      shape: const RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                                                      content: SizedBox(
+                                                                          height: 800,
+                                                                          width: 600,
+                                                                          child: PropertyForm(
+                                                                            property: property,
+                                                                            project: projectController.projectFormData.object,
+                                                                          )),
+                                                                    );
+                                                                  });
+                                                            },
+                                                            icon: const Icon(Icons.edit, color: Colors.black)),
+                                                  ],
                                                 ),
-                                              ))
-                                          .toList(),
-                                    );
-                                  });
+                                              );
+                                            });
+                                      }
+                                    });
+                                  }
                                 }
-                              }
-                              if (snapshot.hasError) {
-                                return Center(
-                                  child: SelectableText(snapshot.data.toString()),
+                                if (snapshot.hasError) {
+                                  return Center(
+                                    child: SelectableText(snapshot.data.toString()),
+                                  );
+                                }
+                                return const Center(
+                                  child: CircularProgressIndicator(),
                                 );
-                              }
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }),
-                      ),
-                    ],
-                  ),
-                )),
-            Expanded(
-                flex: 4,
-                child: Builder(builder: (context) {
-                  return StatefulBuilder(builder: (context, reload) {
-                    reloadPropertyView = reload;
-                    if (selectedProperty == null) {
-                      return const Center(
-                        child: Text("Please select a property to view"),
-                      );
-                    } else {
-                      return PropertyView(
-                        property: selectedProperty!,
-                      );
-                    }
-                  });
-                })),
-          ],
-        ),
-      ),
+                              }),
+                        ),
+                      ],
+                    ),
+                  )),
+              constraints.maxWidth < 860
+                  ? Container()
+                  : Expanded(
+                      flex: 4,
+                      child: Builder(builder: (context) {
+                        return StatefulBuilder(builder: (context, reload) {
+                          reloadPropertyView = reload;
+                          if (selectedProperty == null) {
+                            return const Center(
+                              child: Text("Please select a property to view"),
+                            );
+                          } else {
+                            return PropertyView(
+                              property: selectedProperty!,
+                            );
+                          }
+                        });
+                      })),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
@@ -210,6 +287,8 @@ class PropertyTile extends StatelessWidget {
     return Container(
       color: selected ? Colors.blue : Colors.white,
       child: Card(
+        shape: RoundedRectangleBorder(),
+        borderOnForeground: true,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

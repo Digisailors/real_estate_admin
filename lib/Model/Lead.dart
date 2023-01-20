@@ -219,7 +219,7 @@ class Lead {
     required Commission agentComission,
     required Commission superAgentComission,
   }) async {
-    if (AppSession().staff?.isAdmin ?? false) {
+    if (AppSession().isAdmin) {
       this.sellingAmount = sellingAmount;
       this.staffComission = staffComission;
       this.agentComission = agentComission;

@@ -66,7 +66,19 @@ class _StaffFormState extends State<StaffForm> {
                   ),
                 ],
               ),
-              TileFormField(validator: requiredValidator, controller: controller.panCardNumber, title: "PAN NUMBER"),
+              TileFormField(
+                  validator: (val) {
+                    if (requiredValidator(val) != null) {
+                      return requiredValidator(val);
+                    }
+                    if (widget.staff == null) {
+                      if (AppSession().staffs.where((element) => element.panCardNumber!.toLowerCase() == val!.toLowerCase()).isNotEmpty) {
+                        return "Duplicate PAN Number";
+                      }
+                    }
+                  },
+                  controller: controller.panCardNumber,
+                  title: "PAN NUMBER"),
               TileFormField(controller: controller.addressLine1, title: "ADDRESS LINE 1"),
               TileFormField(controller: controller.addressLine2, title: "ADDRESS LINE 2"),
               Row(

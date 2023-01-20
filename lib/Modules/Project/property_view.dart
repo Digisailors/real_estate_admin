@@ -381,7 +381,7 @@ class _PropertyViewState extends State<PropertyView> {
                                   .toList(),
                               isExpanded: true,
                               decoration: const InputDecoration(border: OutlineInputBorder()),
-                              onChanged: e.leadStatus == LeadStatus.sold
+                              onChanged: e.leadStatus == LeadStatus.sold || !AppSession().isAdmin
                                   ? null
                                   : (val) {
                                       if (val != null) {
@@ -396,11 +396,11 @@ class _PropertyViewState extends State<PropertyView> {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
-                                      if (e.leadStatus == LeadStatus.sold && (AppSession().staff?.isAdmin ?? false) == false) {
+                                      if (e.leadStatus == LeadStatus.sold) {
                                         return AlertDialog(
                                           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                           title: const Text("Operation Not Allowed"),
-                                          content: const Text("Edit operation on sold transaction is only available for admin"),
+                                          content: const Text("Edit operation on sold transaction is not permitted"),
                                           actions: [TextButton(onPressed: Navigator.of(context).pop, child: const Text("Okay"))],
                                         );
                                       }

@@ -5,7 +5,10 @@ import 'package:real_estate_admin/Modules/Project/project_controller.dart';
 import 'package:real_estate_admin/Modules/Project/project_form.dart';
 import 'package:real_estate_admin/Modules/Project/project_form_data.dart';
 import 'package:real_estate_admin/Modules/Project/property_list.dart';
+import 'package:real_estate_admin/Providers/session.dart';
+import 'package:real_estate_admin/get_constants.dart';
 import 'package:real_estate_admin/widgets/formfield.dart';
+import 'package:real_estate_admin/widgets/future_dialog.dart';
 
 import '../../Model/Project.dart';
 
@@ -52,69 +55,73 @@ class _ProjectListState extends State<ProjectList> {
           children: [
             SizedBox(
               height: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: 300,
-                    child: ListTile(
-                      title: const Text('Project Type'),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButtonFormField<String>(
-                            isDense: true,
-                            decoration: const InputDecoration(border: OutlineInputBorder()),
-                            value: type,
-                            items: const [
-                              DropdownMenuItem<String>(
-                                child: Text("All"),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: 'House',
-                                child: Text("House"),
-                              ),
-                              DropdownMenuItem(value: 'Villa', child: Text("Villa")),
-                              DropdownMenuItem(value: 'Shop', child: Text("Shop")),
-                              DropdownMenuItem(value: 'Building', child: Text("Building")),
-                              DropdownMenuItem(value: 'Land', child: Text("Land")),
-                            ],
-                            onChanged: setType,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
+                        title: const Text('Project Type'),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField<String>(
+                              isDense: true,
+                              decoration: const InputDecoration(border: OutlineInputBorder()),
+                              value: type,
+                              items: const [
+                                DropdownMenuItem<String>(
+                                  child: Text("All"),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'House',
+                                  child: Text("House"),
+                                ),
+                                DropdownMenuItem(value: 'Villa', child: Text("Villa")),
+                                DropdownMenuItem(value: 'Shop', child: Text("Shop")),
+                                DropdownMenuItem(value: 'Building', child: Text("Building")),
+                                DropdownMenuItem(value: 'Land', child: Text("Land")),
+                              ],
+                              onChanged: setType,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 300, child: TileFormField(controller: search, title: 'Search')),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(onPressed: reloadQuery, child: const Text("Search")),
-                  ),
-                  Expanded(child: Container()),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                  content: SizedBox(height: 800, width: 600, child: ProjectForm()),
-                                );
-                              });
-                        },
-                        child: const Text("Add")),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {});
-                        },
-                        child: const Text("Refresh")),
-                  )
-                ],
+                    SizedBox(width: 300, child: TileFormField(controller: search, title: 'Search')),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: reloadQuery, child: const Text("Search")),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: !AppSession().isAdmin
+                          ? Container()
+                          : ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                        content: SizedBox(height: 800, width: 600, child: ProjectForm()),
+                                      );
+                                    });
+                              },
+                              child: const Text("Add")),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          child: const Text("Refresh")),
+                    )
+                  ],
+                ),
               ),
             ),
             const Divider(),
@@ -127,10 +134,12 @@ class _ProjectListState extends State<ProjectList> {
                     if ((snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) &&
                         snapshot.hasData) {
                       List<Project> projectslist = snapshot.data!.docs.map((e) => Project.fromSnapshot(e)).toList();
-                      return GridView.count(
-                        crossAxisCount: 5,
-                        children: projectslist.map((e) => ProjectTile(project: e)).toList(),
-                      );
+                      return LayoutBuilder(builder: (context, constraints) {
+                        return GridView.count(
+                          crossAxisCount: (constraints.maxWidth ~/ 245 == 0) ? 1 : constraints.maxWidth ~/ 245,
+                          children: projectslist.map((e) => ProjectTile(project: e)).toList(),
+                        );
+                      });
                     }
                     if (snapshot.hasError) {
                       return Center(
@@ -179,23 +188,25 @@ class ProjectTile extends StatelessWidget {
                   ListTile(
                     title: Text(project.name),
                     subtitle: Text(project.location),
-                    trailing: IconButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                  content: SizedBox(
-                                      height: 800,
-                                      width: 600,
-                                      child: ProjectForm(
-                                        project: project,
-                                      )),
-                                );
-                              });
-                        },
-                        icon: const Icon(Icons.edit)),
+                    trailing: !AppSession().isAdmin
+                        ? null
+                        : IconButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                      content: SizedBox(
+                                          height: 800,
+                                          width: 600,
+                                          child: ProjectForm(
+                                            project: project,
+                                          )),
+                                    );
+                                  });
+                            },
+                            icon: const Icon(Icons.edit)),
                   ),
                 ],
               ),
@@ -204,17 +215,28 @@ class ProjectTile extends StatelessWidget {
           Positioned(
             top: 4,
             right: 4,
-            child: CircleAvatar(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.white,
-              child: IconButton(
-                onPressed: () {
-                  var projectController = ProjectController(ProjectFormData.fromProject(project));
-                  projectController.deleteProject();
-                },
-                icon: const Icon(Icons.delete),
-              ),
-            ),
+            child: !AppSession().isAdmin
+                ? Container()
+                : CircleAvatar(
+                    foregroundColor: Colors.red,
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      onPressed: () {
+                        var projectController = ProjectController(ProjectFormData.fromProject(project));
+                        projectController.deleteProject();
+
+                        // showAlertDialog(
+                        //   context: context,
+                        //   message: "Are you sure you want to delete?",
+                        //   onPressed: () {
+                        //     var projectController = ProjectController(ProjectFormData.fromProject(project));
+                        //     projectController.deleteProject();
+                        //   },
+                        // );
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ),
           ),
         ],
       ),

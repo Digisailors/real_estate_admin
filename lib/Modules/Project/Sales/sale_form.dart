@@ -37,8 +37,7 @@ class _SaleFormState extends State<SaleForm> {
   void initState() {
     super.initState();
     widget.lead.loadReferences();
-    print("AGENT COMISSION");
-    print(widget.lead.agentComission?.toJson());
+
     sellingAmount.text = widget.lead.sellingAmount.toString();
     agentComission = widget.lead.agentComission != null ? ComissionController.fromComission(widget.lead.agentComission!) : ComissionController();
     staffComission = widget.lead.staffComission != null ? ComissionController.fromComission(widget.lead.staffComission!) : ComissionController();
@@ -53,6 +52,8 @@ class _SaleFormState extends State<SaleForm> {
           ),
     );
   }
+
+  final _formKey = GlobalKey<FormState>();
 
   getComission({required ComissionController comission, required String title, required String name, bool isStaff = false}) {
     return ListTile(
@@ -208,96 +209,104 @@ class _SaleFormState extends State<SaleForm> {
         title: const Text('SELL PROPERTY'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            TileFormField(controller: TextEditingController(text: widget.lead.name), title: "Buyer Name", enabled: false),
-            TileFormField(controller: TextEditingController(text: widget.lead.phoneNumber), title: "Buyer Contact", enabled: false),
-            TileFormField(controller: TextEditingController(text: widget.lead.governmentId), title: "Buyer ID", enabled: false),
-            Row(
-              children: [
-                Expanded(
-                  child: StatefulBuilder(builder: (context, reload) {
-                    widget.lead.propertyRef.get().then((value) {
-                      reload(() {
-                        property = Property.fromSnapshot(value);
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const SizedBox(height: 30),
+              TileFormField(controller: TextEditingController(text: widget.lead.name), title: "Buyer Name", enabled: false),
+              TileFormField(controller: TextEditingController(text: widget.lead.phoneNumber), title: "Buyer Contact", enabled: false),
+              TileFormField(controller: TextEditingController(text: widget.lead.governmentId), title: "Buyer ID", enabled: false),
+              Row(
+                children: [
+                  Expanded(
+                    child: StatefulBuilder(builder: (context, reload) {
+                      widget.lead.propertyRef.get().then((value) {
+                        reload(() {
+                          property = Property.fromSnapshot(value);
+                        });
                       });
-                    });
-                    return TileFormField(
-                      enabled: false,
-                      controller: TextEditingController(text: property?.propertyAmount.toString()),
-                      title: "Property Amount",
-                    );
-                  }),
-                ),
-                Expanded(
-                  child: TileFormField(
-                    validator: (val) {
-                      if (val != null) {
-                        if (double.tryParse(val) != null) {
-                          return 'Please enter a valid amount';
-                        } else {
-                          var number = double.tryParse(val) ?? 0;
-                          if (property != null) {
-                            if (property!.propertyAmount < number) {
-                              return 'Selling amount is less than property amount';
+                      return TileFormField(
+                        enabled: false,
+                        controller: TextEditingController(text: property?.propertyAmount.toString()),
+                        title: "Property Amount",
+                      );
+                    }),
+                  ),
+                  Expanded(
+                    child: TileFormField(
+                      validator: (val) {
+                        if (val != null) {
+                          if (sellingAmount.doubleValue == 0) {
+                            return 'Please enter a amount greater than 0';
+                          } else {
+                            var number = double.tryParse(val) ?? 0;
+                            if (property != null) {
+                              if (property!.propertyAmount < number) {
+                                return 'Selling amount is less than property amount';
+                              }
                             }
                           }
+                        } else {
+                          return 'Please enter a valid amount';
                         }
-                      }
-                    },
-                    controller: sellingAmount,
-                    title: "Selling Amount",
-                    onChanged: (val) {
-                      if (double.tryParse(val) != null) {
-                        setState(() {});
-                      }
-                    },
+                      },
+                      controller: sellingAmount,
+                      title: "Selling Amount",
+                      onChanged: (val) {
+                        print(sellingAmount.doubleValue);
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-            getComission(comission: staffComission, title: 'STAFF COMISSION', name: widget.lead.staff?.firstName ?? '', isStaff: true),
-            getComission(comission: agentComission, title: 'AGENT COMISSION', name: widget.lead.agent?.firstName ?? ''),
-            getComission(comission: superAgentComission, title: 'SUPER AGENT COMISSION', name: widget.lead.agent?.superAgent?.firstName ?? ''),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                height: 60,
-                width: double.maxFinite,
-                child: widget.lead.leadStatus == LeadStatus.sold
-                    ? Container()
-                    : ElevatedButton(
-                        onPressed: () async {
-                          var future;
-                          var lead = widget.lead;
-                          if ((AppSession().staff?.isAdmin) ?? false) {
-                            lead.leadStatus = LeadStatus.sold;
-                            lead.soldOn = DateTime.now().trimTime();
-                          } else if (widget.lead.leadStatus != LeadStatus.sold) {
-                            lead.leadStatus = LeadStatus.pendingApproval;
-                          }
-                          lead.staffComission = staffComission.comission;
-                          lead.agentComission = agentComission.comission;
-                          lead.superAgentComission = superAgentComission.comission;
-                          lead.sellingAmount = double.tryParse(sellingAmount.text) ?? 0;
-                          future = lead.reference
-                              .update(lead.toJson())
-                              .then((value) => Result(tilte: 'Success', message: "Record saved succesfully"))
-                              .onError((error, stackTrace) => Result(tilte: 'Failed', message: "Record is not updated \n ${error.toString()}"));
-
-                          showFutureDialog(
-                            context,
-                            future: future,
-                          );
-                        },
-                        child: Text(widget.lead.leadStatus == LeadStatus.lead
-                            ? "MARK PROPERTY AS SOLD"
-                            : (widget.lead.leadStatus == LeadStatus.pendingApproval ? (AppSession().isAdmin ? "SAVE AND APPROVE" : "SAVE") : "SAVE")),
-                      ),
+                ],
               ),
-            )
-          ],
+              getComission(comission: staffComission, title: 'STAFF COMISSION', name: widget.lead.staff?.firstName ?? '', isStaff: true),
+              getComission(comission: agentComission, title: 'AGENT COMISSION', name: widget.lead.agent?.firstName ?? ''),
+              getComission(comission: superAgentComission, title: 'SUPER AGENT COMISSION', name: widget.lead.agent?.superAgent?.firstName ?? ''),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  height: 60,
+                  width: double.maxFinite,
+                  child: widget.lead.leadStatus == LeadStatus.sold
+                      ? Container()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              var future;
+                              var lead = widget.lead;
+                              if (AppSession().isAdmin) {
+                                lead.leadStatus = LeadStatus.sold;
+                                lead.soldOn = DateTime.now().trimTime();
+                              } else if (widget.lead.leadStatus != LeadStatus.sold) {
+                                lead.leadStatus = LeadStatus.pendingApproval;
+                              }
+                              lead.staffComission = staffComission.comission;
+                              lead.agentComission = agentComission.comission;
+                              lead.superAgentComission = superAgentComission.comission;
+                              lead.sellingAmount = sellingAmount.doubleValue;
+                              print(lead.toJson());
+                              future = lead.reference
+                                  .update(lead.toJson())
+                                  .then((value) => Result(tilte: 'Success', message: "Record saved succesfully"))
+                                  .onError((error, stackTrace) => Result(tilte: 'Failed', message: "Record is not updated \n ${error.toString()}"));
+
+                              showFutureDialog(
+                                context,
+                                future: future,
+                              );
+                            }
+                          },
+                          child: Text(widget.lead.leadStatus == LeadStatus.lead
+                              ? "MARK PROPERTY AS SOLD"
+                              : (widget.lead.leadStatus == LeadStatus.pendingApproval
+                                  ? (AppSession().isAdmin ? "SAVE AND APPROVE" : "SAVE")
+                                  : "SAVE")),
+                        ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

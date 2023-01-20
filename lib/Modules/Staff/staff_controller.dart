@@ -13,7 +13,7 @@ class StaffController {
   Future<Result> addStaff() {
     return staff.reference
         .set(staff.toJson())
-        .then((value) => Result(tilte: Result.success, message: "Sgent added Successfully"))
+        .then((value) => Result(tilte: Result.success, message: "Staff added Successfully"))
         .onError((error, stackTrace) => Result(tilte: "Staff addition Failed", message: error.toString()));
   }
 

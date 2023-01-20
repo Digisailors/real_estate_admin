@@ -65,37 +65,19 @@ class _SaleListState extends State<SaleList> {
       //   centerTitle: true,
       // ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
               child: SizedBox(
                 height: 120,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    TableRow(children: [
-                      // TileFormField(
-                      //   controller: from,
-                      //   title: 'FROM DATE',
-                      //   suffix: IconButton(
-                      //     onPressed: () {
-                      //       assignDate(from);
-                      //     },
-                      //     icon: Icon(Icons.calendar_month),
-                      //   ),
-                      // ),
-                      // TileFormField(
-                      //   controller: to,
-                      //   title: 'TO DATE',
-                      //   suffix: GestureDetector(
-                      //     onTap: () {
-                      //       assignDate(to);
-                      //     },
-                      //     child: Icon(Icons.calendar_month),
-                      //   ),
-                      // ),
-                      ListTile(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
                         title: const Text("STAFF"),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -122,7 +104,10 @@ class _SaleListState extends State<SaleList> {
                               }),
                         ),
                       ),
-                      ListTile(
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
                         title: const Text("AGENT"),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -150,7 +135,10 @@ class _SaleListState extends State<SaleList> {
                               }),
                         ),
                       ),
-                      ListTile(
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
                         title: const Text("STATUS"),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -170,9 +158,8 @@ class _SaleListState extends State<SaleList> {
                               }),
                         ),
                       ),
-                      Container(),
-                    ]),
-                  ],
+                    ),
+                  ]),
                 ),
               ),
             ),
@@ -285,13 +272,13 @@ class SaleListSourse extends DataTableSource {
             showDialog(
                 context: context,
                 builder: (context) {
-                  printInfo(info: (AppSession().staff?.isAdmin ?? false).toString());
-                  printInfo(info: (_lead.leadStatus == LeadStatus.sold && (AppSession().staff?.isAdmin ?? false)).toString());
-                  if (_lead.leadStatus == LeadStatus.sold && (AppSession().staff?.isAdmin ?? false) == false) {
+                  printInfo(info: (AppSession().isAdmin).toString());
+                  printInfo(info: (_lead.leadStatus == LeadStatus.sold && AppSession().isAdmin).toString());
+                  if (_lead.leadStatus == LeadStatus.sold) {
                     return AlertDialog(
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                       title: const Text("Operation Not Allowed"),
-                      content: const Text("Edit operation on sold transaction is only available for admin"),
+                      content: const Text("Edit operation on sold transaction is not permitted"),
                       actions: [TextButton(onPressed: Navigator.of(context).pop, child: const Text("Okay"))],
                     );
                   }

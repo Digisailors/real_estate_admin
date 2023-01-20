@@ -104,69 +104,71 @@ class ProjectForm extends StatelessWidget {
         child: Consumer<ProjectFormData>(builder: (context, controller, child) {
           return Form(
             key: _formKey,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Card(child: AspectRatio(aspectRatio: 16 / 9, child: getCoverImage(context))),
-                ),
-                TileFormField(validator: requiredValidator, controller: controller.name, title: 'Project Name'),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(child: TileFormField(validator: requiredValidator, controller: controller.location, title: 'Project Location')),
-                    Expanded(
-                      child: ListTile(
-                        title: const Text('Project Type'),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
-                              value: controller.type,
-                              items: const [
-                                DropdownMenuItem<String>(
-                                  value: 'House',
-                                  child: Text("House"),
-                                ),
-                                DropdownMenuItem(value: 'Villa', child: Text("Villa")),
-                                DropdownMenuItem(value: 'Shop', child: Text("Shop")),
-                                DropdownMenuItem(value: 'Building', child: Text("Building")),
-                                DropdownMenuItem(value: 'Land', child: Text("Land")),
-                              ],
-                              onChanged: controller.onChanged,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Card(child: AspectRatio(aspectRatio: 16 / 9, child: getCoverImage(context))),
+                  ),
+                  TileFormField(validator: requiredValidator, controller: controller.name, title: 'Project Name'),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(child: TileFormField(validator: requiredValidator, controller: controller.location, title: 'Project Location')),
+                      Expanded(
+                        child: ListTile(
+                          title: const Text('Project Type'),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButtonFormField<String>(
+                                isDense: true,
+                                decoration: const InputDecoration(border: OutlineInputBorder()),
+                                value: controller.type,
+                                items: const [
+                                  DropdownMenuItem<String>(
+                                    value: 'House',
+                                    child: Text("House"),
+                                  ),
+                                  DropdownMenuItem(value: 'Villa', child: Text("Villa")),
+                                  DropdownMenuItem(value: 'Shop', child: Text("Shop")),
+                                  DropdownMenuItem(value: 'Building', child: Text("Building")),
+                                  DropdownMenuItem(value: 'Land', child: Text("Land")),
+                                ],
+                                onChanged: controller.onChanged,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  height: 60,
-                  width: double.maxFinite,
-                  margin: const EdgeInsets.all(16),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        var projectController = ProjectController(controller);
-
-                        var future = (project == null) ? projectController.addProject() : projectController.updateProject();
-                        showFutureDialog(
-                          context,
-                          future: future,
-                          onSucess: (result) {
-                            Navigator.of(context).pop();
-                            if (result is Project) {}
-                          },
-                        );
-                      }
-                    },
-                    child: const Text("SAVE PROJECT"),
+                    ],
                   ),
-                ),
-              ],
+                  Container(
+                    height: 60,
+                    width: double.maxFinite,
+                    margin: const EdgeInsets.all(16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          var projectController = ProjectController(controller);
+
+                          var future = (project == null) ? projectController.addProject() : projectController.updateProject();
+                          showFutureDialog(
+                            context,
+                            future: future,
+                            onSucess: (result) {
+                              Navigator.of(context).pop();
+                              if (result is Project) {}
+                            },
+                          );
+                        }
+                      },
+                      child: const Text("SAVE PROJECT"),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }),

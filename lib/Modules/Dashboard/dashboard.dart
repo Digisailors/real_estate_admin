@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:real_estate_admin/Model/Lead.dart';
 import 'package:real_estate_admin/Modules/Dashboard/agentTable.dart';
 import 'package:real_estate_admin/Modules/Dashboard/dashboardController.dart';
 import 'package:real_estate_admin/Modules/Dashboard/bar_chart.dart';
-import 'package:real_estate_admin/Modules/Dashboard/lead_line_chart.dart';
 import 'package:real_estate_admin/Modules/Dashboard/progresscard.dart';
+import 'package:real_estate_admin/get_constants.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -16,109 +17,120 @@ class Dashboard extends StatelessWidget {
       backgroundColor: const Color(0xfff7f9f8),
       body: GetBuilder(
           init: DashboardController(),
-          builder: (context) {
+          builder: (_) {
             var controller = Get.find<DashboardController>();
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                      flex: 8,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              children: [
-                                // Color.fromARGB(255, 231, 225, 251)
-                                Expanded(
-                                    child: ProgressCard(
-                                  valueColor: const Color.fromARGB(255, 174, 143, 253),
-                                  backGroundColor: const Color.fromARGB(255, 231, 225, 251),
-                                  denominator: controller.totalLeads.toDouble(),
-                                  numerator: controller.totalSuccessleads.toDouble(),
-                                  neumeratorTitle: 'CONVERTED ',
-                                  denominatorTitle: 'TOTAL',
-                                  cardTitle: 'LEADS',
-                                )),
-                                Expanded(
-                                    child: ProgressCard(
-                                  valueColor: const Color.fromARGB(255, 254, 187, 108),
-                                  backGroundColor: const Color.fromARGB(255, 253, 243, 233),
-                                  denominator: controller.totalAgents.toDouble(),
-                                  numerator: controller.totalActiveAgents.toDouble(),
-                                  neumeratorTitle: 'ACTIVE',
-                                  denominatorTitle: 'TOTAL',
-                                  cardTitle: 'AGENTS',
-                                )),
-                                Expanded(
-                                    child: ProgressCard(
-                                  valueColor: const Color.fromARGB(255, 69, 198, 168),
-                                  backGroundColor: const Color.fromARGB(255, 232, 250, 234),
-                                  denominator: controller.totalProperties.toDouble(),
-                                  numerator: controller.totalSuccessleads.toDouble(),
-                                  neumeratorTitle: 'SOLD',
-                                  denominatorTitle: 'TOTAL',
-                                  cardTitle: 'PROPERTIES',
-                                )),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: LeadChart(
-                                    dateWiseLeads: controller.dateWiseLeads,
-                                    title: "LEAD PER DAY",
-                                    color: Colors.purpleAccent.shade100,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: LeadChart(
-                                      color: Colors.greenAccent.shade100,
-                                      dateWiseLeads: controller.dateWiseSoldLeads,
-                                      title: "PROPERTIES SOLD PER DAY"),
-                                  // child: LeadLIneChart(dateWiseLeads: controller.dateWiseLeadCount, title: 'PER DAY LEAD'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )),
-                  Expanded(
-                    flex: 3,
+            return LayoutBuilder(
+              builder: (_, constrains) {
+                printInfo(info: '${constrains.maxWidth}');
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Expanded(
-                            child: AgentDataTable(
-                          headColor: Colors.deepPurple.shade100,
-                          agents: controller.top5AgentsByLeads,
-                          num1: 0,
-                        )),
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: AgentDataTable(headColor: Colors.pink.shade100, agents: controller.top5AgentsBySuccessfull, num1: 1),
-                        )),
-                        Expanded(
-                          child: AgentDataTable(headColor: Colors.green.shade100, agents: controller.top5AgentsByComission, num1: 2),
+                        Builder(builder: (context) {
+                          var children = getProgressCardChildren(controller);
+                          return constrains.maxWidth > 1000
+                              ? Row(
+                                  children: children,
+                                )
+                              : Column(
+                                  children: [
+                                    Row(
+                                      children: children.sublist(0, 2),
+                                    ),
+                                    Row(
+                                      children: children.sublist(2),
+                                    )
+                                  ],
+                                );
+                        }),
+                        SizedBox(
+                          height: Get.height * 0.4,
+                          child: LeadChart(
+                            dateWiseLeads: controller.dateWiseLeads,
+                            title: "Lead per day",
+                            color: Colors.purpleAccent.shade100,
+                          ),
                         ),
+                        isMobile(context)
+                            ? Column(children: getChildAgentTables(controller))
+                            : Row(
+                                children: getChildAgentTablesExpanded(controller),
+                              ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             );
           }),
     );
+  }
+
+  List<Widget> getProgressCardChildren(DashboardController controller) {
+    return [
+      // Color.fromARGB(255, 231, 225, 251)
+      Expanded(
+        child: ProgressCard(
+          valueColor: const Color.fromARGB(255, 174, 143, 253),
+          backGroundColor: const Color.fromARGB(255, 231, 225, 251),
+          denominator: controller.totalLeads.toDouble(),
+          numerator: controller.totalSuccessleads.toDouble(),
+          neumeratorTitle: 'Converted ',
+          denominatorTitle: 'Total',
+          cardTitle: 'Leads',
+        ),
+      ),
+      Expanded(
+        child: ProgressCard(
+          valueColor: const Color.fromARGB(255, 254, 187, 108),
+          backGroundColor: const Color.fromARGB(255, 253, 243, 233),
+          denominator: controller.totalAgents.toDouble(),
+          numerator: controller.totalActiveAgents.toDouble(),
+          neumeratorTitle: 'Active',
+          denominatorTitle: 'Total',
+          cardTitle: 'Agents',
+        ),
+      ),
+      Expanded(
+        child: ProgressCard(
+          valueColor: const Color.fromARGB(255, 69, 198, 168),
+          backGroundColor: const Color.fromARGB(255, 232, 250, 234),
+          denominator: controller.totalProperties.toDouble(),
+          numerator: controller.totalSuccessleads.toDouble(),
+          neumeratorTitle: 'Sold',
+          denominatorTitle: 'Total',
+          cardTitle: 'Properties',
+        ),
+      ),
+      Expanded(
+        child: ProgressCard(
+          isLedger: true,
+          valueColor: Colors.yellowAccent,
+          backGroundColor: Colors.deepPurple.shade50,
+          denominator: controller.comissionAmount,
+          numerator: controller.soldAmount,
+          neumeratorTitle: 'Pay-in',
+          denominatorTitle: 'Pay-out',
+          cardTitle: 'Ledger',
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> getChildAgentTables(DashboardController controller) {
+    return [
+      AgentDataTable(headColor: Colors.deepPurple.shade100, agents: controller.top5AgentsByLeads, num1: 0),
+      AgentDataTable(headColor: Colors.pink.shade100, agents: controller.top5AgentsBySuccessfull, num1: 1),
+      AgentDataTable(headColor: Colors.green.shade100, agents: controller.top5AgentsByComission, num1: 2),
+    ];
+  }
+
+  List<Widget> getChildAgentTablesExpanded(DashboardController controller) {
+    return [
+      Expanded(child: AgentDataTable(headColor: Colors.deepPurple.shade100, agents: controller.top5AgentsByLeads, num1: 0)),
+      Expanded(child: AgentDataTable(headColor: Colors.pink.shade100, agents: controller.top5AgentsBySuccessfull, num1: 1)),
+      Expanded(child: AgentDataTable(headColor: Colors.green.shade100, agents: controller.top5AgentsByComission, num1: 2)),
+    ];
   }
 }

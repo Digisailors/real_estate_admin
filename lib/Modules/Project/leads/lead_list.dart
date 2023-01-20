@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate_admin/Model/Agent.dart';
@@ -33,17 +34,19 @@ class _LeadListState extends State<LeadList> {
       //   centerTitle: true,
       // ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
               child: SizedBox(
                 height: 120,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    TableRow(children: [
-                      ListTile(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
                         title: const Text("STAFF"),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -71,7 +74,10 @@ class _LeadListState extends State<LeadList> {
                               }),
                         ),
                       ),
-                      ListTile(
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: ListTile(
                         title: const Text("AGENT"),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -99,10 +105,8 @@ class _LeadListState extends State<LeadList> {
                               }),
                         ),
                       ),
-                      Container(),
-                      Container(),
-                    ]),
-                  ],
+                    ),
+                  ]),
                 ),
               ),
             ),
@@ -113,21 +117,14 @@ class _LeadListState extends State<LeadList> {
                 stream: Lead.getLeads(agent: agent, staff: staff),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Table(
-                      children: [
-                        TableRow(
-                          children: [
-                            PaginatedDataTable(
-                              rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 7,
-                              columns: LeadListSourse.getColumns(),
-                              source: LeadListSourse(
-                                snapshot.data ?? [],
-                                context: context,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    return PaginatedDataTable(
+                      dragStartBehavior: DragStartBehavior.start,
+                      rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 7,
+                      columns: LeadListSourse.getColumns(),
+                      source: LeadListSourse(
+                        snapshot.data ?? [],
+                        context: context,
+                      ),
                     );
                   }
                   if (snapshot.hasError) {
@@ -268,7 +265,7 @@ class LeadListSourse extends DataTableSource {
                       });
                 },
                 icon: const Icon(Icons.edit))),
-        DataCell(_lead.leadStatus == LeadStatus.sold
+        DataCell(_lead.leadStatus == LeadStatus.sold || !AppSession().isAdmin
             ? const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(

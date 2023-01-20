@@ -22,7 +22,7 @@ class AgentDataTable extends StatelessWidget {
     }
     if (num1 == 1) {
       columns.add(
-        const DataColumn(label: Text('CONVERTED LEADS')),
+        const DataColumn(label: Text('Conv. LEADS')),
       );
     }
     if (num1 == 2) {
@@ -69,11 +69,11 @@ class AgentDataTable extends StatelessWidget {
   String getTitle() {
     switch (num1) {
       case 0:
-        return "TOP 5 AGENTS IN LEAD COUNT";
+        return "Top 5 agents in lead count";
       case 1:
-        return "TOP 5 AGENTS WITH MAX LEAD CONVERSION";
+        return "Top 5 agents with successfull leads";
       case 2:
-        return "TOP 5 AGENTS WITH HIGH COMMISSION";
+        return "Top 5 agents with high comission";
 
       default:
         return 'NULL';
@@ -83,6 +83,7 @@ class AgentDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      clipBehavior: Clip.hardEdge,
       color: headColor,
       elevation: 6,
       shape: RoundedRectangleBorder(
@@ -94,7 +95,8 @@ class AgentDataTable extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Text(getTitle()),
           ),
-          Expanded(
+          SizedBox(
+            height: kMinInteractiveDimension * 6,
             child: Container(
               color: Colors.white,
               child: Table(
