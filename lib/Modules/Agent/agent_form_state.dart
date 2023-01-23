@@ -7,6 +7,7 @@ import 'package:real_estate_admin/Model/Staff.dart';
 import '../../Model/Agent.dart';
 
 class AgentFormController {
+  var referralCode = TextEditingController();
   AgentFormController();
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
@@ -39,7 +40,7 @@ class AgentFormController {
     var controller = AgentFormController();
     controller._reference = agent.reference;
     controller.referenceCode = agent.referenceCode;
-    controller.panCardNumber.text = agent.panCardNumber ?? '';
+    controller.panCardNumber.text = agent.panCardNumber?.toUpperCase() ?? '';
     controller.agentReference = agent.superAgentReference;
     controller.approvedStaffReference = agent.approvedStaffReference;
     controller.phoneNumber.text = agent.phoneNumber;
@@ -65,7 +66,8 @@ class AgentFormController {
     return controller;
   }
 
-  String get newReferenceCode => (Random.secure().nextInt(999999) + 100000).toString();
+  String get newReferenceCode =>
+      (Random.secure().nextInt(999999) + 100000).toString();
   DocumentReference? _reference;
   DocumentReference get reference {
     return _reference ?? FirebaseFirestore.instance.collection('agents').doc();

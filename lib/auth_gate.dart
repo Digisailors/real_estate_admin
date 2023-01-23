@@ -7,6 +7,7 @@ import 'package:real_estate_admin/Modules/Dashboard/dashboard.dart';
 import 'package:real_estate_admin/Providers/session.dart';
 import 'package:real_estate_admin/home.dart';
 import 'package:real_estate_admin/login_screen.dart';
+import 'package:real_estate_admin/main.dart';
 
 import 'Modules/Project/project_list.dart';
 
@@ -51,6 +52,7 @@ class AuthGate extends StatelessWidget {
               return Consumer(
                 builder: ((context, value, child) {
                   return GetMaterialApp(
+                    scrollBehavior: MyCustomScrollBehavior(),
                     defaultTransition: Transition.noTransition,
                     home: const Dashboard(),
                     builder: (context, child) {
@@ -65,7 +67,8 @@ class AuthGate extends StatelessWidget {
           }
         }
         if (snapshot.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(snapshot.error.toString())));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(snapshot.error.toString())));
           return const LoginScreen();
         }
         return const Center(

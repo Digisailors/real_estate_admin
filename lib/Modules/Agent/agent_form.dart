@@ -50,7 +50,8 @@ class _AgentFormState extends State<AgentForm> {
                     ),
                   ),
                   Expanded(
-                    child: TileFormField(controller: controller.lastName, title: "Last Name"),
+                    child: TileFormField(
+                        controller: controller.lastName, title: "Last Name"),
                   ),
                 ],
               ),
@@ -60,13 +61,14 @@ class _AgentFormState extends State<AgentForm> {
                     child: TileFormField(
                       controller: controller.email,
                       title: "EMAIL",
+                      validator: requiredEmail,
                     ),
                   ),
                   Expanded(
                     child: TileFormField(
                       controller: controller.phoneNumber,
                       title: "PHONE NUMBER",
-                      validator: requiredValidator,
+                      validator: requiredPhone,
                     ),
                   ),
                 ],
@@ -78,25 +80,53 @@ class _AgentFormState extends State<AgentForm> {
                   if (requiredValidator(val) != null) {
                     return requiredValidator(val);
                   }
+                  String pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
+                  RegExp regex = RegExp(pattern);
+                  if (!regex.hasMatch(val!)) {
+                    return 'Invalid PAN Number';
+                  }
+
                   if (widget.agent == null) {
-                    if (AppSession().staffs.where((element) => element.panCardNumber!.toLowerCase() == val!.toLowerCase()).isNotEmpty) {
+                    if (AppSession()
+                        .staffs
+                        .where((element) =>
+                            element.panCardNumber!.toUpperCase() ==
+                            val.toUpperCase())
+                        .isNotEmpty) {
                       return "Duplicate PAN Number";
                     }
                   }
                 },
               ),
-              TileFormField(controller: controller.addressLine1, title: "ADDRESS LINE 1"),
-              TileFormField(controller: controller.addressLine2, title: "ADDRESS LINE 2"),
+              TileFormField(
+                controller: controller.addressLine1,
+                title: "ADDRESS LINE 1",
+                validator: requiredValidator,
+              ),
+              TileFormField(
+                  controller: controller.addressLine2, title: "ADDRESS LINE 2"),
               Row(
                 children: [
                   Expanded(
-                    child: TileFormField(controller: controller.city, title: "CITY"),
+                    child: TileFormField(
+                      controller: controller.city,
+                      title: "CITY",
+                      validator: requiredValidator,
+                    ),
                   ),
                   Expanded(
-                    child: TileFormField(controller: controller.pincode, title: "PIN CODE"),
+                    child: TileFormField(
+                      controller: controller.pincode,
+                      title: "PIN CODE",
+                      validator: requiredPinCode,
+                    ),
                   ),
                 ],
               ),
+              widget.agent == null
+                  ? TileFormField(
+                      controller: controller.referralCode, title: "REFERRAL")
+                  : Container(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
@@ -105,7 +135,8 @@ class _AgentFormState extends State<AgentForm> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        var agentController = AgentController(formController: controller);
+                        var agentController =
+                            AgentController(formController: controller);
                         var future;
                         if (widget.agent == null) {
                           future = agentController.addAgent();

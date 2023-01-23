@@ -11,7 +11,8 @@ import 'package:real_estate_admin/widgets/utils.dart';
 import '../../../Providers/session.dart';
 
 class LeadForm extends StatefulWidget {
-  const LeadForm({Key? key, this.lead, required this.property}) : super(key: key);
+  const LeadForm({Key? key, this.lead, required this.property})
+      : super(key: key);
 
   final Lead? lead;
   final Property property;
@@ -31,7 +32,8 @@ class _LeadFormState extends State<LeadForm> {
     super.initState();
   }
 
-  late LeadFormController controller = LeadFormController(widget.property.reference);
+  late LeadFormController controller =
+      LeadFormController(widget.property.reference);
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -74,20 +76,29 @@ class _LeadFormState extends State<LeadForm> {
             ),
             Row(
               children: [
-                Expanded(child: TileFormField(controller: controller.address, title: 'ADDRESS')),
-                Expanded(child: TileFormField(controller: controller.email, title: 'EMAIL'))
+                Expanded(
+                    child: TileFormField(
+                        controller: controller.address, title: 'ADDRESS')),
+                Expanded(
+                    child: TileFormField(
+                        controller: controller.email, title: 'EMAIL'))
               ],
             ),
             Row(
               children: [
-                Expanded(child: TileFormField(controller: controller.governmentId, title: 'GOVT.ID')),
+                Expanded(
+                    child: TileFormField(
+                        controller: controller.governmentId, title: 'GOVT.ID')),
                 Expanded(
                     child: ListTile(
                   title: const Text("ENQUIRY DATE"),
                   subtitle: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: TextFormField(
-                      controller: TextEditingController(text: controller.enquiryDate.toString().substring(0, 10)),
+                      controller: TextEditingController(
+                          text: controller.enquiryDate
+                              .toString()
+                              .substring(0, 10)),
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         suffixIcon: GestureDetector(
@@ -99,7 +110,8 @@ class _LeadFormState extends State<LeadForm> {
                               lastDate: DateTime(2100),
                             ).then((value) {
                               setState(() {
-                                controller.enquiryDate = value ?? controller.enquiryDate;
+                                controller.enquiryDate =
+                                    value ?? controller.enquiryDate;
                               });
                             });
                           },
@@ -122,14 +134,17 @@ class _LeadFormState extends State<LeadForm> {
                         value: controller.staffRef,
                         items: AppSession()
                             .staffs
-                            .map((staff) => DropdownMenuItem<DocumentReference?>(
-                                  value: staff.reference,
-                                  child: Text(staff.firstName),
-                                ))
+                            .map(
+                                (staff) => DropdownMenuItem<DocumentReference?>(
+                                      value: staff.reference,
+                                      child: Text(staff.firstName),
+                                    ))
                             .toList(),
                         isExpanded: true,
-                        decoration: const InputDecoration(border: OutlineInputBorder()),
-                        onChanged: controller.leadStatus == LeadStatus.lead && AppSession().isAdmin
+                        decoration:
+                            const InputDecoration(border: OutlineInputBorder()),
+                        onChanged: controller.leadStatus == LeadStatus.lead &&
+                                AppSession().isAdmin
                             ? (val) {
                                 if (val != null) {
                                   controller.staffRef = val;
@@ -154,14 +169,17 @@ class _LeadFormState extends State<LeadForm> {
                         value: controller.agentRef,
                         items: AppSession()
                             .agents
-                            .map((agent) => DropdownMenuItem<DocumentReference?>(
-                                  value: agent.reference,
-                                  child: Text(agent.firstName),
-                                ))
+                            .map(
+                                (agent) => DropdownMenuItem<DocumentReference?>(
+                                      value: agent.reference,
+                                      child: Text(agent.firstName),
+                                    ))
                             .toList(),
                         isExpanded: true,
-                        decoration: const InputDecoration(border: OutlineInputBorder()),
-                        onChanged: controller.leadStatus == LeadStatus.lead && AppSession().isAdmin
+                        decoration:
+                            const InputDecoration(border: OutlineInputBorder()),
+                        onChanged: controller.leadStatus == LeadStatus.lead &&
+                                AppSession().isAdmin
                             ? (val) {
                                 if (val != null) {
                                   controller.agentRef = val;
@@ -183,14 +201,18 @@ class _LeadFormState extends State<LeadForm> {
                     onPressed: () async {
                       isDuplicateLead = await widget.property.reference
                           .collection('leads')
-                          .where('phoneNumber', isEqualTo: controller.phoneNumber.text.trim())
+                          .where('phoneNumber',
+                              isEqualTo: controller.phoneNumber.text.trim())
                           .get()
                           .then((value) {
                         print(value.docs.length);
                         if (value.docs.isEmpty) {
                           return false;
                         }
-                        if (widget.lead != null && value.docs.length == 1 && value.docs.first.reference == widget.lead?.reference) {
+                        if (widget.lead != null &&
+                            value.docs.length == 1 &&
+                            value.docs.first.reference ==
+                                widget.lead?.reference) {
                           return false;
                         } else {
                           return true;
@@ -202,10 +224,16 @@ class _LeadFormState extends State<LeadForm> {
                             ? widget.property.addLead(controller.lead)
                             : widget.lead!.reference
                                 .update(controller.lead.toJson())
-                                .then((value) => Result(tilte: 'Success', message: 'Record modified Successfully'))
-                                .onError((error, stackTrace) => Result(tilte: 'Failed', message: 'Record not modified\n${error.toString()}'));
+                                .then((value) => Result(
+                                    tilte: 'Success',
+                                    message: 'Record modified Successfully'))
+                                .onError((error, stackTrace) => Result(
+                                    tilte: 'Failed',
+                                    message:
+                                        'Record not modified\n${error.toString()}'));
                         // ignore: use_build_context_synchronously
-                        showFutureDialog(context, future: future, onSucess: (val) {
+                        showFutureDialog(context, future: future,
+                            onSucess: (val) {
                           Navigator.of(context).pop();
                         });
                       }

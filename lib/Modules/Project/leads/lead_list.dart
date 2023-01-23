@@ -43,70 +43,81 @@ class _LeadListState extends State<LeadList> {
                 height: 120,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [
-                    SizedBox(
-                      width: 300,
-                      child: ListTile(
-                        title: const Text("STAFF"),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: DropdownButtonFormField<Staff?>(
-                              value: staff,
-                              items: AppSession()
-                                  .staffs
-                                  .map((staffIterable) => DropdownMenuItem<Staff?>(
-                                        value: staffIterable,
-                                        child: Text(staffIterable.firstName),
-                                      ))
-                                  .followedBy([
-                                const DropdownMenuItem<Staff?>(
-                                  child: Text("ALL"),
-                                )
-                              ]).toList(),
-                              isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() {
-                                    staff = val;
-                                  });
-                                }
-                              }),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          child: ListTile(
+                            title: const Text("STAFF"),
+                            subtitle: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: DropdownButtonFormField<Staff?>(
+                                  value: staff,
+                                  items: AppSession()
+                                      .staffs
+                                      .map((staffIterable) =>
+                                          DropdownMenuItem<Staff?>(
+                                            value: staffIterable,
+                                            child:
+                                                Text(staffIterable.firstName),
+                                          ))
+                                      .followedBy([
+                                    const DropdownMenuItem<Staff?>(
+                                      child: Text("ALL"),
+                                    )
+                                  ]).toList(),
+                                  isExpanded: true,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder()),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      setState(() {
+                                        staff = val;
+                                      });
+                                    }
+                                  }),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 300,
-                      child: ListTile(
-                        title: const Text("AGENT"),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: DropdownButtonFormField<Agent?>(
-                              value: agent,
-                              items: AppSession()
-                                  .agents
-                                  .map((agentIterable) => DropdownMenuItem<Agent?>(
-                                        value: agentIterable,
-                                        child: Text(agentIterable.firstName),
-                                      ))
-                                  .followedBy([
-                                const DropdownMenuItem<Agent?>(
-                                  child: Text("ALL"),
-                                )
-                              ]).toList(),
-                              isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() {
-                                    agent = val;
-                                  });
-                                }
-                              }),
+                        SizedBox(
+                          width: 300,
+                          child: ListTile(
+                            title: const Text("AGENT"),
+                            subtitle: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: DropdownButtonFormField<Agent?>(
+                                  value: agent,
+                                  items: AppSession()
+                                      .agents
+                                      .map((agentIterable) =>
+                                          DropdownMenuItem<Agent?>(
+                                            value: agentIterable,
+                                            child:
+                                                Text(agentIterable.firstName),
+                                          ))
+                                      .followedBy([
+                                    const DropdownMenuItem<Agent?>(
+                                      child: Text("ALL"),
+                                    )
+                                  ]).toList(),
+                                  isExpanded: true,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder()),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      setState(() {
+                                        agent = val;
+                                      });
+                                    }
+                                  }),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ]),
+                      ]),
                 ),
               ),
             ),
@@ -176,6 +187,7 @@ class LeadListSourse extends DataTableSource {
         DataCell(Text(_lead.phoneNumber ?? '')),
         DataCell(
           DropdownButtonFormField<DocumentReference?>(
+              hint: _lead.staffRef == null ? const Text('Not Assigned') : null,
               value: _lead.staffRef,
               items: AppSession()
                   .staffs
@@ -186,15 +198,20 @@ class LeadListSourse extends DataTableSource {
                   .toList(),
               isExpanded: true,
               decoration: const InputDecoration(border: OutlineInputBorder()),
-              onChanged: _lead.leadStatus == LeadStatus.lead && AppSession().isAdmin
-                  ? (val) {
-                      if (val != null) {
-                        _lead.assignStaff(val);
-                      }
-                    }
-                  : null),
+              onChanged:
+                  _lead.leadStatus == LeadStatus.lead && AppSession().isAdmin
+                      ? (val) {
+                          if (val != null) {
+                            _lead.assignStaff(val);
+                          }
+                        }
+                      : null),
         ),
-        DataCell(Text(AppSession().agents.where((element) => element.reference == _lead.agentRef).first.firstName)),
+        DataCell(Text(AppSession()
+            .agents
+            .where((element) => element.reference == _lead.agentRef)
+            .first
+            .firstName)),
         DataCell(Text(_lead.enquiryDate.toString().substring(0, 10))),
         DataCell(TextButton(
           onPressed: () {
@@ -204,7 +221,9 @@ class LeadListSourse extends DataTableSource {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
                       content: SizedBox(
                         height: 800,
                         width: 600,
@@ -226,7 +245,9 @@ class LeadListSourse extends DataTableSource {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
                           content: SizedBox(
                               height: 800,
                               width: 600,
@@ -248,12 +269,16 @@ class LeadListSourse extends DataTableSource {
               )
             : IconButton(
                 onPressed: () async {
-                  Property property = await _lead.propertyRef.get().then((value) => Property.fromSnapshot(value));
+                  Property property = await _lead.propertyRef
+                      .get()
+                      .then((value) => Property.fromSnapshot(value));
                   showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
                           content: SizedBox(
                               height: 800,
                               width: 600,
@@ -276,7 +301,8 @@ class LeadListSourse extends DataTableSource {
             : IconButton(
                 onPressed: () {
                   _lead.reference.delete();
-                  _lead.propertyRef.update({'leadCount': FieldValue.increment(-1)});
+                  _lead.propertyRef
+                      .update({'leadCount': FieldValue.increment(-1)});
                 },
                 icon: const Icon(Icons.delete)))
       ],
