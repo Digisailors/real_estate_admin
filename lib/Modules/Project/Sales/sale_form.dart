@@ -396,7 +396,6 @@ class _SaleFormState extends State<SaleForm> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context, 'Cancel');
-                                          Navigator.pop(context, 'Cancel');
                                         },
                                         child: const Text('Cancel'),
                                       ),
@@ -440,6 +439,7 @@ class _SaleFormState extends State<SaleForm> {
                                               context,
                                               future: future,
                                             );
+                                            Navigator.pop(context, 'Ok');
                                           }
                                         },
                                         child: const Text('OK'),
