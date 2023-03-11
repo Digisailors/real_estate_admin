@@ -42,8 +42,10 @@ class _StaffListState extends State<StaffList> {
                 context: context,
                 builder: (context) {
                   return const AlertDialog(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    content: SizedBox(height: 800, width: 600, child: StaffForm()),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    content:
+                        SizedBox(height: 800, width: 600, child: StaffForm()),
                   );
                 });
           },
@@ -55,10 +57,14 @@ class _StaffListState extends State<StaffList> {
           children: [
             StreamBuilder(
               stream: query.snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.active || snapshot.hasData) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.hasData) {
                   List<Staff> staffs = [];
-                  staffs = snapshot.data!.docs.map((e) => Staff.fromSnapshot(e)).toList();
+                  staffs = snapshot.data!.docs
+                      .map((e) => Staff.fromSnapshot(e))
+                      .toList();
                   if (staffs.isEmpty) {
                     return const Center(
                       child: Padding(
@@ -73,7 +79,8 @@ class _StaffListState extends State<StaffList> {
                         child: SizedBox(
                           width: double.maxFinite,
                           child: PaginatedDataTable(
-                            rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 4,
+                            rowsPerPage:
+                                (Get.height ~/ kMinInteractiveDimension) - 4,
                             columns: StaffListSource.getColumns(),
                             source: StaffListSource(staffs, context: context),
                           ),
@@ -115,18 +122,32 @@ class StaffListSource extends DataTableSource {
       index: index,
       cells: [
         // DataCell(Text((index + 1).toString())),
-        DataCell(TextButton(onPressed: () {}, child: Text("${e.firstName} ${e.lastName}"))),
+        DataCell(TextButton(
+            onPressed: () {}, child: Text("${e.firstName} ${e.lastName}"))),
         DataCell(Text(e.phoneNumber)),
         DataCell(Text(e.panCardNumber ?? '')),
         DataCell(Text(e.email)),
-        DataCell(Text(NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
+        DataCell(Text(
+            NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
         DataCell(Text(e.leadCount.toString())),
         DataCell(Text(e.successfullLeadCount.toString())),
         DataCell(IconButton(
             onPressed: () {
-              Get.to(() => StaffForm(
-                    staff: e,
-                  ));
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      content: SizedBox(
+                          height: 800,
+                          width: 600,
+                          child: StaffForm(
+                            staff: e,
+                          )),
+                    );
+                  });
             },
             icon: const Icon(Icons.edit))),
         DataCell(IconButton(

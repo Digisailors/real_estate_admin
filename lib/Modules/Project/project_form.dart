@@ -109,13 +109,23 @@ class ProjectForm extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Card(child: AspectRatio(aspectRatio: 16 / 9, child: getCoverImage(context))),
+                    child: Card(
+                        child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: getCoverImage(context))),
                   ),
-                  TileFormField(validator: requiredValidator, controller: controller.name, title: 'Project Name'),
+                  TileFormField(
+                      validator: requiredValidator,
+                      controller: controller.name,
+                      title: 'Project Name'),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Expanded(child: TileFormField(validator: requiredValidator, controller: controller.location, title: 'Project Location')),
+                      Expanded(
+                          child: TileFormField(
+                              validator: requiredValidator,
+                              controller: controller.location,
+                              title: 'Project Location')),
                       Expanded(
                         child: ListTile(
                           title: const Text('Project Type'),
@@ -124,17 +134,23 @@ class ProjectForm extends StatelessWidget {
                             child: DropdownButtonHideUnderline(
                               child: DropdownButtonFormField<String>(
                                 isDense: true,
-                                decoration: const InputDecoration(border: OutlineInputBorder()),
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder()),
                                 value: controller.type,
                                 items: const [
                                   DropdownMenuItem<String>(
                                     value: 'House',
                                     child: Text("House"),
                                   ),
-                                  DropdownMenuItem(value: 'Villa', child: Text("Villa")),
-                                  DropdownMenuItem(value: 'Shop', child: Text("Shop")),
-                                  DropdownMenuItem(value: 'Building', child: Text("Building")),
-                                  DropdownMenuItem(value: 'Land', child: Text("Land")),
+                                  DropdownMenuItem(
+                                      value: 'Villa', child: Text("Villa")),
+                                  DropdownMenuItem(
+                                      value: 'Shop', child: Text("Shop")),
+                                  DropdownMenuItem(
+                                      value: 'Building',
+                                      child: Text("Building")),
+                                  DropdownMenuItem(
+                                      value: 'Land', child: Text("Land")),
                                 ],
                                 onChanged: controller.onChanged,
                               ),
@@ -153,13 +169,16 @@ class ProjectForm extends StatelessWidget {
                         if (_formKey.currentState!.validate()) {
                           var projectController = ProjectController(controller);
 
-                          var future = (project == null) ? projectController.addProject() : projectController.updateProject();
+                          var future = (project == null)
+                              ? projectController.addProject()
+                              : projectController.updateProject();
                           showFutureDialog(
                             context,
                             future: future,
                             onSucess: (result) {
                               Navigator.of(context).pop();
                               if (result is Project) {}
+                              Navigator.of(context).pop();
                             },
                           );
                         }
