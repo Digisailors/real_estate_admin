@@ -30,7 +30,9 @@ class _HomeState extends State<Home> {
     var session = AppSession();
     return Row(
       children: [
-        isDesktop(context) ? Expanded(flex: 3, child: getDrawer(context, session)) : Container(),
+        isDesktop(context)
+            ? Expanded(flex: 3, child: getDrawer(context, session))
+            : Container(),
         Expanded(
             flex: 14,
             child: Scaffold(
@@ -55,16 +57,30 @@ class _HomeState extends State<Home> {
           child: Column(
             children: [
               AspectRatio(
-                aspectRatio: 1,
+                aspectRatio: isDesktop(context) ? 1.5 : 2,
                 child: Center(
                   child: Image.asset(
-                    'assets/logo.png',
-                    height: isDesktop(context) ? 150 : 100,
+                    'mmalogo.png',
+                    height: isDesktop(context) ? 100 : 80,
                   ),
                 ),
               ),
               ListTile(
-                title: Center(child: Text(AppSession().staff?.firstName ?? "No Username")),
+                title: Center(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.verified_user,
+                      color: Colors.blue,
+                    ),
+                    Text(
+                      AppSession().staff?.firstName ?? "No Username",
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                )),
               ),
               ListTile(
                 selected: selectedTile == 0,
@@ -157,8 +173,13 @@ class _HomeState extends State<Home> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                          content: SizedBox(height: 800, width: 600, child: StaffForm(staff: AppSession().staff)),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          content: SizedBox(
+                              height: 800,
+                              width: 600,
+                              child: StaffForm(staff: AppSession().staff)),
                         );
                       });
                 },
