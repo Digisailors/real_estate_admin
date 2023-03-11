@@ -49,6 +49,7 @@ class AuthGate extends StatelessWidget {
               AppSession().checkAdmin().then((val) {
                 reload(() {});
               });
+
               return Consumer(
                 builder: ((context, value, child) {
                   return GetMaterialApp(
@@ -67,8 +68,7 @@ class AuthGate extends StatelessWidget {
           }
         }
         if (snapshot.hasError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(snapshot.error.toString())));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(snapshot.error.toString())));
           return const LoginScreen();
         }
         return const Center(

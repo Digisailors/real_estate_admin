@@ -21,7 +21,7 @@ class Staff {
   final String email;
   final DocumentReference reference;
   final bool isAdmin;
-  int commissionAmount;
+  double commissionAmount;
   int leadCount;
   int successfullLeadCount;
 

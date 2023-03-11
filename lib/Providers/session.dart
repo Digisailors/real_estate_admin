@@ -49,9 +49,16 @@ class AppSession extends ChangeNotifier {
 
   Future<bool> checkAdmin() async {
     if (firbaseAuth.currentUser != null) {
-      return firbaseAuth.currentUser!.getIdTokenResult().then((value) {
+      return firbaseAuth.currentUser!.getIdTokenResult().then((value) async {
         if (value.claims!.keys.contains('isAdmin')) {
           _isAdmin = value.claims!['isAdmin'];
+          if (_isAdmin ?? false == true) {
+            staff = await FirebaseFirestore.instance
+                .collection("staffs")
+                .doc(firbaseAuth.currentUser!.uid)
+                .get()
+                .then((value) => Staff.fromJson(value.data()));
+          }
           return _isAdmin ?? false;
         }
         return false;

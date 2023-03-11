@@ -23,7 +23,7 @@ class StaffFormController {
   Staff? superAgent;
   Staff? approvedStaff;
   bool isAdmin = false;
-  int commissionAmount = 0;
+  double commissionAmount = 0;
 
   // String get newDocId => FirebaseFirestore.instance.collection('staffs').doc().id;
 

@@ -64,6 +64,9 @@ class _HomeState extends State<Home> {
                 ),
               ),
               ListTile(
+                title: Center(child: Text(AppSession().staff?.firstName ?? "No Username")),
+              ),
+              ListTile(
                 selected: selectedTile == 0,
                 title: const Text("Dashboard"),
                 selectedColor: Colors.blue,
