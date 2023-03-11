@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:real_estate_admin/Model/Agent.dart';
 import 'package:real_estate_admin/Modules/Agent/agent_controller.dart';
 import 'package:real_estate_admin/Modules/Agent/agent_form_state.dart';
@@ -74,6 +75,7 @@ class _AgentFormState extends State<AgentForm> {
                 ],
               ),
               TileFormField(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
                 controller: controller.panCardNumber,
                 title: "PAN NUMBER",
                 validator: (val) {
