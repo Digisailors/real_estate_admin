@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
+import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
 import 'package:real_estate_admin/Modules/Project/propertyController.dart';
 import 'package:real_estate_admin/widgets/utils.dart';
 
@@ -219,6 +220,12 @@ class _PropertyFormState extends State<PropertyForm> {
                       }
                     },
                   ),
+                  const Divider(),
+                  ComissionTile(comissionController: data.agentComission, title: "Agent Comission", name: "Agent"),
+                  const Divider(),
+                  ComissionTile(comissionController: data.staffComission, title: "Staff Comission", name: "Staff"),
+                  const Divider(),
+                  ComissionTile(comissionController: data.superAgentComission, title: "Super Agent Commission", name: "Super Agent"),
                   const Divider(),
                   ListTile(
                     title: const Text("Supporting Documents"),
