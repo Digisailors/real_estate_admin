@@ -189,13 +189,19 @@ class LeadListSourse extends DataTableSource {
           DropdownButtonFormField<DocumentReference?>(
               hint: _lead.staffRef == null ? const Text('Not Assigned') : null,
               value: _lead.staffRef,
-              items: AppSession()
-                  .staffs
-                  .map((staff) => DropdownMenuItem<DocumentReference?>(
-                        value: staff.reference,
-                        child: Text(staff.firstName),
-                      ))
-                  .toList(),
+              items: [
+                    const DropdownMenuItem<DocumentReference?>(
+                      
+                      child: Text("None"),
+                    )
+                  ] +
+                  AppSession()
+                      .staffs
+                      .map((staff) => DropdownMenuItem<DocumentReference?>(
+                            value: staff.reference,
+                            child: Text(staff.firstName),
+                          ))
+                      .toList(),
               isExpanded: true,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               onChanged:

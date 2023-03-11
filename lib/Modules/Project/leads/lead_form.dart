@@ -220,6 +220,7 @@ class _LeadFormState extends State<LeadForm> {
                       });
                       if (_formKey.currentState!.validate()) {
                         controller.propertyID = widget.property.propertyID;
+                        controller.propertyName = widget.property.title;
                         var future = widget.lead == null
                             ? widget.property.addLead(controller.lead)
                             : widget.lead!.reference
