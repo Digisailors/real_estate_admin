@@ -1,5 +1,6 @@
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../Model/Result.dart';
 
 showFutureDialog(
@@ -13,7 +14,8 @@ showFutureDialog(
         return FutureBuilder<Result>(
             future: future,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
                   return AlertDialog(
                     title: Text(snapshot.data!.tilte),
@@ -21,9 +23,11 @@ showFutureDialog(
                     actions: [
                       TextButton(
                           onPressed: () {
-                            if (onSucess != null && snapshot.data?.tilte == Result.success) {
+                            if (onSucess != null &&
+                                snapshot.data?.tilte == Result.success) {
                               onSucess(snapshot.data!.data);
                             } else {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             }
                           },
@@ -36,6 +40,7 @@ showFutureDialog(
                     actions: [
                       TextButton(
                           onPressed: () {
+                            Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },
                           child: const Text("OKAY"))
@@ -68,7 +73,11 @@ showAlertDialog({
           title: Text(message),
           actions: [
             TextButton(onPressed: onPressed, child: const Text("OKAY")),
-            TextButton(onPressed: onPressed, child: const Text("CANCEL")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("CANCEL")),
           ],
         );
       });

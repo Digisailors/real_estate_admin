@@ -189,13 +189,19 @@ class LeadListSourse extends DataTableSource {
           DropdownButtonFormField<DocumentReference?>(
               hint: _lead.staffRef == null ? const Text('Not Assigned') : null,
               value: _lead.staffRef,
-              items: AppSession()
-                  .staffs
-                  .map((staff) => DropdownMenuItem<DocumentReference?>(
-                        value: staff.reference,
-                        child: Text(staff.firstName),
-                      ))
-                  .toList(),
+              items: [
+                    const DropdownMenuItem<DocumentReference?>(
+                      
+                      child: Text("None"),
+                    )
+                  ] +
+                  AppSession()
+                      .staffs
+                      .map((staff) => DropdownMenuItem<DocumentReference?>(
+                            value: staff.reference,
+                            child: Text(staff.firstName),
+                          ))
+                      .toList(),
               isExpanded: true,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               onChanged:
@@ -235,7 +241,11 @@ class LeadListSourse extends DataTableSource {
                   });
             });
           },
-          child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
+          child: Text(
+            _lead.propertyName!,
+          ),
+
+          // Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(_lead.leadStatus != LeadStatus.lead
             ? Container()

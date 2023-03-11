@@ -19,7 +19,8 @@ class ProjectList extends StatefulWidget {
   State<ProjectList> createState() => _ProjectListState();
 }
 
-final CollectionReference<Map<String, dynamic>> projects = FirebaseFirestore.instance.collection('projects');
+final CollectionReference<Map<String, dynamic>> projects =
+    FirebaseFirestore.instance.collection('projects');
 
 class _ProjectListState extends State<ProjectList> {
   final search = TextEditingController();
@@ -69,7 +70,8 @@ class _ProjectListState extends State<ProjectList> {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButtonFormField<String>(
                               isDense: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
                               value: type,
                               items: const [
                                 DropdownMenuItem<String>(
@@ -77,12 +79,17 @@ class _ProjectListState extends State<ProjectList> {
                                 ),
                                 DropdownMenuItem<String>(
                                   value: 'House',
-                                  child: Text("House"),
+                                  child: Text("Individual House"),
                                 ),
-                                DropdownMenuItem(value: 'Villa', child: Text("Villa")),
-                                DropdownMenuItem(value: 'Shop', child: Text("Shop")),
-                                DropdownMenuItem(value: 'Building', child: Text("Building")),
-                                DropdownMenuItem(value: 'Land', child: Text("Land")),
+                                DropdownMenuItem(
+                                    value: 'Villa', child: Text("Villa")),
+                                DropdownMenuItem(
+                                    value: 'Shop', child: Text("Shop")),
+                                DropdownMenuItem(
+                                    value: 'Building',
+                                    child: Text("Apartments")),
+                                DropdownMenuItem(
+                                    value: 'Land', child: Text("Land")),
                               ],
                               onChanged: setType,
                             ),
@@ -90,10 +97,14 @@ class _ProjectListState extends State<ProjectList> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 300, child: TileFormField(controller: search, title: 'Search')),
+                    SizedBox(
+                        width: 300,
+                        child:
+                            TileFormField(controller: search, title: 'Search')),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: reloadQuery, child: const Text("Search")),
+                      child: ElevatedButton(
+                          onPressed: reloadQuery, child: const Text("Search")),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -105,8 +116,13 @@ class _ProjectListState extends State<ProjectList> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                        content: SizedBox(height: 800, width: 600, child: ProjectForm()),
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0))),
+                                        content: SizedBox(
+                                            height: 800,
+                                            width: 600,
+                                            child: ProjectForm()),
                                       );
                                     });
                               },
@@ -130,14 +146,23 @@ class _ProjectListState extends State<ProjectList> {
                 padding: const EdgeInsets.all(8.0),
                 child: StreamBuilder(
                   stream: query.snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                    if ((snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) &&
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if ((snapshot.connectionState == ConnectionState.active ||
+                            snapshot.connectionState == ConnectionState.done) &&
                         snapshot.hasData) {
-                      List<Project> projectslist = snapshot.data!.docs.map((e) => Project.fromSnapshot(e)).toList();
+                      List<Project> projectslist = snapshot.data!.docs
+                          .map((e) => Project.fromSnapshot(e))
+                          .toList();
                       return LayoutBuilder(builder: (context, constraints) {
                         return GridView.count(
-                          crossAxisCount: (constraints.maxWidth ~/ 245 == 0) ? 1 : constraints.maxWidth ~/ 245,
-                          children: projectslist.map((e) => ProjectTile(project: e)).toList(),
+                          crossAxisCount: (constraints.maxWidth ~/ 245 == 0)
+                              ? 1
+                              : constraints.maxWidth ~/ 245,
+                          children: projectslist
+                              .map((e) => ProjectTile(project: e))
+                              .toList(),
                         );
                       });
                     }
@@ -180,7 +205,8 @@ class ProjectTile extends StatelessWidget {
                   AspectRatio(
                     aspectRatio: 16 / 9,
                     child: Image.network(
-                      project.coverPhoto ?? 'https://picsum.photos/id/1/200/300',
+                      project.coverPhoto ??
+                          'https://picsum.photos/id/1/200/300',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -196,7 +222,9 @@ class ProjectTile extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
                                       content: SizedBox(
                                           height: 800,
                                           width: 600,
@@ -222,7 +250,8 @@ class ProjectTile extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: IconButton(
                       onPressed: () {
-                        var projectController = ProjectController(ProjectFormData.fromProject(project));
+                        var projectController = ProjectController(
+                            ProjectFormData.fromProject(project));
                         projectController.deleteProject();
 
                         // showAlertDialog(

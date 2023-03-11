@@ -21,6 +21,7 @@ class LeadFormController {
   DocumentReference? _reference;
   LeadStatus leadStatus = LeadStatus.lead;
   int? propertyID;
+  String? propertyName;
 
   ComissionController staffComission = ComissionController();
   ComissionController agentComission = ComissionController();
@@ -54,6 +55,7 @@ class LeadFormController {
     controller.sellingAmount.text = lead.sellingAmount.toString();
     controller.leadStatus = lead.leadStatus;
     controller.propertyID = lead.propertyID;
+    controller.propertyName = lead.propertyName;
     controller.soldOn = lead.soldOn;
     return controller;
   }
@@ -62,6 +64,7 @@ class LeadFormController {
     return Lead(
       soldOn: soldOn,
       propertyID: propertyID!,
+      propertyName : propertyName,
       name: name.text,
       enquiryDate: enquiryDate,
       agentRef: agentRef,
