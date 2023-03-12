@@ -241,11 +241,8 @@ class LeadListSourse extends DataTableSource {
                   });
             });
           },
-          child: Text(
-            _lead.propertyName!,
-          ),
-
-          // Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
+          child : Text(_lead.parentProperty?.title ?? ""),
+          // child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(_lead.leadStatus != LeadStatus.lead
             ? Container()

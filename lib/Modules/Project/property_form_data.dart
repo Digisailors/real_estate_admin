@@ -18,15 +18,27 @@ class PropertyViewModel extends ChangeNotifier {
   final taluk = TextEditingController();
   final features = TextEditingController();
   final description = TextEditingController();
-  final propertyAmount = CurrencyTextFieldController(rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
-  var agentComission = Commission();
-  var superAgentComission = Commission();
-  var staffComission = Commission();
+  final propertyAmount = CurrencyTextFieldController(
+      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  final buildUpArea = TextEditingController();
+  int? bedroomCount;
+  final uds = TextEditingController();
+
+
+  ComissionController staffComission = ComissionController();
+  ComissionController agentComission = ComissionController();
+  ComissionController superAgentComission = ComissionController();
+  final sellingAmount = CurrencyTextFieldController(
+      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  Facing? facing;
+
+  double get sellingPrice => sellingAmount.doubleValue;
   int? propertyID;
 
   ComissionType comissionType = ComissionType.amount;
   DocumentReference? _reference;
-  DocumentReference get reference => _reference ?? projectReference.collection('properties').doc();
+  DocumentReference get reference =>
+      _reference ?? projectReference.collection('properties').doc();
 
   final DocumentReference projectReference;
 
@@ -35,6 +47,7 @@ class PropertyViewModel extends ChangeNotifier {
   String? coverPhoto;
   bool isSold = false;
   List<Lead> leads = [];
+  int leadCount = 0;
 
   Uint8List? coverPhototData;
   List<Uint8List> photosData = [];
@@ -89,12 +102,21 @@ class PropertyViewModel extends ChangeNotifier {
         photos: photos,
         propertyAmount: propertyAmount.doubleValue,
         comissionType: comissionType,
-        agentComission: agentComission,
-        superAgentComission: superAgentComission,
-        staffComission: staffComission,
+        agentComission: agentComission.comission,
+        superAgentComission: superAgentComission.comission,
+        staffComission: staffComission.comission,
         leads: leads,
         isSold: isSold,
         reference: reference,
+        bedroomCount: bedroomCount,
+        buildUpArea: buildUpArea.text,
+        docId: reference.id,
+        documents: [],
+        facing: facing,
+        leadCount: leadCount,
+        // parentProject:  ,
+        sellingAmount: double.tryParse(sellingAmount.text),
+        uds: uds.text,
       );
 
   factory PropertyViewModel.fromProperty(Property property) {
@@ -110,14 +132,28 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.coverPhoto = property.coverPhoto ?? '';
     propertyViewModel.photos = property.photos;
     propertyViewModel.propertyAmount.text = property.propertyAmount.toString();
-    propertyViewModel.comissionType = property.comissionType ?? ComissionType.amount;
-    propertyViewModel.agentComission = property.agentComission ?? Commission();
-    propertyViewModel.superAgentComission = property.superAgentComission ?? Commission();
-    propertyViewModel.staffComission = property.staffComission ?? Commission();
+    propertyViewModel.comissionType =
+        property.comissionType ?? ComissionType.amount;
+    propertyViewModel.agentComission = property.agentComission != null
+        ? ComissionController.fromComission(property.agentComission!)
+        : ComissionController();
+    propertyViewModel.superAgentComission = property.superAgentComission != null
+        ? ComissionController.fromComission(property.superAgentComission!)
+        : ComissionController();
+    propertyViewModel.staffComission = property.staffComission != null
+        ? ComissionController.fromComission(property.staffComission!)
+        : ComissionController();
     propertyViewModel.isSold = property.isSold;
     propertyViewModel.leads = property.leads;
     propertyViewModel._reference = property.reference;
     propertyViewModel.propertyID = property.propertyID;
+    propertyViewModel.bedroomCount = property.bedroomCount;
+    propertyViewModel.buildUpArea.text = property.buildUpArea ?? '';
+    propertyViewModel.facing = property.facing;
+    propertyViewModel.leadCount = property.leadCount;
+    propertyViewModel.sellingAmount.text = property.sellingAmount.toString();
+    propertyViewModel.uds.text = property.uds ?? '';
+
     return propertyViewModel;
   }
 }

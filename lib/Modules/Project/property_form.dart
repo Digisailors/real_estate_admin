@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
+import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
 import 'package:real_estate_admin/Modules/Project/propertyController.dart';
 import 'package:real_estate_admin/widgets/utils.dart';
 
@@ -202,6 +203,71 @@ class _PropertyFormState extends State<PropertyForm> {
                       )
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: TileFormField(
+                              controller: data.uds, title: "UDS")),
+                      Expanded(
+                        child: TileFormField(
+                            controller: data.buildUpArea,
+                            title: "Build-up Area"),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text("Bedroom Count"),
+                          ),
+                          subtitle: DropdownButtonFormField<int>(
+                              value: data.bedroomCount,
+                              items: <int>[1, 2, 3]
+                                  .map((e) => DropdownMenuItem<int>(
+                                      value: e, child: Text("$e BHK")))
+                                  .followedBy([
+                                const DropdownMenuItem(child: Text("None"))
+                              ]).toList(),
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
+                              onChanged: (val) {
+                                setState(() {
+                                  data.bedroomCount = val;
+                                });
+                              }),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          title: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text("Facing"),
+                          ),
+                          subtitle: DropdownButtonFormField<Facing?>(
+                              value: data.facing,
+                              items: Facing.values
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e.name)))
+                                  .followedBy([
+                                const DropdownMenuItem(child: Text("None"))
+                              ]).toList(),
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
+                              onChanged: (val) {
+                                setState(() {
+                                  data.facing = val;
+                                });
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   TileFormField(
                     controller: data.features,
                     title: 'Features',
@@ -232,6 +298,22 @@ class _PropertyFormState extends State<PropertyForm> {
                       }
                     },
                   ),
+
+                  const Divider(),
+                  ComissionTile(
+                      comissionController: data.agentComission,
+                      title: "Agent Comission",
+                      name: "Agent"),
+                  const Divider(),
+                  ComissionTile(
+                      comissionController: data.staffComission,
+                      title: "Staff Comission",
+                      name: "Staff"),
+                  const Divider(),
+                  ComissionTile(
+                      comissionController: data.superAgentComission,
+                      title: "Super Agent Commission",
+                      name: "Super Agent"),
                   const Divider(),
                   ListTile(
                     title: const Text("Supporting Documents"),

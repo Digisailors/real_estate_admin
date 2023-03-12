@@ -47,7 +47,8 @@ class Project {
     };
   }
 
-  factory Project.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory Project.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Map<String, dynamic> json = snapshot.data()!;
     json['reference'] = snapshot.reference;
     return Project.fromJson(json);
@@ -68,5 +69,22 @@ class Project {
     this.type = type ?? this.type;
     this.location = location ?? this.location;
     this.coverPhoto = coverPhoto ?? this.coverPhoto;
+  }
+
+  Future<void> delete() {
+    var batch = FirebaseFirestore.instance.batch();
+    reference.collection("properties").get().then((value) {
+      for (var propertyDoc in value.docs) {
+        propertyDoc.reference.collection("leads").get().then((leadDocs) {
+          // FirebaseFirestore.instance.
+          for (var leadDoc in leadDocs.docs) {
+            batch.delete(leadDoc.reference);
+          }
+        });
+        batch.delete(propertyDoc.reference);
+      }
+      batch.delete(reference);
+    });
+    return batch.commit();
   }
 }

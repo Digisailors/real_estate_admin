@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: constant_identifier_names
+
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +14,17 @@ import 'Project.dart';
 enum ComissionType { percent, amount }
 
 enum PropertyType { house, apartment, plot }
+
+enum Facing {
+  North,
+  West,
+  East,
+  South,
+  NorthEast,
+  NorthWest,
+  SouthEast,
+  SouthWest
+}
 
 enum Unit {
   sqft,
@@ -28,10 +41,12 @@ class Property {
   String features;
   String? description;
   List<dynamic> photos;
+  List<dynamic> documents;
   double propertyAmount;
   String? coverPhoto;
   String title;
   List<Lead> leads;
+  Facing? facing;
 
   ComissionType? comissionType;
   Commission? agentComission;
@@ -42,13 +57,20 @@ class Property {
   int leadCount;
   int propertyID;
 
-  DocumentReference get projectRef => FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
+  double? sellingAmount;
+  String? uds;
+  String? buildUpArea;
+  int? bedroomCount;
+
+  DocumentReference get projectRef =>
+      FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
 
   String get pid => 'P${propertyID.toString().padLeft(6, '0')}';
 
   static Future<int> getNextPropertyId() {
     return FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await transaction.get(counters);
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await transaction.get(counters);
       int newProjectID = (snapshot.data()!['properties'] ?? 0) + 1;
       transaction.update(counters, {'properties': newProjectID});
       return newProjectID;
@@ -61,25 +83,32 @@ class Property {
   Property({
     required this.propertyID,
     required this.title,
-    this.leadCount = 0,
-    this.plotNumber,
-    this.surveyNumber,
-    this.dtcpNumber,
-    this.district,
-    this.taluk,
+    required this.leadCount,
+    required this.plotNumber,
+    required this.surveyNumber,
+    required this.dtcpNumber,
+    required this.district,
+    required this.taluk,
     required this.features,
-    this.description,
-    this.coverPhoto,
+    required this.description,
+    required this.coverPhoto,
     required this.photos,
-    this.propertyAmount = 0,
-    this.comissionType,
-    this.agentComission,
-    this.superAgentComission,
-    this.staffComission,
+    required this.propertyAmount,
+    required this.sellingAmount,
+    required this.comissionType,
+    required this.agentComission,
+    required this.superAgentComission,
+    required this.staffComission,
     this.parentProject,
+    required this.facing,
+    required this.docId,
+    required this.documents,
     required this.leads,
     required this.isSold,
     required this.reference,
+    required this.bedroomCount,
+    required this.buildUpArea,
+    required this.uds,
   });
 
   Map<String, dynamic> toJson() => {
@@ -105,10 +134,18 @@ class Property {
         "isSold": isSold,
         "search": search,
         'propertyID': propertyID,
+        "facing": facing?.index,
+        "documents": documents,
+        "sellingAmount": sellingAmount,
+        "uds": uds,
+        "buildUpArea": buildUpArea,
+        "bedroomCount": bedroomCount,
+        
       };
 
   Stream<List<Lead>> getLeads() {
-    return reference.collection('leads').snapshots().map((snapsot) => snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
+    return reference.collection('leads').snapshots().map((snapsot) =>
+        snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
   }
 
   Future<Result> addLead(Lead lead) {
@@ -150,7 +187,9 @@ class Property {
     var unparsedLeads = json["leads"];
     List<Lead> leads = [];
     if (unparsedLeads is List && unparsedLeads.isNotEmpty) {
-      leads = unparsedLeads.map((e) => Lead.fromJson(e, snapshot.reference)).toList();
+      leads = unparsedLeads
+          .map((e) => Lead.fromJson(e, snapshot.reference))
+          .toList();
     }
     return Property(
       propertyID: json['propertyID'],
@@ -158,7 +197,9 @@ class Property {
       leadCount: json['leadCount'],
       isSold: json["isSold"],
       title: json["title"],
-      parentProject: json["parentProject"] != null ? Project.fromJson(json["parentProject"]) : null,
+      parentProject: json["parentProject"] != null
+          ? Project.fromJson(json["parentProject"])
+          : null,
       plotNumber: json["plotNumber"],
       surveyNumber: json["surveyNumber"],
       dtcpNumber: json["dtcpNumber"],
@@ -169,11 +210,22 @@ class Property {
       coverPhoto: json["coverPhoto"],
       photos: json["photos"].map((e) => e as String).toList(),
       propertyAmount: json["propertyAmount"],
-      comissionType: json["comissionType"] != null ? ComissionType.values.elementAt(json["comissionType"]) : null,
+      sellingAmount: json["sellingAmount"],
+      comissionType: json["comissionType"] != null
+          ? ComissionType.values.elementAt(json["comissionType"])
+          : null,
       agentComission: Commission.fromJson(json["agentComission"]),
       superAgentComission: Commission.fromJson(json["superAgentComission"]),
       staffComission: Commission.fromJson(json["staffComission"]),
       leads: leads,
+      docId: json["docId"],
+      facing: json["facing"] != null
+          ? Facing.values.elementAt(json["facing"])
+          : null,
+      documents: json["documents"] ?? [],
+      bedroomCount: json["bedroomCount"],
+      buildUpArea: json["buildUpArea"],
+      uds: json["uds"],
     );
   }
 }
@@ -191,7 +243,9 @@ class Commission {
     if (json == null) {
       return null;
     }
-    return Commission(comissionType: ComissionType.values.elementAt(json["comissionType"]), value: json["value"]);
+    return Commission(
+        comissionType: ComissionType.values.elementAt(json["comissionType"]),
+        value: json["value"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -214,5 +268,6 @@ class ComissionController {
     return controler;
   }
 
-  Commission get comission => Commission(comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
+  Commission get comission => Commission(
+      comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
 }
