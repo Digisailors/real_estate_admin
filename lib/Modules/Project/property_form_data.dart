@@ -18,18 +18,18 @@ class PropertyViewModel extends ChangeNotifier {
   final taluk = TextEditingController();
   final features = TextEditingController();
   final description = TextEditingController();
-  final propertyAmount = CurrencyTextFieldController(
-      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  final propertyAmount = CurrencyTextFieldController(rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
   final buildUpArea = TextEditingController();
   int? bedroomCount;
   final uds = TextEditingController();
 
+  bool isCarParkingAvailable = false;
+  bool isPrivateTerraceAvailable = false;
 
   ComissionController staffComission = ComissionController();
   ComissionController agentComission = ComissionController();
   ComissionController superAgentComission = ComissionController();
-  final sellingAmount = CurrencyTextFieldController(
-      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  final sellingAmount = CurrencyTextFieldController(rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
   Facing? facing;
 
   double get sellingPrice => sellingAmount.doubleValue;
@@ -37,8 +37,7 @@ class PropertyViewModel extends ChangeNotifier {
 
   ComissionType comissionType = ComissionType.amount;
   DocumentReference? _reference;
-  DocumentReference get reference =>
-      _reference ?? projectReference.collection('properties').doc();
+  DocumentReference get reference => _reference ?? projectReference.collection('properties').doc();
 
   final DocumentReference projectReference;
 
@@ -117,6 +116,8 @@ class PropertyViewModel extends ChangeNotifier {
         // parentProject:  ,
         sellingAmount: double.tryParse(sellingAmount.text),
         uds: uds.text,
+        isCarParkingAvailable: isCarParkingAvailable,
+        isPrivateTerraceAvailable: isPrivateTerraceAvailable,
       );
 
   factory PropertyViewModel.fromProperty(Property property) {
@@ -132,17 +133,13 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.coverPhoto = property.coverPhoto ?? '';
     propertyViewModel.photos = property.photos;
     propertyViewModel.propertyAmount.text = property.propertyAmount.toString();
-    propertyViewModel.comissionType =
-        property.comissionType ?? ComissionType.amount;
-    propertyViewModel.agentComission = property.agentComission != null
-        ? ComissionController.fromComission(property.agentComission!)
-        : ComissionController();
-    propertyViewModel.superAgentComission = property.superAgentComission != null
-        ? ComissionController.fromComission(property.superAgentComission!)
-        : ComissionController();
-    propertyViewModel.staffComission = property.staffComission != null
-        ? ComissionController.fromComission(property.staffComission!)
-        : ComissionController();
+    propertyViewModel.comissionType = property.comissionType ?? ComissionType.amount;
+    propertyViewModel.agentComission =
+        property.agentComission != null ? ComissionController.fromComission(property.agentComission!) : ComissionController();
+    propertyViewModel.superAgentComission =
+        property.superAgentComission != null ? ComissionController.fromComission(property.superAgentComission!) : ComissionController();
+    propertyViewModel.staffComission =
+        property.staffComission != null ? ComissionController.fromComission(property.staffComission!) : ComissionController();
     propertyViewModel.isSold = property.isSold;
     propertyViewModel.leads = property.leads;
     propertyViewModel._reference = property.reference;
@@ -153,6 +150,8 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.leadCount = property.leadCount;
     propertyViewModel.sellingAmount.text = property.sellingAmount.toString();
     propertyViewModel.uds.text = property.uds ?? '';
+    propertyViewModel.isCarParkingAvailable = property.isCarParkingAvailable ?? false;
+    propertyViewModel.isPrivateTerraceAvailable = property.isPrivateTerraceAvailable ?? false;
 
     return propertyViewModel;
   }
