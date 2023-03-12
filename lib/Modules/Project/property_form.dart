@@ -13,7 +13,8 @@ import 'property_form_data.dart';
 import 'package:badges/badges.dart';
 
 class PropertyForm extends StatefulWidget {
-  const PropertyForm({Key? key, this.property, required this.project}) : super(key: key);
+  const PropertyForm({Key? key, this.property, required this.project})
+      : super(key: key);
 
   final Project project;
   final Property? property;
@@ -111,7 +112,11 @@ class _PropertyFormState extends State<PropertyForm> {
                       child: Image(image: e.provider, fit: BoxFit.cover),
                     ),
                   ),
-                  Positioned(child: CircleAvatar(child: IconButton(onPressed: e.remove, icon: const Icon(Icons.close)))),
+                  Positioned(
+                      child: CircleAvatar(
+                          child: IconButton(
+                              onPressed: e.remove,
+                              icon: const Icon(Icons.close)))),
                 ],
               ),
             ))
@@ -160,9 +165,14 @@ class _PropertyFormState extends State<PropertyForm> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Card(child: AspectRatio(aspectRatio: 16 / 9, child: getCoverImage(data))),
+                    child: Card(
+                        child: AspectRatio(
+                            aspectRatio: 16 / 9, child: getCoverImage(data))),
                   ),
-                  TileFormField(controller: data.title, title: "Title", validator: requiredValidator),
+                  TileFormField(
+                      controller: data.title,
+                      title: "Title",
+                      validator: requiredValidator),
                   Row(
                     children: [
                       Expanded(
@@ -177,11 +187,13 @@ class _PropertyFormState extends State<PropertyForm> {
                       ))
                     ],
                   ),
-                  TileFormField(controller: data.dtcpNumber, title: 'DTLP Number'),
+                  TileFormField(
+                      controller: data.dtcpNumber, title: 'DTCP Number'),
                   Row(
                     children: [
                       Expanded(
-                        child: TileFormField(controller: data.district, title: 'District'),
+                        child: TileFormField(
+                            controller: data.district, title: 'District'),
                       ),
                       Expanded(
                         child: TileFormField(
@@ -191,6 +203,71 @@ class _PropertyFormState extends State<PropertyForm> {
                       )
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: TileFormField(
+                              controller: data.uds, title: "UDS")),
+                      Expanded(
+                        child: TileFormField(
+                            controller: data.buildUpArea,
+                            title: "Build-up Area"),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text("Bedroom Count"),
+                          ),
+                          subtitle: DropdownButtonFormField<int>(
+                              value: data.bedroomCount,
+                              items: <int>[1, 2, 3]
+                                  .map((e) => DropdownMenuItem<int>(
+                                      value: e, child: Text("$e BHK")))
+                                  .followedBy([
+                                const DropdownMenuItem(child: Text("None"))
+                              ]).toList(),
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
+                              onChanged: (val) {
+                                setState(() {
+                                  data.bedroomCount = val;
+                                });
+                              }),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          title: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text("Facing"),
+                          ),
+                          subtitle: DropdownButtonFormField<Facing?>(
+                              value: data.facing,
+                              items: Facing.values
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e.name)))
+                                  .followedBy([
+                                const DropdownMenuItem(child: Text("None"))
+                              ]).toList(),
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
+                              onChanged: (val) {
+                                setState(() {
+                                  data.facing = val;
+                                });
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   TileFormField(
                     controller: data.features,
                     title: 'Features',
@@ -210,7 +287,8 @@ class _PropertyFormState extends State<PropertyForm> {
                       if (required != null) {
                         return required;
                       } else {
-                        var plainText = p0!.split('Rs. ').last.replaceAll(",", "");
+                        var plainText =
+                            p0!.split('Rs. ').last.replaceAll(",", "");
                         if (plainText != null) {
                           var num = double.tryParse(plainText);
                           if (num == null) {
@@ -220,12 +298,22 @@ class _PropertyFormState extends State<PropertyForm> {
                       }
                     },
                   ),
+
                   const Divider(),
-                  ComissionTile(comissionController: data.agentComission, title: "Agent Comission", name: "Agent"),
+                  ComissionTile(
+                      comissionController: data.agentComission,
+                      title: "Agent Comission",
+                      name: "Agent"),
                   const Divider(),
-                  ComissionTile(comissionController: data.staffComission, title: "Staff Comission", name: "Staff"),
+                  ComissionTile(
+                      comissionController: data.staffComission,
+                      title: "Staff Comission",
+                      name: "Staff"),
                   const Divider(),
-                  ComissionTile(comissionController: data.superAgentComission, title: "Super Agent Commission", name: "Super Agent"),
+                  ComissionTile(
+                      comissionController: data.superAgentComission,
+                      title: "Super Agent Commission",
+                      name: "Super Agent"),
                   const Divider(),
                   ListTile(
                     title: const Text("Supporting Documents"),
@@ -255,14 +343,16 @@ class _PropertyFormState extends State<PropertyForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          var propertyController = PropertyController(propertyFormData: data, project: widget.project);
+                          var propertyController = PropertyController(
+                              propertyFormData: data, project: widget.project);
                           Future<Result> future;
                           if (widget.property != null) {
                             future = propertyController.updateProperty();
                           } else {
                             future = propertyController.addProperty();
                           }
-                          showFutureDialog(context, future: future, onSucess: (val) {
+                          showFutureDialog(context, future: future,
+                              onSucess: (val) {
                             Navigator.of(context).pop();
                           });
                         }

@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: constant_identifier_names
+
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,14 +16,14 @@ enum ComissionType { percent, amount }
 enum PropertyType { house, apartment, plot }
 
 enum Facing {
-  north,
-  west,
-  east,
-  south,
-  northEast,
-  northWest,
-  southEast,
-  southWest
+  North,
+  West,
+  East,
+  South,
+  NorthEast,
+  NorthWest,
+  SouthEast,
+  SouthWest
 }
 
 enum Unit {
@@ -135,6 +137,10 @@ class Property {
         "facing": facing?.index,
         "documents": documents,
         "sellingAmount": sellingAmount,
+        "uds": uds,
+        "buildUpArea": buildUpArea,
+        "bedroomCount": bedroomCount,
+        
       };
 
   Stream<List<Lead>> getLeads() {

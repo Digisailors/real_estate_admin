@@ -21,7 +21,7 @@ class PropertyViewModel extends ChangeNotifier {
   final propertyAmount = CurrencyTextFieldController(
       rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
   final buildUpArea = TextEditingController();
-  final bedroomCount = TextEditingController();
+  int? bedroomCount;
   final uds = TextEditingController();
 
 
@@ -108,7 +108,7 @@ class PropertyViewModel extends ChangeNotifier {
         leads: leads,
         isSold: isSold,
         reference: reference,
-        bedroomCount: int.tryParse(bedroomCount.text),
+        bedroomCount: bedroomCount,
         buildUpArea: buildUpArea.text,
         docId: reference.id,
         documents: [],
@@ -134,19 +134,26 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.propertyAmount.text = property.propertyAmount.toString();
     propertyViewModel.comissionType =
         property.comissionType ?? ComissionType.amount;
-    propertyViewModel.agentComission = property.agentComission == null
+    propertyViewModel.agentComission = property.agentComission != null
         ? ComissionController.fromComission(property.agentComission!)
         : ComissionController();
-    propertyViewModel.superAgentComission = property.superAgentComission == null
+    propertyViewModel.superAgentComission = property.superAgentComission != null
         ? ComissionController.fromComission(property.superAgentComission!)
         : ComissionController();
-    propertyViewModel.staffComission = property.staffComission == null
+    propertyViewModel.staffComission = property.staffComission != null
         ? ComissionController.fromComission(property.staffComission!)
         : ComissionController();
     propertyViewModel.isSold = property.isSold;
     propertyViewModel.leads = property.leads;
     propertyViewModel._reference = property.reference;
     propertyViewModel.propertyID = property.propertyID;
+    propertyViewModel.bedroomCount = property.bedroomCount;
+    propertyViewModel.buildUpArea.text = property.buildUpArea ?? '';
+    propertyViewModel.facing = property.facing;
+    propertyViewModel.leadCount = property.leadCount;
+    propertyViewModel.sellingAmount.text = property.sellingAmount.toString();
+    propertyViewModel.uds.text = property.uds ?? '';
+
     return propertyViewModel;
   }
 }

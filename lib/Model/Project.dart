@@ -76,6 +76,7 @@ class Project {
     reference.collection("properties").get().then((value) {
       for (var propertyDoc in value.docs) {
         propertyDoc.reference.collection("leads").get().then((leadDocs) {
+          // FirebaseFirestore.instance.
           for (var leadDoc in leadDocs.docs) {
             batch.delete(leadDoc.reference);
           }
