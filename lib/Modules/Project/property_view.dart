@@ -38,7 +38,21 @@ class _PropertyViewState extends State<PropertyView> {
         children: [
           Expanded(
               child: ListTile(
-            title: const Text("Direction"),
+            title: const Text("Build-up Area"),
+            subtitle: Text(widget.property.buildUpArea ?? "Nil"),
+          )),
+          Expanded(
+              child: ListTile(
+            title: const Text("UDS"),
+            subtitle: Text(widget.property.uds?.toString() ?? "Nil"),
+          ))
+        ],
+      ),
+      Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: const Text("Facing Direction"),
             subtitle: Text(widget.property.facing?.name ?? "Nil"),
           )),
           Expanded(
@@ -53,12 +67,16 @@ class _PropertyViewState extends State<PropertyView> {
           Expanded(
               child: ListTile(
             title: const Text("Private terrace"),
-            subtitle: Text((widget.property.isPrivateTerraceAvailable ?? false) ? "Avialble" : "Not Available"),
+            subtitle: Text((widget.property.isPrivateTerraceAvailable ?? false)
+                ? "Avialble"
+                : "Not Available"),
           )),
           Expanded(
               child: ListTile(
             title: const Text("Car Parking"),
-            subtitle: Text((widget.property.isCarParkingAvailable ?? false) ? "Avialble" : "Not Available"),
+            subtitle: Text((widget.property.isCarParkingAvailable ?? false)
+                ? "Avialble"
+                : "Not Available"),
           )),
         ],
       ),
@@ -68,7 +86,8 @@ class _PropertyViewState extends State<PropertyView> {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(e, style: getText(context).bodyText1!.apply(color: Colors.grey)),
+              child: Text(e,
+                  style: getText(context).bodyText1!.apply(color: Colors.grey)),
             ),
           ),
         ));
@@ -86,7 +105,8 @@ class _PropertyViewState extends State<PropertyView> {
               return PhotoViewGalleryPageOptions(
                 imageProvider: NetworkImage(widget.property.photos[index]),
                 initialScale: PhotoViewComputedScale.contained * 0.8,
-                heroAttributes: PhotoViewHeroAttributes(tag: widget.property.photos[index]),
+                heroAttributes:
+                    PhotoViewHeroAttributes(tag: widget.property.photos[index]),
               );
             },
             loadingBuilder: (context, event) => const Center(
@@ -114,13 +134,42 @@ class _PropertyViewState extends State<PropertyView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.property.coverPhoto ?? '',
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return PhotoViewGallery.builder(
+                              itemCount: widget.property.coverPhoto!.length,
+                              builder: (BuildContext context, int index) {
+                                return PhotoViewGalleryPageOptions(
+                                  imageProvider:
+                                      NetworkImage(widget.property.coverPhoto!),
+                                  initialScale:
+                                      PhotoViewComputedScale.contained * 0.8,
+                                  heroAttributes: PhotoViewHeroAttributes(
+                                      tag: widget.property.coverPhoto!),
+                                );
+                              },
+                              loadingBuilder: (context, event) => const Center(
+                                child: SizedBox(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              // pageController: pageController,
+                            );
+                          });
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.property.coverPhoto ?? '',
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -138,7 +187,8 @@ class _PropertyViewState extends State<PropertyView> {
                       itemBuilder: (BuildContext context, int index) {
                         var img = widget.property.photos[index];
                         return Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              12, 12, 12, 12),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: GestureDetector(
@@ -166,7 +216,10 @@ class _PropertyViewState extends State<PropertyView> {
                 ),
                 child: Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: getFeatures()),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: getFeatures()),
                 ),
               ),
             ),
@@ -188,13 +241,16 @@ class _PropertyViewState extends State<PropertyView> {
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
                             'Description',
-                            style: getText(context).headline5!.apply(color: Colors.lightBlue),
+                            style: getText(context)
+                                .headline5!
+                                .apply(color: Colors.lightBlue),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            widget.property.description ?? 'No Description mentioned',
+                            widget.property.description ??
+                                'No Description mentioned',
                             textAlign: TextAlign.start,
                           ),
                         )
@@ -222,7 +278,9 @@ class _PropertyViewState extends State<PropertyView> {
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
                             'Land Details',
-                            style: getText(context).headline5!.apply(color: Colors.lightBlue),
+                            style: getText(context)
+                                .headline5!
+                                .apply(color: Colors.lightBlue),
                           ),
                         ),
                         // ListTile(
@@ -249,13 +307,15 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.dtcpNumber ?? 'Nil'),
-                                  title: const Text('DLTP Number'),
+                                  subtitle:
+                                      Text(widget.property.dtcpNumber ?? 'Nil'),
+                                  title: const Text('DTCP Number'),
                                 )),
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.plotNumber ?? 'Nil'),
+                                  subtitle:
+                                      Text(widget.property.plotNumber ?? 'Nil'),
                                   title: const Text('Plot No'),
                                 ))
                           ],
@@ -265,13 +325,15 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.surveyNumber ?? 'Nil'),
+                                  subtitle: Text(
+                                      widget.property.surveyNumber ?? 'Nil'),
                                   title: const Text('Survey Number'),
                                 )),
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.district ?? 'Nil'),
+                                  subtitle:
+                                      Text(widget.property.district ?? 'Nil'),
                                   title: const Text('District'),
                                 ))
                           ],
@@ -281,13 +343,15 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.taluk ?? 'Nil'),
+                                  subtitle:
+                                      Text(widget.property.taluk ?? 'Nil'),
                                   title: const Text('Taluk'),
                                 )),
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.propertyAmount.toString()),
+                                  subtitle: Text(widget.property.propertyAmount
+                                      .toString()),
                                   title: const Text('Property Amount'),
                                 ))
                           ],
@@ -306,8 +370,10 @@ class _PropertyViewState extends State<PropertyView> {
                 ),
                 child: StreamBuilder<List<Lead>>(
                   stream: widget.property.getLeads(),
-                  builder: (BuildContext context, AsyncSnapshot<List<Lead>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Lead>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active &&
+                        snapshot.hasData) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -317,32 +383,50 @@ class _PropertyViewState extends State<PropertyView> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
                                   'Leads',
-                                  style: getText(context).headline5!.apply(color: Colors.lightBlue),
+                                  style: getText(context)
+                                      .headline5!
+                                      .apply(color: Colors.lightBlue),
                                 ),
                               ),
                               Expanded(child: Container()),
                               widget.property.isSold
                                   ? Container()
                                   : Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
                                       child: ElevatedButton(
                                           onPressed: () {
                                             showModalBottomSheet(
                                                 isScrollControlled: true,
-                                                constraints: BoxConstraints(maxWidth: double.maxFinite / 2, minHeight: Get.height * 0.8),
-                                                backgroundColor: Colors.transparent,
+                                                constraints: BoxConstraints(
+                                                    maxWidth:
+                                                        double.maxFinite / 2,
+                                                    minHeight:
+                                                        Get.height * 0.8),
+                                                backgroundColor:
+                                                    Colors.transparent,
                                                 context: context,
                                                 builder: (context) {
                                                   return SizedBox(
                                                     height: Get.height * 0.7,
-                                                    child: LayoutBuilder(builder: (context, constraints) {
+                                                    child: LayoutBuilder(
+                                                        builder: (context,
+                                                            constraints) {
                                                       return Container(
-                                                        color: Colors.transparent,
+                                                        color:
+                                                            Colors.transparent,
                                                         child: Align(
-                                                          alignment: Alignment.centerRight,
+                                                          alignment: Alignment
+                                                              .centerRight,
                                                           child: ConstrainedBox(
-                                                            constraints: constraints.copyWith(maxWidth: constraints.maxWidth / 2),
-                                                            child: LeadForm(property: widget.property),
+                                                            constraints: constraints
+                                                                .copyWith(
+                                                                    maxWidth:
+                                                                        constraints.maxWidth /
+                                                                            2),
+                                                            child: LeadForm(
+                                                                property: widget
+                                                                    .property),
                                                           ),
                                                         ),
                                                       );
@@ -408,73 +492,106 @@ class _PropertyViewState extends State<PropertyView> {
                 DataColumn(label: Container()),
               ],
               rows: snapshot.data!
-                  .map((e) => DataRow(color: MaterialStateProperty.all(getColor(e)), cells: [
-                        DataCell(Text(e.name)),
-                        DataCell(Text(e.phoneNumber ?? e.email ?? '')),
-                        DataCell(Text(
-                            AppSession().agents.firstWhereOrNull((element) => element.reference == e.reference)?.firstName ?? "Agent not found")),
-                        DataCell(
-                          DropdownButtonFormField<DocumentReference?>(
-                              value: e.staffRef,
-                              items: AppSession()
-                                  .staffs
-                                  .map((staff) => DropdownMenuItem<DocumentReference?>(
-                                        value: staff.reference,
-                                        child: Text(staff.firstName),
-                                      ))
-                                  .toList(),
-                              isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
-                              onChanged: e.leadStatus == LeadStatus.sold || !AppSession().isAdmin
-                                  ? null
-                                  : (val) {
-                                      if (val != null) {
-                                        e.assignStaff(val);
-                                      }
-                                    }),
-                        ),
-                        DataCell(Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      if (e.leadStatus == LeadStatus.sold) {
-                                        return AlertDialog(
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                          title: const Text("Operation Not Allowed"),
-                                          content: const Text("Edit operation on sold transaction is not permitted"),
-                                          actions: [TextButton(onPressed: Navigator.of(context).pop, child: const Text("Okay"))],
-                                        );
-                                      }
-                                      if (e.leadStatus == LeadStatus.pendingApproval) {
-                                        return AlertDialog(
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                          content: SizedBox(
-                                              height: 800,
-                                              width: 600,
-                                              child: SaleForm(
-                                                lead: e,
-                                              )),
-                                        );
-                                      } else {
-                                        return AlertDialog(
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                          content: SizedBox(
-                                              height: 800,
-                                              width: 600,
-                                              child: LeadForm(
-                                                lead: e,
-                                                property: widget.property,
-                                              )),
-                                        );
-                                      }
-                                    });
-                              },
-                              child: const Text("EDIT")),
-                        )),
-                      ]))
+                  .map((e) => DataRow(
+                          color: MaterialStateProperty.all(getColor(e)),
+                          cells: [
+                            DataCell(Text(e.name)),
+                            DataCell(Text(e.phoneNumber ?? e.email ?? '')),
+                            DataCell(Text(AppSession()
+                                    .agents
+                                    .firstWhereOrNull((element) =>
+                                        element.reference == e.reference)
+                                    ?.firstName ??
+                                "Agent not found")),
+                            DataCell(
+                              DropdownButtonFormField<DocumentReference?>(
+                                  value: e.staffRef,
+                                  items: AppSession()
+                                      .staffs
+                                      .map((staff) =>
+                                          DropdownMenuItem<DocumentReference?>(
+                                            value: staff.reference,
+                                            child: Text(staff.firstName),
+                                          ))
+                                      .toList(),
+                                  isExpanded: true,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder()),
+                                  onChanged: e.leadStatus == LeadStatus.sold ||
+                                          !AppSession().isAdmin
+                                      ? null
+                                      : (val) {
+                                          if (val != null) {
+                                            e.assignStaff(val);
+                                          }
+                                        }),
+                            ),
+                            DataCell(Padding(
+                              padding: const EdgeInsets.only(right: 16),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          if (e.leadStatus == LeadStatus.sold) {
+                                            return AlertDialog(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0))),
+                                              title: const Text(
+                                                  "Operation Not Allowed"),
+                                              content: const Text(
+                                                  "Edit operation on sold transaction is not permitted"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed:
+                                                        Navigator.of(context)
+                                                            .pop,
+                                                    child: const Text("Okay"))
+                                              ],
+                                            );
+                                          }
+                                          if (e.leadStatus ==
+                                              LeadStatus.pendingApproval) {
+                                            return AlertDialog(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0))),
+                                              content: SizedBox(
+                                                  height: 800,
+                                                  width: 600,
+                                                  child: SaleForm(
+                                                    lead: e,
+                                                  )),
+                                            );
+                                          } else {
+                                            return AlertDialog(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0))),
+                                              content: SizedBox(
+                                                  height: 800,
+                                                  width: 600,
+                                                  child: LeadForm(
+                                                    lead: e,
+                                                    property: widget.property,
+                                                  )),
+                                            );
+                                          }
+                                        });
+                                  },
+                                  child: const Text("EDIT")),
+                            )),
+                          ]))
                   .toList(),
             ),
           ],
@@ -514,7 +631,8 @@ class LeadTile extends StatelessWidget {
               Expanded(
                 child: ListTile(
                   title: const Text("Staff Contact"),
-                  subtitle: Text(lead.staff?.phoneNumber ?? 'Staff Not Assigned'),
+                  subtitle:
+                      Text(lead.staff?.phoneNumber ?? 'Staff Not Assigned'),
                 ),
               ),
             ],

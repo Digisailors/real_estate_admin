@@ -14,7 +14,16 @@ enum ComissionType { percent, amount }
 
 enum PropertyType { house, apartment, plot }
 
-enum Facing { North, West, East, South, NorthEast, NorthWest, SouthEast, SouthWest }
+enum Facing {
+  North,
+  West,
+  East,
+  South,
+  North_East,
+  North_West,
+  South_East,
+  South_West
+}
 
 enum Unit {
   sqft,
@@ -54,13 +63,15 @@ class Property {
   bool? isCarParkingAvailable;
   bool? isPrivateTerraceAvailable;
 
-  DocumentReference get projectRef => FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
+  DocumentReference get projectRef =>
+      FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
 
   String get pid => 'P${propertyID.toString().padLeft(6, '0')}';
 
   static Future<int> getNextPropertyId() {
     return FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await transaction.get(counters);
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await transaction.get(counters);
       int newProjectID = (snapshot.data()!['properties'] ?? 0) + 1;
       transaction.update(counters, {'properties': newProjectID});
       return newProjectID;
@@ -135,7 +146,8 @@ class Property {
       };
 
   Stream<List<Lead>> getLeads() {
-    return reference.collection('leads').snapshots().map((snapsot) => snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
+    return reference.collection('leads').snapshots().map((snapsot) =>
+        snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
   }
 
   Future<Result> addLead(Lead lead) {
@@ -177,7 +189,9 @@ class Property {
     var unparsedLeads = json["leads"];
     List<Lead> leads = [];
     if (unparsedLeads is List && unparsedLeads.isNotEmpty) {
-      leads = unparsedLeads.map((e) => Lead.fromJson(e, snapshot.reference)).toList();
+      leads = unparsedLeads
+          .map((e) => Lead.fromJson(e, snapshot.reference))
+          .toList();
     }
     return Property(
       propertyID: json['propertyID'],
@@ -185,7 +199,9 @@ class Property {
       leadCount: json['leadCount'],
       isSold: json["isSold"],
       title: json["title"],
-      parentProject: json["parentProject"] != null ? Project.fromJson(json["parentProject"]) : null,
+      parentProject: json["parentProject"] != null
+          ? Project.fromJson(json["parentProject"])
+          : null,
       plotNumber: json["plotNumber"],
       surveyNumber: json["surveyNumber"],
       dtcpNumber: json["dtcpNumber"],
@@ -195,16 +211,28 @@ class Property {
       description: json["description"],
       coverPhoto: json["coverPhoto"],
       photos: json["photos"].map((e) => e as String).toList(),
-      propertyAmount: json["propertyAmount"] is int ? (json["propertyAmount"] as int).toDouble() : (json["propertyAmount"] ?? 0),
-      sellingAmount: json["sellingAmount"] is int ? (json["sellingAmount"] as int).toDouble() : (json["sellingAmount"] ?? 0),
-      comissionType: json["comissionType"] != null ? ComissionType.values.elementAt(json["comissionType"]) : null,
+      propertyAmount: json["propertyAmount"] is int
+          ? (json["propertyAmount"] as int).toDouble()
+          : (json["propertyAmount"] ?? 0),
+      sellingAmount: json["sellingAmount"] is int
+          ? (json["sellingAmount"] as int).toDouble()
+          : (json["sellingAmount"] ?? 0),
+      comissionType: json["comissionType"] != null
+          ? ComissionType.values.elementAt(json["comissionType"])
+          : null,
       agentComission: Commission.fromJson(json["agentComission"]),
       superAgentComission: Commission.fromJson(json["superAgentComission"]),
       staffComission: Commission.fromJson(json["staffComission"]),
       leads: leads,
       docId: json["docId"],
-      facing: json["facing"] != null ? Facing.values.elementAt(json["facing"]) : null,
-      documents: json["documents"] == null ? <Attachment>[] : (json["documents"] as List).map((e) => Attachment.fromJson(e)).toList(),
+      facing: json["facing"] != null
+          ? Facing.values.elementAt(json["facing"])
+          : null,
+      documents: json["documents"] == null
+          ? <Attachment>[]
+          : (json["documents"] as List)
+              .map((e) => Attachment.fromJson(e))
+              .toList(),
       bedroomCount: json["bedroomCount"],
       buildUpArea: json["buildUpArea"],
       uds: json["uds"],
@@ -229,7 +257,9 @@ class Commission {
     }
     return Commission(
       comissionType: ComissionType.values.elementAt(json["comissionType"]),
-      value: json["value"] is int ? (json["value"] as int).toDouble() : (json["value"] ?? 0),
+      value: json["value"] is int
+          ? (json["value"] as int).toDouble()
+          : (json["value"] ?? 0),
     );
   }
 
@@ -253,5 +283,6 @@ class ComissionController {
     return controler;
   }
 
-  Commission get comission => Commission(comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
+  Commission get comission => Commission(
+      comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
 }
