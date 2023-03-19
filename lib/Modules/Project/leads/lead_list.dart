@@ -106,6 +106,17 @@ class _LeadListState extends State<LeadList> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 32),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          staff = null;
+                          agent = null;
+                        });
+                      },
+                      child: const Text("Clear"),
+                    ),
+                    const SizedBox(width: 32),
                   ]),
                 ),
               ),
@@ -196,6 +207,8 @@ class LeadListSource extends DataTableSource {
                   ? (val) {
                       if (val != null) {
                         _lead.assignStaff(val);
+                      } else {
+                        _lead.resignStaff();
                       }
                     }
                   : null),
@@ -222,7 +235,8 @@ class LeadListSource extends DataTableSource {
                   });
             });
           },
-          child: Text(_lead.parentProperty?.title ?? ""),
+          // child: Text(_lead.parentProperty?.title ?? ""),
+          child: Text(_lead.propertyName ?? ""),
           // child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(_lead.leadStatus != LeadStatus.lead

@@ -33,6 +33,36 @@ class _PropertyViewState extends State<PropertyView> {
         ),
       ),
     ];
+    widgets.addAll([
+      Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: const Text("Direction"),
+            subtitle: Text(widget.property.facing?.name ?? "Nil"),
+          )),
+          Expanded(
+              child: ListTile(
+            title: const Text("Bed Rooms"),
+            subtitle: Text(widget.property.bedroomCount?.toString() ?? "Nil"),
+          ))
+        ],
+      ),
+      Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: const Text("Private terrace"),
+            subtitle: Text((widget.property.isPrivateTerraceAvailable ?? false) ? "Avialble" : "Not Available"),
+          )),
+          Expanded(
+              child: ListTile(
+            title: const Text("Car Parking"),
+            subtitle: Text((widget.property.isCarParkingAvailable ?? false) ? "Avialble" : "Not Available"),
+          )),
+        ],
+      ),
+    ]);
     widgets.addAll((widget.property.features).split('\n').map(
           (e) => Align(
             alignment: Alignment.centerLeft,

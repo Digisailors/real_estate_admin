@@ -13,6 +13,7 @@ class TileFormField extends StatelessWidget {
     this.suffix,
     this.enabled,
     this.validator,
+    this.obscureText = false,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -24,6 +25,7 @@ class TileFormField extends StatelessWidget {
   final Widget? suffix;
   final bool? enabled;
   final String? Function(String?)? validator;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class TileFormField extends StatelessWidget {
           enabled: enabled,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
+          obscureText: obscureText,
           onChanged: onChanged,
           controller: controller,
           decoration: InputDecoration(

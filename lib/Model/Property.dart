@@ -8,6 +8,7 @@ import 'package:real_estate_admin/Model/Result.dart';
 import '../Modules/Dashboard/dashboardController.dart';
 import 'Lead.dart';
 import 'Project.dart';
+import 'helper models/attachment.dart';
 
 enum ComissionType { percent, amount }
 
@@ -30,7 +31,7 @@ class Property {
   String features;
   String? description;
   List<dynamic> photos;
-  List<dynamic> documents;
+  List<Attachment> documents;
   double propertyAmount;
   String? coverPhoto;
   String title;
@@ -126,7 +127,7 @@ class Property {
         "search": search,
         'propertyID': propertyID,
         "facing": facing?.index,
-        "documents": documents,
+        "documents": documents.map((e) => e.toJson()).toList(),
         "sellingAmount": sellingAmount,
         "uds": uds,
         "buildUpArea": buildUpArea,
@@ -203,7 +204,7 @@ class Property {
       leads: leads,
       docId: json["docId"],
       facing: json["facing"] != null ? Facing.values.elementAt(json["facing"]) : null,
-      documents: json["documents"] ?? [],
+      documents: json["documents"] == null ? <Attachment>[] : (json["documents"] as List).map((e) => Attachment.fromJson(e)).toList(),
       bedroomCount: json["bedroomCount"],
       buildUpArea: json["buildUpArea"],
       uds: json["uds"],

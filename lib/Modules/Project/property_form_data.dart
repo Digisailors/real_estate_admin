@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:real_estate_admin/Modules/Project/text_editing_controller.dart';
 import '../../Model/Lead.dart';
 import '../../Model/Property.dart';
 import 'package:image_picker_web/image_picker_web.dart';
+
+import '../../Model/helper models/attachment.dart';
 
 enum Provide { network, memory, logo }
 
@@ -42,6 +46,8 @@ class PropertyViewModel extends ChangeNotifier {
   final DocumentReference projectReference;
 
   List<dynamic> photos = [];
+  List<Attachment> attachments = [];
+  List<Attachment> deletedAtachments = [];
   List<dynamic> deletedPhotos = [];
   String? coverPhoto;
   bool isSold = false;
@@ -50,6 +56,8 @@ class PropertyViewModel extends ChangeNotifier {
 
   Uint8List? coverPhototData;
   List<Uint8List> photosData = [];
+  List<PlatformFile> files = [];
+  List<Uint8List> get filesData => files.map((e) => e.bytes).where((element) => element != null).map((e) => e!).toList();
   Provide show = Provide.logo;
 
   PropertyViewModel(this.projectReference);
@@ -61,6 +69,32 @@ class PropertyViewModel extends ChangeNotifier {
     }
     notifyListeners();
     return;
+  }
+
+  Future<void> pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      files = result.files;
+    }
+    notifyListeners();
+    return;
+  }
+
+  List<Attachment> get tempAttachments {
+    List<Attachment> returns = [];
+    returns.addAll(files.map((e) => Attachment(name: e.name, url: '', attachmentLocation: AttachmentLocation.local, rawData: e.bytes)).toList());
+    returns.addAll(attachments);
+    // returns.add(null);
+    return returns;
+  }
+
+  removeAttachement(Attachment attachment) {
+    if (attachment.attachmentLocation == AttachmentLocation.local) {
+      files.removeWhere((element) => element.name == attachment.name);
+    } else {
+      attachments.remove(attachment);
+      deletedAtachments.add(attachment);
+    }
   }
 
   Future<void> pickCoverPhoto() async {
@@ -110,7 +144,7 @@ class PropertyViewModel extends ChangeNotifier {
         bedroomCount: bedroomCount,
         buildUpArea: buildUpArea.text,
         docId: reference.id,
-        documents: [],
+        documents: attachments,
         facing: facing,
         leadCount: leadCount,
         // parentProject:  ,

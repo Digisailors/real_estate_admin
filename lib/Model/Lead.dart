@@ -22,6 +22,7 @@ class Lead {
   Commission? staffComission;
   DocumentReference? agentRef;
   Commission? agentComission;
+  double? costPerSqft;
 
   Commission? superAgentComission;
 
@@ -61,6 +62,12 @@ class Lead {
   void assignStaff(DocumentReference staffRefence) async {
     staff = await staffRefence.get().then((value) => Staff.fromSnapshot(value));
     staffRef = staffRefence;
+    reference.update(toJson());
+  }
+
+  void resignStaff() {
+    staff = null;
+    staffRef = null;
     reference.update(toJson());
   }
 
