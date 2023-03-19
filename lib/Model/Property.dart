@@ -1,8 +1,6 @@
 // ignore: file_names
 // ignore_for_file: constant_identifier_names
 
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:real_estate_admin/Model/Result.dart';
@@ -10,21 +8,13 @@ import 'package:real_estate_admin/Model/Result.dart';
 import '../Modules/Dashboard/dashboardController.dart';
 import 'Lead.dart';
 import 'Project.dart';
+import 'helper models/attachment.dart';
 
 enum ComissionType { percent, amount }
 
 enum PropertyType { house, apartment, plot }
 
-enum Facing {
-  North,
-  West,
-  East,
-  South,
-  NorthEast,
-  NorthWest,
-  SouthEast,
-  SouthWest
-}
+enum Facing { North, West, East, South, NorthEast, NorthWest, SouthEast, SouthWest }
 
 enum Unit {
   sqft,
@@ -41,7 +31,7 @@ class Property {
   String features;
   String? description;
   List<dynamic> photos;
-  List<dynamic> documents;
+  List<Attachment> documents;
   double propertyAmount;
   String? coverPhoto;
   String title;
@@ -61,16 +51,16 @@ class Property {
   String? uds;
   String? buildUpArea;
   int? bedroomCount;
+  bool? isCarParkingAvailable;
+  bool? isPrivateTerraceAvailable;
 
-  DocumentReference get projectRef =>
-      FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
+  DocumentReference get projectRef => FirebaseFirestore.instance.doc(reference.path.split('/properties').first);
 
   String get pid => 'P${propertyID.toString().padLeft(6, '0')}';
 
   static Future<int> getNextPropertyId() {
     return FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await transaction.get(counters);
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await transaction.get(counters);
       int newProjectID = (snapshot.data()!['properties'] ?? 0) + 1;
       transaction.update(counters, {'properties': newProjectID});
       return newProjectID;
@@ -109,6 +99,8 @@ class Property {
     required this.bedroomCount,
     required this.buildUpArea,
     required this.uds,
+    required this.isCarParkingAvailable,
+    required this.isPrivateTerraceAvailable,
   });
 
   Map<String, dynamic> toJson() => {
@@ -135,17 +127,15 @@ class Property {
         "search": search,
         'propertyID': propertyID,
         "facing": facing?.index,
-        "documents": documents,
+        "documents": documents.map((e) => e.toJson()).toList(),
         "sellingAmount": sellingAmount,
         "uds": uds,
         "buildUpArea": buildUpArea,
         "bedroomCount": bedroomCount,
-        
       };
 
   Stream<List<Lead>> getLeads() {
-    return reference.collection('leads').snapshots().map((snapsot) =>
-        snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
+    return reference.collection('leads').snapshots().map((snapsot) => snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
   }
 
   Future<Result> addLead(Lead lead) {
@@ -187,9 +177,7 @@ class Property {
     var unparsedLeads = json["leads"];
     List<Lead> leads = [];
     if (unparsedLeads is List && unparsedLeads.isNotEmpty) {
-      leads = unparsedLeads
-          .map((e) => Lead.fromJson(e, snapshot.reference))
-          .toList();
+      leads = unparsedLeads.map((e) => Lead.fromJson(e, snapshot.reference)).toList();
     }
     return Property(
       propertyID: json['propertyID'],
@@ -197,9 +185,7 @@ class Property {
       leadCount: json['leadCount'],
       isSold: json["isSold"],
       title: json["title"],
-      parentProject: json["parentProject"] != null
-          ? Project.fromJson(json["parentProject"])
-          : null,
+      parentProject: json["parentProject"] != null ? Project.fromJson(json["parentProject"]) : null,
       plotNumber: json["plotNumber"],
       surveyNumber: json["surveyNumber"],
       dtcpNumber: json["dtcpNumber"],
@@ -209,23 +195,21 @@ class Property {
       description: json["description"],
       coverPhoto: json["coverPhoto"],
       photos: json["photos"].map((e) => e as String).toList(),
-      propertyAmount: json["propertyAmount"],
-      sellingAmount: json["sellingAmount"],
-      comissionType: json["comissionType"] != null
-          ? ComissionType.values.elementAt(json["comissionType"])
-          : null,
+      propertyAmount: json["propertyAmount"] is int ? (json["propertyAmount"] as int).toDouble() : (json["propertyAmount"] ?? 0),
+      sellingAmount: json["sellingAmount"] is int ? (json["sellingAmount"] as int).toDouble() : (json["sellingAmount"] ?? 0),
+      comissionType: json["comissionType"] != null ? ComissionType.values.elementAt(json["comissionType"]) : null,
       agentComission: Commission.fromJson(json["agentComission"]),
       superAgentComission: Commission.fromJson(json["superAgentComission"]),
       staffComission: Commission.fromJson(json["staffComission"]),
       leads: leads,
       docId: json["docId"],
-      facing: json["facing"] != null
-          ? Facing.values.elementAt(json["facing"])
-          : null,
-      documents: json["documents"] ?? [],
+      facing: json["facing"] != null ? Facing.values.elementAt(json["facing"]) : null,
+      documents: json["documents"] == null ? <Attachment>[] : (json["documents"] as List).map((e) => Attachment.fromJson(e)).toList(),
       bedroomCount: json["bedroomCount"],
       buildUpArea: json["buildUpArea"],
       uds: json["uds"],
+      isCarParkingAvailable: json["isCarParkingAvailable"],
+      isPrivateTerraceAvailable: json["isPrivateTerraceAvailable"],
     );
   }
 }
@@ -244,8 +228,9 @@ class Commission {
       return null;
     }
     return Commission(
-        comissionType: ComissionType.values.elementAt(json["comissionType"]),
-        value: json["value"]);
+      comissionType: ComissionType.values.elementAt(json["comissionType"]),
+      value: json["value"] is int ? (json["value"] as int).toDouble() : (json["value"] ?? 0),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -268,6 +253,5 @@ class ComissionController {
     return controler;
   }
 
-  Commission get comission => Commission(
-      comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
+  Commission get comission => Commission(comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
 }

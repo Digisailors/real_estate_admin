@@ -17,6 +17,8 @@ class StaffForm extends StatefulWidget {
 }
 
 class _StaffFormState extends State<StaffForm> {
+  bool visibility = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,14 +45,10 @@ class _StaffFormState extends State<StaffForm> {
               Row(
                 children: [
                   Expanded(
-                    child: TileFormField(
-                        validator: requiredValidator,
-                        controller: controller.firstName,
-                        title: "First Name"),
+                    child: TileFormField(validator: requiredValidator, controller: controller.firstName, title: "First Name"),
                   ),
                   Expanded(
-                    child: TileFormField(
-                        controller: controller.lastName, title: "Last Name"),
+                    child: TileFormField(controller: controller.lastName, title: "Last Name"),
                   ),
                 ],
               ),
@@ -59,8 +57,7 @@ class _StaffFormState extends State<StaffForm> {
                   Expanded(
                     child: TileFormField(
                         validator: (string) {
-                          if ((string ?? '').isEmpty ||
-                              !(string ?? '').isEmail) {
+                          if ((string ?? '').isEmpty || !(string ?? '').isEmail) {
                             return 'Please enter a valid email';
                           }
                         },
@@ -77,12 +74,7 @@ class _StaffFormState extends State<StaffForm> {
                             return 'Please enter a valid phonenumber';
                           }
                           if (widget.staff == null) {
-                            if (AppSession()
-                                .staffs
-                                .where((element) =>
-                                    element.phoneNumber.toLowerCase() ==
-                                    string!.toLowerCase())
-                                .isNotEmpty) {
+                            if (AppSession().staffs.where((element) => element.phoneNumber.toLowerCase() == string!.toLowerCase()).isNotEmpty) {
                               return "Phone Number Already Exists";
                             }
                           }
@@ -95,10 +87,7 @@ class _StaffFormState extends State<StaffForm> {
                 ],
               ),
               TileFormField(
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10)
-                  ],
+                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
                   validator: (val) {
                     if (requiredValidator(val) != null) {
                       return requiredValidator(val);
@@ -109,31 +98,22 @@ class _StaffFormState extends State<StaffForm> {
                       return 'Invalid PAN Number';
                     }
                     if (widget.staff == null) {
-                      if (AppSession()
-                          .staffs
-                          .where((element) =>
-                              element.panCardNumber!.toLowerCase() ==
-                              val.toLowerCase())
-                          .isNotEmpty) {
+                      if (AppSession().staffs.where((element) => element.panCardNumber!.toLowerCase() == val.toLowerCase()).isNotEmpty) {
                         return "Duplicate PAN Number";
                       }
                     }
                   },
                   controller: controller.panCardNumber,
                   title: "PAN NUMBER"),
-              TileFormField(
-                  controller: controller.addressLine1, title: "ADDRESS LINE 1"),
-              TileFormField(
-                  controller: controller.addressLine2, title: "ADDRESS LINE 2"),
+              TileFormField(controller: controller.addressLine1, title: "ADDRESS LINE 1"),
+              TileFormField(controller: controller.addressLine2, title: "ADDRESS LINE 2"),
               Row(
                 children: [
                   Expanded(
-                    child: TileFormField(
-                        controller: controller.city, title: "CITY"),
+                    child: TileFormField(controller: controller.city, title: "CITY"),
                   ),
                   Expanded(
-                    child: TileFormField(
-                        controller: controller.pincode, title: "PIN CODE"),
+                    child: TileFormField(controller: controller.pincode, title: "PIN CODE"),
                   ),
                 ],
               ),
@@ -146,8 +126,7 @@ class _StaffFormState extends State<StaffForm> {
                               value: controller.isAdmin,
                               onChanged: (val) {
                                 setState(() {
-                                  controller.isAdmin =
-                                      val ?? controller.isAdmin;
+                                  controller.isAdmin = val ?? controller.isAdmin;
                                 });
                               }),
                         ),
@@ -157,6 +136,41 @@ class _StaffFormState extends State<StaffForm> {
                       ],
                     )
                   : Container(),
+              if (widget.staff == null)
+                Row(
+                  children: [
+                    Expanded(
+                        child: TileFormField(
+                      controller: controller.password,
+                      title: "Password",
+                      validator: (text) {
+                        if ((text ?? "").isEmpty) {
+                          return "Password should not be empty";
+                        }
+                        if ((text ?? "").length < 8) {
+                          return "Password should be atleast 8 charachters";
+                        }
+                        if (controller.password.text != controller.confirmPassword.text) {
+                          return "Password does not match with confirm password";
+                        }
+                      },
+                      obscureText: !visibility,
+                    )),
+                    Expanded(
+                        child: TileFormField(
+                      controller: controller.confirmPassword,
+                      title: "Confirm password",
+                      obscureText: !visibility,
+                    )),
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            visibility = !visibility;
+                          });
+                        },
+                        icon: visibility ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off)),
+                  ],
+                ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
@@ -165,8 +179,7 @@ class _StaffFormState extends State<StaffForm> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        var staffController =
-                            StaffController(formController: controller);
+                        var staffController = StaffController(formController: controller);
                         // print(controller.staff.toJson());
                         var future;
                         if (widget.staff == null) {

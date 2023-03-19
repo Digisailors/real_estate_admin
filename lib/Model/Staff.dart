@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 
@@ -24,6 +22,7 @@ class Staff {
   double commissionAmount;
   int leadCount;
   int successfullLeadCount;
+  String? password;
 
   Staff({
     required this.leadCount,
@@ -46,6 +45,7 @@ class Staff {
     this.bankName,
     this.branch,
     this.ifscCode,
+    this.password,
   });
 
   Map<String, dynamic> toJson() => {
@@ -68,6 +68,7 @@ class Staff {
         "bankName": bankName,
         "branch": branch,
         "ifscCode": ifscCode,
+        "password": password,
         "search": search
       };
 

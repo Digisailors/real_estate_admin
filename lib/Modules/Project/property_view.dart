@@ -7,6 +7,8 @@ import 'package:real_estate_admin/Modules/Project/leads/lead_form.dart';
 import 'package:real_estate_admin/Modules/Project/leads/lead_list.dart';
 import 'package:real_estate_admin/Providers/session.dart';
 import 'package:real_estate_admin/helper.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../Model/Lead.dart';
 import 'Sales/sale_form.dart';
@@ -31,6 +33,36 @@ class _PropertyViewState extends State<PropertyView> {
         ),
       ),
     ];
+    widgets.addAll([
+      Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: const Text("Direction"),
+            subtitle: Text(widget.property.facing?.name ?? "Nil"),
+          )),
+          Expanded(
+              child: ListTile(
+            title: const Text("Bed Rooms"),
+            subtitle: Text(widget.property.bedroomCount?.toString() ?? "Nil"),
+          ))
+        ],
+      ),
+      Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: const Text("Private terrace"),
+            subtitle: Text((widget.property.isPrivateTerraceAvailable ?? false) ? "Avialble" : "Not Available"),
+          )),
+          Expanded(
+              child: ListTile(
+            title: const Text("Car Parking"),
+            subtitle: Text((widget.property.isCarParkingAvailable ?? false) ? "Avialble" : "Not Available"),
+          )),
+        ],
+      ),
+    ]);
     widgets.addAll((widget.property.features).split('\n').map(
           (e) => Align(
             alignment: Alignment.centerLeft,
@@ -41,6 +73,32 @@ class _PropertyViewState extends State<PropertyView> {
           ),
         ));
     return widgets;
+  }
+
+  showImage(int index) {
+    // pageController.initialPage = index;
+    showDialog(
+        context: context,
+        builder: (context) {
+          return PhotoViewGallery.builder(
+            itemCount: widget.property.photos.length,
+            builder: (BuildContext context, int index) {
+              return PhotoViewGalleryPageOptions(
+                imageProvider: NetworkImage(widget.property.photos[index]),
+                initialScale: PhotoViewComputedScale.contained * 0.8,
+                heroAttributes: PhotoViewHeroAttributes(tag: widget.property.photos[index]),
+              );
+            },
+            loadingBuilder: (context, event) => const Center(
+              child: SizedBox(
+                width: 20.0,
+                height: 20.0,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            // pageController: pageController,
+          );
+        });
   }
 
   @override
@@ -85,21 +143,7 @@ class _PropertyViewState extends State<PropertyView> {
                             borderRadius: BorderRadius.circular(10),
                             child: GestureDetector(
                               onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                        content: SizedBox(
-                                          height: 800,
-                                          width: 600,
-                                          child: Image.network(
-                                            img,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      );
-                                    });
+                                showImage(index);
                               },
                               child: Image.network(
                                 img,

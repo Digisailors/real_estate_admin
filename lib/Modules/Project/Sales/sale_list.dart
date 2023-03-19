@@ -159,6 +159,18 @@ class _SaleListState extends State<SaleList> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 32),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          staff = null;
+                          agent = null;
+                          leadStatus = null;
+                        });
+                      },
+                      child: const Text("Clear"),
+                    ),
+                    const SizedBox(width: 32),
                   ]),
                 ),
               ),
@@ -264,7 +276,8 @@ class SaleListSourse extends DataTableSource {
                   });
             });
           },
-          child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
+          child: Text(_lead.propertyName ?? ""),
+          // child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(IconButton(
           icon: (_lead.leadStatus != LeadStatus.sold && AppSession().isAdmin) ? const Icon(Icons.edit) : const Icon(Icons.visibility),

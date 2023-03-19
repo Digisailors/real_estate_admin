@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:real_estate_admin/Modules/Project/text_editing_controller.dart';
 import '../../Model/Lead.dart';
 import '../../Model/Property.dart';
 import 'package:image_picker_web/image_picker_web.dart';
+
+import '../../Model/helper models/attachment.dart';
 
 enum Provide { network, memory, logo }
 
@@ -18,18 +22,18 @@ class PropertyViewModel extends ChangeNotifier {
   final taluk = TextEditingController();
   final features = TextEditingController();
   final description = TextEditingController();
-  final propertyAmount = CurrencyTextFieldController(
-      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  final propertyAmount = CurrencyTextFieldController(rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
   final buildUpArea = TextEditingController();
   int? bedroomCount;
   final uds = TextEditingController();
 
+  bool isCarParkingAvailable = false;
+  bool isPrivateTerraceAvailable = false;
 
   ComissionController staffComission = ComissionController();
   ComissionController agentComission = ComissionController();
   ComissionController superAgentComission = ComissionController();
-  final sellingAmount = CurrencyTextFieldController(
-      rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
+  final sellingAmount = CurrencyTextFieldController(rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
   Facing? facing;
 
   double get sellingPrice => sellingAmount.doubleValue;
@@ -37,12 +41,13 @@ class PropertyViewModel extends ChangeNotifier {
 
   ComissionType comissionType = ComissionType.amount;
   DocumentReference? _reference;
-  DocumentReference get reference =>
-      _reference ?? projectReference.collection('properties').doc();
+  DocumentReference get reference => _reference ?? projectReference.collection('properties').doc();
 
   final DocumentReference projectReference;
 
   List<dynamic> photos = [];
+  List<Attachment> attachments = [];
+  List<Attachment> deletedAtachments = [];
   List<dynamic> deletedPhotos = [];
   String? coverPhoto;
   bool isSold = false;
@@ -51,6 +56,8 @@ class PropertyViewModel extends ChangeNotifier {
 
   Uint8List? coverPhototData;
   List<Uint8List> photosData = [];
+  List<PlatformFile> files = [];
+  List<Uint8List> get filesData => files.map((e) => e.bytes).where((element) => element != null).map((e) => e!).toList();
   Provide show = Provide.logo;
 
   PropertyViewModel(this.projectReference);
@@ -62,6 +69,32 @@ class PropertyViewModel extends ChangeNotifier {
     }
     notifyListeners();
     return;
+  }
+
+  Future<void> pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      files = result.files;
+    }
+    notifyListeners();
+    return;
+  }
+
+  List<Attachment> get tempAttachments {
+    List<Attachment> returns = [];
+    returns.addAll(files.map((e) => Attachment(name: e.name, url: '', attachmentLocation: AttachmentLocation.local, rawData: e.bytes)).toList());
+    returns.addAll(attachments);
+    // returns.add(null);
+    return returns;
+  }
+
+  removeAttachement(Attachment attachment) {
+    if (attachment.attachmentLocation == AttachmentLocation.local) {
+      files.removeWhere((element) => element.name == attachment.name);
+    } else {
+      attachments.remove(attachment);
+      deletedAtachments.add(attachment);
+    }
   }
 
   Future<void> pickCoverPhoto() async {
@@ -111,12 +144,14 @@ class PropertyViewModel extends ChangeNotifier {
         bedroomCount: bedroomCount,
         buildUpArea: buildUpArea.text,
         docId: reference.id,
-        documents: [],
+        documents: attachments,
         facing: facing,
         leadCount: leadCount,
         // parentProject:  ,
         sellingAmount: double.tryParse(sellingAmount.text),
         uds: uds.text,
+        isCarParkingAvailable: isCarParkingAvailable,
+        isPrivateTerraceAvailable: isPrivateTerraceAvailable,
       );
 
   factory PropertyViewModel.fromProperty(Property property) {
@@ -132,17 +167,13 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.coverPhoto = property.coverPhoto ?? '';
     propertyViewModel.photos = property.photos;
     propertyViewModel.propertyAmount.text = property.propertyAmount.toString();
-    propertyViewModel.comissionType =
-        property.comissionType ?? ComissionType.amount;
-    propertyViewModel.agentComission = property.agentComission != null
-        ? ComissionController.fromComission(property.agentComission!)
-        : ComissionController();
-    propertyViewModel.superAgentComission = property.superAgentComission != null
-        ? ComissionController.fromComission(property.superAgentComission!)
-        : ComissionController();
-    propertyViewModel.staffComission = property.staffComission != null
-        ? ComissionController.fromComission(property.staffComission!)
-        : ComissionController();
+    propertyViewModel.comissionType = property.comissionType ?? ComissionType.amount;
+    propertyViewModel.agentComission =
+        property.agentComission != null ? ComissionController.fromComission(property.agentComission!) : ComissionController();
+    propertyViewModel.superAgentComission =
+        property.superAgentComission != null ? ComissionController.fromComission(property.superAgentComission!) : ComissionController();
+    propertyViewModel.staffComission =
+        property.staffComission != null ? ComissionController.fromComission(property.staffComission!) : ComissionController();
     propertyViewModel.isSold = property.isSold;
     propertyViewModel.leads = property.leads;
     propertyViewModel._reference = property.reference;
@@ -153,6 +184,8 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.leadCount = property.leadCount;
     propertyViewModel.sellingAmount.text = property.sellingAmount.toString();
     propertyViewModel.uds.text = property.uds ?? '';
+    propertyViewModel.isCarParkingAvailable = property.isCarParkingAvailable ?? false;
+    propertyViewModel.isPrivateTerraceAvailable = property.isPrivateTerraceAvailable ?? false;
 
     return propertyViewModel;
   }

@@ -20,6 +20,9 @@ class StaffFormController {
   TextEditingController branch = TextEditingController();
   TextEditingController ifscCode = TextEditingController();
   TextEditingController email = TextEditingController();
+
+  TextEditingController password = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
   Staff? superAgent;
   Staff? approvedStaff;
   bool isAdmin = false;
@@ -59,6 +62,7 @@ class StaffFormController {
         branch: branch.text,
         ifscCode: ifscCode.text,
         isAdmin: isAdmin,
+        password: password.text.trim(),
       );
 
   factory StaffFormController.fromStaff(Staff staff) {

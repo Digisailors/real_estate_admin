@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
@@ -7,14 +8,14 @@ import 'package:real_estate_admin/widgets/utils.dart';
 
 import '../../Model/Project.dart';
 import '../../Model/Property.dart';
+import '../../Model/helper models/attachment.dart';
 import '../../widgets/formfield.dart';
 import '../../widgets/future_dialog.dart';
 import 'property_form_data.dart';
 import 'package:badges/badges.dart';
 
 class PropertyForm extends StatefulWidget {
-  const PropertyForm({Key? key, this.property, required this.project})
-      : super(key: key);
+  const PropertyForm({Key? key, this.property, required this.project}) : super(key: key);
 
   final Project project;
   final Property? property;
@@ -112,11 +113,7 @@ class _PropertyFormState extends State<PropertyForm> {
                       child: Image(image: e.provider, fit: BoxFit.cover),
                     ),
                   ),
-                  Positioned(
-                      child: CircleAvatar(
-                          child: IconButton(
-                              onPressed: e.remove,
-                              icon: const Icon(Icons.close)))),
+                  Positioned(child: CircleAvatar(child: IconButton(onPressed: e.remove, icon: const Icon(Icons.close)))),
                 ],
               ),
             ))
@@ -165,14 +162,9 @@ class _PropertyFormState extends State<PropertyForm> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                        child: AspectRatio(
-                            aspectRatio: 16 / 9, child: getCoverImage(data))),
+                    child: Card(child: AspectRatio(aspectRatio: 16 / 9, child: getCoverImage(data))),
                   ),
-                  TileFormField(
-                      controller: data.title,
-                      title: "Title",
-                      validator: requiredValidator),
+                  TileFormField(controller: data.title, title: "Title", validator: requiredValidator),
                   Row(
                     children: [
                       Expanded(
@@ -187,13 +179,11 @@ class _PropertyFormState extends State<PropertyForm> {
                       ))
                     ],
                   ),
-                  TileFormField(
-                      controller: data.dtcpNumber, title: 'DTCP Number'),
+                  TileFormField(controller: data.dtcpNumber, title: 'DTCP Number'),
                   Row(
                     children: [
                       Expanded(
-                        child: TileFormField(
-                            controller: data.district, title: 'District'),
+                        child: TileFormField(controller: data.district, title: 'District'),
                       ),
                       Expanded(
                         child: TileFormField(
@@ -205,13 +195,9 @@ class _PropertyFormState extends State<PropertyForm> {
                   ),
                   Row(
                     children: [
+                      Expanded(child: TileFormField(controller: data.uds, title: "UDS")),
                       Expanded(
-                          child: TileFormField(
-                              controller: data.uds, title: "UDS")),
-                      Expanded(
-                        child: TileFormField(
-                            controller: data.buildUpArea,
-                            title: "Build-up Area"),
+                        child: TileFormField(controller: data.buildUpArea, title: "Build-up Area"),
                       ),
                     ],
                   ),
@@ -226,14 +212,10 @@ class _PropertyFormState extends State<PropertyForm> {
                           subtitle: DropdownButtonFormField<int>(
                               value: data.bedroomCount,
                               items: <int>[1, 2, 3]
-                                  .map((e) => DropdownMenuItem<int>(
-                                      value: e, child: Text("$e BHK")))
-                                  .followedBy([
-                                const DropdownMenuItem(child: Text("None"))
-                              ]).toList(),
+                                  .map((e) => DropdownMenuItem<int>(value: e, child: Text("$e BHK")))
+                                  .followedBy([const DropdownMenuItem(child: Text("None"))]).toList(),
                               isExpanded: true,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder()),
+                              decoration: const InputDecoration(border: OutlineInputBorder()),
                               onChanged: (val) {
                                 setState(() {
                                   data.bedroomCount = val;
@@ -250,14 +232,10 @@ class _PropertyFormState extends State<PropertyForm> {
                           subtitle: DropdownButtonFormField<Facing?>(
                               value: data.facing,
                               items: Facing.values
-                                  .map((e) => DropdownMenuItem(
-                                      value: e, child: Text(e.name)))
-                                  .followedBy([
-                                const DropdownMenuItem(child: Text("None"))
-                              ]).toList(),
+                                  .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                                  .followedBy([const DropdownMenuItem(child: Text("None"))]).toList(),
                               isExpanded: true,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder()),
+                              decoration: const InputDecoration(border: OutlineInputBorder()),
                               onChanged: (val) {
                                 setState(() {
                                   data.facing = val;
@@ -265,6 +243,31 @@ class _PropertyFormState extends State<PropertyForm> {
                               }),
                         ),
                       ),
+                    ],
+                  ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                          child: CheckboxListTile(
+                        value: data.isCarParkingAvailable,
+                        title: const Text("Car Parking"),
+                        onChanged: (val) {
+                          setState(() {
+                            data.isCarParkingAvailable = val ?? data.isCarParkingAvailable;
+                          });
+                        },
+                      )),
+                      Expanded(
+                          child: CheckboxListTile(
+                        value: data.isPrivateTerraceAvailable,
+                        title: const Text("Private Terrace"),
+                        onChanged: (val) {
+                          setState(() {
+                            data.isPrivateTerraceAvailable = val ?? data.isPrivateTerraceAvailable;
+                          });
+                        },
+                      )),
                     ],
                   ),
 
@@ -287,8 +290,7 @@ class _PropertyFormState extends State<PropertyForm> {
                       if (required != null) {
                         return required;
                       } else {
-                        var plainText =
-                            p0!.split('Rs. ').last.replaceAll(",", "");
+                        var plainText = p0!.split('Rs. ').last.replaceAll(",", "");
                         if (plainText != null) {
                           var num = double.tryParse(plainText);
                           if (num == null) {
@@ -300,23 +302,67 @@ class _PropertyFormState extends State<PropertyForm> {
                   ),
 
                   const Divider(),
-                  ComissionTile(
-                      comissionController: data.agentComission,
-                      title: "Agent Comission",
-                      name: "Agent"),
+                  ComissionTile(comissionController: data.agentComission, title: "Agent Comission", name: "Agent"),
                   const Divider(),
-                  ComissionTile(
-                      comissionController: data.staffComission,
-                      title: "Staff Comission",
-                      name: "Staff"),
+                  ComissionTile(comissionController: data.staffComission, title: "Staff Comission", name: "Staff"),
                   const Divider(),
-                  ComissionTile(
-                      comissionController: data.superAgentComission,
-                      title: "Super Agent Commission",
-                      name: "Super Agent"),
+                  ComissionTile(comissionController: data.superAgentComission, title: "Super Agent Commission", name: "Super Agent"),
                   const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      decoration: myBoxDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListTile(
+                          title: const Text("Supporting documents"),
+                          subtitle: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ...data.tempAttachments
+                                  .map((attachment) => ListTile(
+                                        leading: attachment.attachmentLocation == AttachmentLocation.cloud
+                                            ? const Icon(FontAwesomeIcons.file)
+                                            : const Icon(FontAwesomeIcons.fileArrowUp),
+                                        title: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(attachment.name),
+                                        ),
+                                        trailing: IconButton(
+                                          icon: const Icon(Icons.remove_circle),
+                                          onPressed: () {
+                                            setState(() {
+                                              data.removeAttachement(attachment);
+                                            });
+                                          },
+                                        ),
+                                      ))
+                                  .toList(),
+                              ListTile(
+                                leading: const Icon(FontAwesomeIcons.file),
+                                title: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("Add Attachment"),
+                                ),
+                                trailing: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.note_add,
+                                    size: 24,
+                                  ),
+                                ),
+                                onTap: () {
+                                  data.pickFiles().then((value) => setState(() {}));
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   ListTile(
-                    title: const Text("Supporting Documents"),
+                    title: const Text("Images"),
                     subtitle: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Padding(
@@ -343,16 +389,14 @@ class _PropertyFormState extends State<PropertyForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          var propertyController = PropertyController(
-                              propertyFormData: data, project: widget.project);
+                          var propertyController = PropertyController(propertyFormData: data, project: widget.project);
                           Future<Result> future;
                           if (widget.property != null) {
                             future = propertyController.updateProperty();
                           } else {
                             future = propertyController.addProperty();
                           }
-                          showFutureDialog(context, future: future,
-                              onSucess: (val) {
+                          showFutureDialog(context, future: future, onSucess: (val) {
                             Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           });

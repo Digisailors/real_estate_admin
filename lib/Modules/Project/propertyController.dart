@@ -9,6 +9,7 @@ import 'package:real_estate_admin/Modules/Project/property_form_data.dart';
 import '../../Model/Lead.dart';
 import '../../Model/Property.dart';
 import '../../Model/Staff.dart';
+import '../../Model/helper models/attachment.dart';
 
 class PropertyController {
   final PropertyViewModel propertyFormData;
@@ -27,20 +28,36 @@ class PropertyController {
     return url;
   }
 
+  Future<List<Attachment>> uploadDocuments() {
+    List<Attachment> returns = [];
+    returns.addAll(propertyFormData.attachments);
+    List<Future<Attachment>> tempFutures = [];
+    for (var element in propertyFormData.files) {
+      tempFutures.add(uploadAttachment(element.bytes!, element.name));
+    }
+    return Future.wait(tempFutures).then((value) {
+      returns.addAll(value);
+      return returns;
+    });
+  }
+
   Future<Result> addProperty() async {
     propertyFormData.propertyID ??= await Property.getNextPropertyId();
     if (propertyFormData.coverPhototData != null) {
       propertyFormData.coverPhoto = await uploadFile(propertyFormData.coverPhototData!, 'coverPhoto${propertyFormData.propertyID}');
     }
-
+    List<Future> futures = [];
     if (propertyFormData.photosData.isNotEmpty) {
-      List<Future<String>> futures = [];
+      List<Future<String>> photoFutures = [];
       int time = DateTime.now().millisecondsSinceEpoch;
       for (var element in propertyFormData.photosData) {
-        futures.add(uploadFile(element, (time++).toString()));
+        photoFutures.add(uploadFile(element, (time++).toString()));
       }
-      propertyFormData.photos = await Future.wait(futures);
+      futures.add(Future.wait(photoFutures).then((value) => propertyFormData.photos = photoFutures));
     }
+    futures.add(uploadDocuments().then((value) => propertyFormData.attachments = value));
+
+    await Future.wait(futures);
     return propertyFormData.reference.set(propertyFormData.property.toJson()).then((value) async {
       final batch = FirebaseFirestore.instance.batch();
       if (propertyFormData.property.leads.isNotEmpty) {
@@ -59,18 +76,25 @@ class PropertyController {
       propertyFormData.coverPhoto = await uploadFile(propertyFormData.coverPhototData!, 'coverPhoto${propertyFormData.propertyID}');
     }
 
+    List<Future> futures = [];
     if (propertyFormData.photosData.isNotEmpty) {
-      List<Future<String>> futures = [];
+      List<Future<String>> photoFutures = [];
       int time = DateTime.now().millisecondsSinceEpoch;
       for (var element in propertyFormData.photosData) {
-        futures.add(uploadFile(element, (time++).toString()));
+        photoFutures.add(uploadFile(element, (time++).toString()));
       }
-      var urls = await Future.wait(futures);
-      propertyFormData.photos.addAll(urls);
+      futures.add(Future.wait(photoFutures).then((value) => propertyFormData.photos = photoFutures));
     }
+    futures.add(uploadDocuments().then((value) => propertyFormData.attachments = value));
+    await Future.wait(futures);
     if (propertyFormData.deletedPhotos.isNotEmpty) {
       for (var element in propertyFormData.deletedPhotos) {
         FirebaseStorage.instance.refFromURL(element).delete();
+      }
+    }
+    if (propertyFormData.deletedAtachments.isNotEmpty) {
+      for (var element in propertyFormData.deletedAtachments) {
+        FirebaseStorage.instance.refFromURL(element.url).delete();
       }
     }
     return propertyFormData.reference
@@ -104,6 +128,12 @@ class PropertyController {
 
   assignStaff({required Lead lead, required Staff staff}) {
     lead.staff = staff;
+  }
+
+  Future<Attachment> uploadAttachment(Uint8List file, String name) async {
+    var ref = storage.child(name);
+    var url = await ref.putData(file).then((p0) => p0.ref.getDownloadURL());
+    return Attachment(name: name, url: url, attachmentLocation: AttachmentLocation.cloud);
   }
 
   Future<Result> markAsSold() {

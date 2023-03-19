@@ -19,6 +19,11 @@ class _AgentListState extends State<AgentList> {
   @override
   void initState() {
     query = agentsRef;
+    searchController.addListener(() {
+      if (searchController.text.isEmpty) {
+        reload();
+      }
+    });
     super.initState();
   }
 
@@ -36,8 +41,7 @@ class _AgentListState extends State<AgentList> {
     // }
     query = query.where('activeStatus', isEqualTo: activeStatus.index);
     if (searchController.text.isNotEmpty) {
-      query = query.where('search',
-          arrayContains: searchController.text.toLowerCase().trim());
+      query = query.where('search', arrayContains: searchController.text.toLowerCase().trim());
     }
     setState(() {});
   }
@@ -63,11 +67,8 @@ class _AgentListState extends State<AgentList> {
                       context: context,
                       builder: (context) {
                         return const AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
-                          content: SizedBox(
-                              height: 800, width: 600, child: AgentForm()),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          content: SizedBox(height: 800, width: 600, child: AgentForm()),
                         );
                       });
                 },
@@ -91,10 +92,7 @@ class _AgentListState extends State<AgentList> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(
-                          width: 300,
-                          child: TileFormField(
-                              controller: searchController, title: "SEARCH")),
+                      SizedBox(width: 300, child: TileFormField(controller: searchController, title: "SEARCH")),
                       SizedBox(
                         width: 300,
                         child: ListTile(
@@ -104,18 +102,10 @@ class _AgentListState extends State<AgentList> {
                             child: DropdownButtonFormField<ActiveStatus>(
                               value: activeStatus,
                               items: const [
-                                DropdownMenuItem(
-                                    value: ActiveStatus.all,
-                                    child: Text("ALL")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.active,
-                                    child: Text("ACTIVE")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.blocked,
-                                    child: Text("BLOCKED")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.pendingApproval,
-                                    child: Text("YET TO APPROVE")),
+                                DropdownMenuItem(value: ActiveStatus.all, child: Text("ALL")),
+                                DropdownMenuItem(value: ActiveStatus.active, child: Text("ACTIVE")),
+                                DropdownMenuItem(value: ActiveStatus.blocked, child: Text("BLOCKED")),
+                                DropdownMenuItem(value: ActiveStatus.pendingApproval, child: Text("YET TO APPROVE")),
                               ],
                               onChanged: (val) {
                                 activeStatus = val ?? activeStatus;
@@ -147,15 +137,10 @@ class _AgentListState extends State<AgentList> {
             child: SingleChildScrollView(
               child: StreamBuilder(
                 stream: query.snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active ||
-                      snapshot.hasData) {
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active || snapshot.hasData) {
                     List<Agent> agents = [];
-                    agents = snapshot.data!.docs
-                        .map((e) => Agent.fromSnapshot(e))
-                        .toList();
+                    agents = snapshot.data!.docs.map((e) => Agent.fromSnapshot(e)).toList();
                     if (agents.isEmpty) {
                       return const Center(
                         child: Padding(
@@ -165,8 +150,7 @@ class _AgentListState extends State<AgentList> {
                       );
                     } else {
                       return PaginatedDataTable(
-                        rowsPerPage:
-                            (Get.height ~/ kMinInteractiveDimension) - 7,
+                        rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 7,
                         source: AgentListSource(agents, context: context),
                         columns: AgentListSource.getColumns(),
                       );
@@ -203,9 +187,7 @@ class AgentListSource extends DataTableSource {
     final e = agents[(index)];
 
     return DataRow.byIndex(
-      color: MaterialStateProperty.all(e.activeStatus == ActiveStatus.active
-          ? Colors.lightGreen.shade100
-          : Colors.white),
+      color: MaterialStateProperty.all(e.activeStatus == ActiveStatus.active ? Colors.lightGreen.shade100 : Colors.white),
       index: index,
       cells: [
         // DataCell(Text((index + 1).toString())),
@@ -215,13 +197,8 @@ class AgentListSource extends DataTableSource {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
-                      content: SizedBox(
-                          height: 800,
-                          width: 600,
-                          child: AgentScreen(agent: e)),
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      content: SizedBox(height: 800, width: 600, child: AgentScreen(agent: e)),
                     );
                   });
             },
@@ -242,16 +219,11 @@ class AgentListSource extends DataTableSource {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                 title: const Text("Are you sure ?"),
-                                content: const Text(
-                                    "This will disable the agent, and stop him from adding leads"),
+                                content: const Text("This will disable the agent, and stop him from adding leads"),
                                 actions: [
-                                  TextButton(
-                                      onPressed: Navigator.of(context).pop,
-                                      child: const Text("NO")),
+                                  TextButton(onPressed: Navigator.of(context).pop, child: const Text("NO")),
                                   TextButton(
                                       onPressed: () {
                                         e.disable();
@@ -267,12 +239,8 @@ class AgentListSource extends DataTableSource {
               : Expanded(
                   flex: 2,
                   child: TextButton(
-                      onPressed: e.activeStatus == ActiveStatus.pendingApproval
-                          ? e.approve
-                          : e.enable,
-                      child: Text(e.activeStatus == ActiveStatus.pendingApproval
-                          ? "APPROVE"
-                          : "ACTIVATE")),
+                      onPressed: e.activeStatus == ActiveStatus.pendingApproval ? e.approve : e.enable,
+                      child: Text(e.activeStatus == ActiveStatus.pendingApproval ? "APPROVE" : "ACTIVATE")),
                 ),
           Expanded(
             flex: 1,
@@ -282,9 +250,7 @@ class AgentListSource extends DataTableSource {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                           content: SizedBox(
                               height: 800,
                               width: 600,
