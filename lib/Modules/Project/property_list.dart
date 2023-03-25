@@ -174,6 +174,7 @@ class _PropertyListState extends State<PropertyList> {
                                                       selected: e.reference ==
                                                           selectedProperty
                                                               ?.reference,
+                                                              
                                                     ),
                                                   ))
                                               .toList(),

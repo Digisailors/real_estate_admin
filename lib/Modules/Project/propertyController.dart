@@ -16,13 +16,19 @@ class PropertyController {
   final Project project;
 
   PropertyController({required this.propertyFormData, required this.project});
-  CollectionReference<Map<String, dynamic>> get properties => project.reference.collection('properties');
-  Reference get storage => FirebaseStorage.instance.ref().child(project.reference.id);
-  CollectionReference get leadsRef => propertyFormData.reference.collection('leads');
+  CollectionReference<Map<String, dynamic>> get properties =>
+      project.reference.collection('properties');
+  Reference get storage =>
+      FirebaseStorage.instance.ref().child(project.reference.id);
+  CollectionReference get leadsRef =>
+      propertyFormData.reference.collection('leads');
 
   Future<String> uploadFile(Uint8List file, String name) async {
     var ref = storage.child(name);
-    var url = await ref.putData(file).then((p0) => p0.ref.getDownloadURL()).catchError((error) {
+    var url = await ref
+        .putData(file)
+        .then((p0) => p0.ref.getDownloadURL())
+        .catchError((error) {
       print(error.toString());
     });
     return url;
@@ -44,7 +50,9 @@ class PropertyController {
   Future<Result> addProperty() async {
     propertyFormData.propertyID ??= await Property.getNextPropertyId();
     if (propertyFormData.coverPhototData != null) {
-      propertyFormData.coverPhoto = await uploadFile(propertyFormData.coverPhototData!, 'coverPhoto${propertyFormData.propertyID}');
+      propertyFormData.coverPhoto = await uploadFile(
+          propertyFormData.coverPhototData!,
+          'coverPhoto${propertyFormData.propertyID}');
     }
     List<Future> futures = [];
     if (propertyFormData.photosData.isNotEmpty) {
@@ -53,12 +61,16 @@ class PropertyController {
       for (var element in propertyFormData.photosData) {
         photoFutures.add(uploadFile(element, (time++).toString()));
       }
-      futures.add(Future.wait(photoFutures).then((value) => propertyFormData.photos = photoFutures));
+      futures.add(Future.wait(photoFutures)
+          .then((value) => propertyFormData.photos = photoFutures));
     }
-    futures.add(uploadDocuments().then((value) => propertyFormData.attachments = value));
+    futures.add(uploadDocuments()
+        .then((value) => propertyFormData.attachments = value));
 
     await Future.wait(futures);
-    return propertyFormData.reference.set(propertyFormData.property.toJson()).then((value) async {
+    return propertyFormData.reference
+        .set(propertyFormData.property.toJson())
+        .then((value) async {
       final batch = FirebaseFirestore.instance.batch();
       if (propertyFormData.property.leads.isNotEmpty) {
         var leadsRef = propertyFormData.reference.collection('leads');
@@ -67,13 +79,17 @@ class PropertyController {
         }
         await batch.commit();
       }
-      return Result(tilte: Result.success, message: "Property added Successfully");
-    }).onError((error, stackTrace) => Result(tilte: Result.failure, message: "Property Addition Fialed!"));
+      return Result(
+          tilte: Result.success, message: "Property added Successfully");
+    }).onError((error, stackTrace) => Result(
+            tilte: Result.failure, message: "Property Addition Fialed!"));
   }
 
   Future<Result> updateProperty() async {
     if (propertyFormData.coverPhototData != null) {
-      propertyFormData.coverPhoto = await uploadFile(propertyFormData.coverPhototData!, 'coverPhoto${propertyFormData.propertyID}');
+      propertyFormData.coverPhoto = await uploadFile(
+          propertyFormData.coverPhototData!,
+          'coverPhoto${propertyFormData.propertyID}');
     }
 
     List<Future> futures = [];
@@ -83,9 +99,11 @@ class PropertyController {
       for (var element in propertyFormData.photosData) {
         photoFutures.add(uploadFile(element, (time++).toString()));
       }
-      futures.add(Future.wait(photoFutures).then((value) => propertyFormData.photos = photoFutures));
+      futures.add(Future.wait(photoFutures)
+          .then((value) => propertyFormData.photos.addAll(value)));
     }
-    futures.add(uploadDocuments().then((value) => propertyFormData.attachments = value));
+    futures.add(uploadDocuments()
+        .then((value) => propertyFormData.attachments.addAll(value)));
     await Future.wait(futures);
     if (propertyFormData.deletedPhotos.isNotEmpty) {
       for (var element in propertyFormData.deletedPhotos) {
@@ -99,8 +117,10 @@ class PropertyController {
     }
     return propertyFormData.reference
         .update(propertyFormData.property.toJson())
-        .then((value) => Result(tilte: Result.success, message: "Property updated Successfully"))
-        .onError((error, stackTrace) => Result(tilte: Result.failure, message: "Property update failed!"));
+        .then((value) => Result(
+            tilte: Result.success, message: "Property updated Successfully"))
+        .onError((error, stackTrace) =>
+            Result(tilte: Result.failure, message: "Property update failed!"));
   }
 
   Future<Result> deleteProperty() {
@@ -112,12 +132,15 @@ class PropertyController {
     }
     return propertyFormData.reference
         .delete()
-        .then((value) => Result(tilte: Result.success, message: "Property updated Successfully"))
-        .onError((error, stackTrace) => Result(tilte: Result.failure, message: "Property update failed!"));
+        .then((value) => Result(
+            tilte: Result.success, message: "Property updated Successfully"))
+        .onError((error, stackTrace) =>
+            Result(tilte: Result.failure, message: "Property update failed!"));
   }
 
   Stream<List<Lead>> getLeads() {
-    return leadsRef.snapshots().map((snapsot) => snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
+    return leadsRef.snapshots().map((snapsot) =>
+        snapsot.docs.map((e) => Lead.fromJson(e.data(), e.reference)).toList());
   }
 
   addLead(Lead lead) {
@@ -133,13 +156,16 @@ class PropertyController {
   Future<Attachment> uploadAttachment(Uint8List file, String name) async {
     var ref = storage.child(name);
     var url = await ref.putData(file).then((p0) => p0.ref.getDownloadURL());
-    return Attachment(name: name, url: url, attachmentLocation: AttachmentLocation.cloud);
+    return Attachment(
+        name: name, url: url, attachmentLocation: AttachmentLocation.cloud);
   }
 
   Future<Result> markAsSold() {
     return propertyFormData.reference
         .update({"isSold": true})
-        .then((value) => Result(tilte: Result.success, message: "Property is sold as marked"))
-        .onError((error, stackTrace) => Result(tilte: Result.failure, message: error.toString()));
+        .then((value) => Result(
+            tilte: Result.success, message: "Property is sold as marked"))
+        .onError((error, stackTrace) =>
+            Result(tilte: Result.failure, message: error.toString()));
   }
 }

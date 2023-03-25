@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
@@ -212,8 +213,18 @@ class _PropertyFormState extends State<PropertyForm> {
                               controller: data.uds, title: "UDS")),
                       Expanded(
                         child: TileFormField(
-                            controller: data.buildUpArea,
-                            title: "Build-up Area"),
+                          controller: data.buildUpArea,
+                          title: "Build-up Area",
+                          onChanged: (val) {
+                            // setState(() {
+                            //   double propertyAmount =
+                            //       double.parse(data.propertyAmount.text) *
+                            //           double.parse(data.buildUpArea.text);
+                            //   data.propertyAmounts.text =
+                            //       propertyAmount.toString();
+                            // });
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -327,6 +338,60 @@ class _PropertyFormState extends State<PropertyForm> {
                         }
                       }
                     },
+                    onChanged: (val) {
+                      setState(() {
+                        double propertyAmount =
+                            double.parse(data.propertyAmount.text) *
+                                double.parse(data.buildUpArea.text);
+                        data.propertyAmounts.text = propertyAmount.toString();
+                      });
+                    },
+                  ),
+                  TileFormField(
+                    controller: data.costPerSqft,
+                    title: "Cost Per Sqft.",
+                    onChanged: (val) {
+                      setState(() {
+                        double sellingAmount =
+                            double.parse(data.buildUpArea.text) *
+                                double.parse(data.costPerSqft.text);
+                        data.sellingAmounts.text = sellingAmount.toString();
+                      });
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: TileFormField(
+                        enabled: false,
+                        controller: data.propertyAmounts,
+                        title: "Property Amount",
+                      )),
+                      Expanded(
+                        child: TileFormField(
+                          enabled: false,
+                          validator: (val) {
+                            if (val != null) {
+                              // ignore: unrelated_type_equality_checks
+                              if (data.sellingAmounts.text == '0') {
+                                return 'Please enter a amount greater than 0';
+                              } else {
+                                var number = double.tryParse(val) ?? 0;
+
+                                if (double.parse(data.propertyAmounts.text) <
+                                    number) {
+                                  return 'Selling amount is less than property amount';
+                                }
+                              }
+                            } else {
+                              return 'Please enter a valid amount';
+                            }
+                          },
+                          controller: data.sellingAmounts,
+                          title: "Selling Amount",
+                        ),
+                      ),
+                    ],
                   ),
 
                   const Divider(),
@@ -436,9 +501,17 @@ class _PropertyFormState extends State<PropertyForm> {
                               propertyFormData: data, project: widget.project);
                           Future<Result> future;
                           if (widget.property != null) {
-                            future = propertyController.updateProperty();
+                            future = propertyController
+                                .updateProperty()
+                                .whenComplete(() {
+                              setState(() {});
+                            });
                           } else {
-                            future = propertyController.addProperty();
+                            future = propertyController
+                                .addProperty()
+                                .whenComplete(() {
+                              setState(() {});
+                            });
                           }
                           showFutureDialog(context, future: future,
                               onSucess: (val) {
