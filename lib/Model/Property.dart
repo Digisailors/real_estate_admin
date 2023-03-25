@@ -42,11 +42,12 @@ class Property {
   List<dynamic> photos;
   List<Attachment> documents;
   double propertyAmount;
+  double? propertyAmounts;
   String? coverPhoto;
   String title;
   List<Lead> leads;
   Facing? facing;
-
+  double? costPerSqft;
   ComissionType? comissionType;
   Commission? agentComission;
   Commission? superAgentComission;
@@ -57,6 +58,7 @@ class Property {
   int propertyID;
 
   double? sellingAmount;
+  double? sellingAmounts;
   String? uds;
   String? buildUpArea;
   int? bedroomCount;
@@ -95,7 +97,9 @@ class Property {
     required this.coverPhoto,
     required this.photos,
     required this.propertyAmount,
+    required this.propertyAmounts,
     required this.sellingAmount,
+    required this.sellingAmounts,
     required this.comissionType,
     required this.agentComission,
     required this.superAgentComission,
@@ -112,6 +116,7 @@ class Property {
     required this.uds,
     required this.isCarParkingAvailable,
     required this.isPrivateTerraceAvailable,
+    required this.costPerSqft,
   });
 
   Map<String, dynamic> toJson() => {
@@ -127,8 +132,9 @@ class Property {
         "features": features,
         "description": description,
         "coverPhoto": coverPhoto,
-        "photos": photos,
+        "photos": photos.map((e) => e).toList(),
         "propertyAmount": propertyAmount,
+        "propertyAmounts": propertyAmounts,
         "comissionType": comissionType?.index,
         "agentComission": agentComission?.toJson(),
         "superAgentComission": superAgentComission?.toJson(),
@@ -140,9 +146,13 @@ class Property {
         "facing": facing?.index,
         "documents": documents.map((e) => e.toJson()).toList(),
         "sellingAmount": sellingAmount,
+        "sellingAmounts": sellingAmounts,
         "uds": uds,
         "buildUpArea": buildUpArea,
         "bedroomCount": bedroomCount,
+        "isCarParkingAvailable": isCarParkingAvailable,
+        "isPrivateTerraceAvailable": isPrivateTerraceAvailable,
+        "costPerSqft": costPerSqft
       };
 
   Stream<List<Lead>> getLeads() {
@@ -214,9 +224,15 @@ class Property {
       propertyAmount: json["propertyAmount"] is int
           ? (json["propertyAmount"] as int).toDouble()
           : (json["propertyAmount"] ?? 0),
+      propertyAmounts: json["propertyAmounts"] is int
+          ? (json["propertyAmounts"] as int).toDouble()
+          : (json["propertyAmounts"] ?? 0),
       sellingAmount: json["sellingAmount"] is int
           ? (json["sellingAmount"] as int).toDouble()
           : (json["sellingAmount"] ?? 0),
+      sellingAmounts: json["sellingAmounts"] is int
+          ? (json["sellingAmounts"] as int).toDouble()
+          : (json["sellingAmounts"] ?? 0),
       comissionType: json["comissionType"] != null
           ? ComissionType.values.elementAt(json["comissionType"])
           : null,
@@ -236,8 +252,9 @@ class Property {
       bedroomCount: json["bedroomCount"],
       buildUpArea: json["buildUpArea"],
       uds: json["uds"],
-      isCarParkingAvailable: json["isCarParkingAvailable"],
-      isPrivateTerraceAvailable: json["isPrivateTerraceAvailable"],
+      isCarParkingAvailable: json["isCarParkingAvailable"] ?? false,
+      isPrivateTerraceAvailable: json["isPrivateTerraceAvailable"] ?? false,
+      costPerSqft: json["costPerSqft"],
     );
   }
 }

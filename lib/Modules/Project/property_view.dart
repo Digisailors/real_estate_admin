@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate_admin/Model/Property.dart';
@@ -23,14 +24,59 @@ class PropertyView extends StatefulWidget {
 }
 
 class _PropertyViewState extends State<PropertyView> {
+  void downloadFiles(List<String> urls) {
+    String url = "https://www.africau.edu/images/default/sample.pdf";
+    final anchor = html.AnchorElement(href: url);
+    anchor.download = url.split('/').last;
+    anchor.click();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (mounted) {
+      setState(() {});
+    }
+    super.didChangeDependencies();
+  }
+
   List<Widget> getFeatures() {
     List<Widget> widgets = [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'Feature',
-          style: getText(context).headline5!.apply(color: Colors.lightBlue),
-        ),
+      Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Feature',
+              style: getText(context).headline5!.apply(
+                    color: Colors.lightBlue,
+                  ),
+            ),
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextButton.icon(
+              onPressed: () {
+                List<String> urls = [];
+                urls.addAll(
+                    widget.property.documents.map((e) => e.url).toList());
+                downloadFiles(urls);
+                print(urls[0]);
+              },
+              icon: const Icon(
+                Icons.file_download,
+                size: 16,
+                color: Colors.lightBlue,
+              ),
+              label: Text(
+                'Property Files',
+                style: getText(context)
+                    .headline5!
+                    .apply(color: Colors.lightBlue, fontSizeFactor: 0.5),
+              ),
+            ),
+          )
+        ],
       ),
     ];
     widgets.addAll([
@@ -53,7 +99,8 @@ class _PropertyViewState extends State<PropertyView> {
           Expanded(
               child: ListTile(
             title: const Text("Facing Direction"),
-            subtitle: Text(widget.property.facing?.name ?? "Nil"),
+            subtitle: Text(
+                widget.property.facing?.name.replaceAll("_", " ") ?? "Nil"),
           )),
           Expanded(
               child: ListTile(
@@ -67,15 +114,15 @@ class _PropertyViewState extends State<PropertyView> {
           Expanded(
               child: ListTile(
             title: const Text("Private terrace"),
-            subtitle: Text((widget.property.isPrivateTerraceAvailable ?? false)
-                ? "Avialble"
+            subtitle: Text((widget.property.isPrivateTerraceAvailable!)
+                ? "Available"
                 : "Not Available"),
           )),
           Expanded(
               child: ListTile(
             title: const Text("Car Parking"),
             subtitle: Text((widget.property.isCarParkingAvailable ?? false)
-                ? "Avialble"
+                ? "Available"
                 : "Not Available"),
           )),
         ],
@@ -352,8 +399,58 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle: Text(widget.property.propertyAmount
                                       .toString()),
-                                  title: const Text('Property Amount'),
+                                  title: const Text('Property Value'),
                                 ))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: ListTile(
+                                  subtitle: Text(widget.property.propertyAmounts
+                                      .toString()),
+                                  title: const Text('Propery Amount'),
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: ListTile(
+                                  subtitle: Text(widget.property.sellingAmounts
+                                      .toString()),
+                                  title: const Text('Selling Amount'),
+                                ))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: ListTile(
+                                  subtitle: Text(widget
+                                      .property.agentComission!.value
+                                      .toString()),
+                                  title: const Text('Agent Comission'),
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: ListTile(
+                                  subtitle: Text(widget
+                                      .property.staffComission!.value
+                                      .toString()),
+                                  title: const Text('Staff Comission'),
+                                ))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: ListTile(
+                                  subtitle: Text(widget
+                                      .property.superAgentComission!.value
+                                      .toString()),
+                                  title: const Text('Super Agent Comission'),
+                                )),
                           ],
                         ),
                       ],

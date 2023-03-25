@@ -13,13 +13,18 @@ class ProjectController extends ChangeNotifier {
   ProjectController(this.projectFormData);
 
   final ProjectFormData projectFormData;
-  final CollectionReference<Map<String, dynamic>> projects = FirebaseFirestore.instance.collection('projects');
-  Reference get projectStorageRef => FirebaseStorage.instance.ref().child(projectFormData.reference.id);
+  final CollectionReference<Map<String, dynamic>> projects =
+      FirebaseFirestore.instance.collection('projects');
+  Reference get projectStorageRef =>
+      FirebaseStorage.instance.ref().child(projectFormData.reference.id);
   var storage = FirebaseStorage.instance;
 
   Future<String> uploadFile(Uint8List file, String name) async {
     var ref = projectStorageRef.child(name);
-    var url = await ref.putData(file).then((p0) => p0.ref.getDownloadURL()).catchError((error) {
+    var url = await ref
+        .putData(file)
+        .then((p0) => p0.ref.getDownloadURL())
+        .catchError((error) {
       print(error.toString());
     });
     return url;
@@ -27,19 +32,25 @@ class ProjectController extends ChangeNotifier {
 
   Future<Result> addProject() async {
     if (projectFormData.coverPhototData != null) {
-      projectFormData.coverPhoto = await uploadFile(projectFormData.coverPhototData!, "coverPhoto.jpg");
+      projectFormData.coverPhoto =
+          await uploadFile(projectFormData.coverPhototData!, "coverPhoto.jpg");
     }
     var project = projectFormData.object;
-    return project.reference
-        .set(project.toJson())
-        .then((value) => Result(tilte: Result.success, message: "Project Added Successfully"))
-        .onError((error, stackTrace) => Result(tilte: Result.failure, message: 'Project Addition Failed.\n ${error.toString()}'));
+    return project.reference.set(project.toJson()).then((value) {
+      notifyListeners();
+      return Result(
+          tilte: Result.success, message: "Project Added Successfully");
+    }).onError((error, stackTrace) => Result(
+        tilte: Result.failure,
+        message: 'Project Addition Failed.\n ${error.toString()}'));
   }
 
   Future<Result> updateProject() async {
     if (projectFormData.coverPhototData != null) {
-      projectFormData.coverPhoto = await uploadFile(projectFormData.coverPhototData!, "coverPhoto");
+      projectFormData.coverPhoto =
+          await uploadFile(projectFormData.coverPhototData!, "coverPhoto");
     }
+    
     if (projectFormData.deletedPhotos.isNotEmpty) {
       try {
         for (var element in projectFormData.deletedPhotos) {
@@ -50,12 +61,16 @@ class ProjectController extends ChangeNotifier {
       }
     }
     var project = projectFormData.object;
-    return project.reference
-        .update(project.toJson())
-        .then((value) => Result(tilte: Result.success, message: "Project updated Successfully"))
-        .onError((error, stackTrace) {
+    
+    return project.reference.update(project.toJson()).then((value) {
+      notifyListeners();
+      return Result(
+          tilte: Result.success, message: "Project updated Successfully");
+    }).onError((error, stackTrace) {
       print(error.toString());
-      return Result(tilte: Result.failure, message: 'Project update Failed.\n ${error.toString()}');
+      return Result(
+          tilte: Result.failure,
+          message: 'Project update Failed.\n ${error.toString()}');
     });
   }
 
@@ -63,26 +78,36 @@ class ProjectController extends ChangeNotifier {
     if ((projectFormData.coverPhoto ?? '').isNotEmpty) {
       storage.refFromURL(projectFormData.coverPhoto!).delete();
     }
-    await projectFormData.reference.collection('properties').get().then((snapshot) {
+    await projectFormData.reference
+        .collection('properties')
+        .get()
+        .then((snapshot) {
       var thisProperties = snapshot.docs.map((e) => Property.fromSnapshot(e));
       List<Future> futures = [];
       for (var property in thisProperties) {
         var propertyFormData = PropertyViewModel.fromProperty(property);
-        var controller = PropertyController(propertyFormData: propertyFormData, project: projectFormData.object);
+        var controller = PropertyController(
+            propertyFormData: propertyFormData,
+            project: projectFormData.object);
         futures.add(controller.deleteProperty());
       }
       return Future.wait(futures);
     });
     return projectFormData.reference
         .delete()
-        .then((value) => Result(tilte: Result.success, message: "Project Deleted Successfully"))
-        .onError((error, stackTrace) => Result(tilte: Result.failure, message: 'Project Deletion Failed.\n ${error.toString()}'));
+        .then((value) => Result(
+            tilte: Result.success, message: "Project Deleted Successfully"))
+        .onError((error, stackTrace) => Result(
+            tilte: Result.failure,
+            message: 'Project Deletion Failed.\n ${error.toString()}'));
   }
 
   Stream<List<Property>> getPropertiesAsStream({String? search, bool? isSold}) {
-    Query<Map<String, dynamic>> query = projectFormData.reference.collection('properties');
+    Query<Map<String, dynamic>> query =
+        projectFormData.reference.collection('properties');
     if ((search ?? '').isNotEmpty) {
-      query = query.where('search', arrayContains: search!.toLowerCase().trim());
+      query =
+          query.where('search', arrayContains: search!.toLowerCase().trim());
     }
     if (isSold != null) {
       query = query.where('isSold', isEqualTo: isSold);
