@@ -103,7 +103,7 @@ class PropertyController {
           .then((value) => propertyFormData.photos.addAll(value)));
     }
     futures.add(uploadDocuments()
-        .then((value) => propertyFormData.attachments.addAll(value)));
+        .then((value) => propertyFormData.attachments = value));
     await Future.wait(futures);
     if (propertyFormData.deletedPhotos.isNotEmpty) {
       for (var element in propertyFormData.deletedPhotos) {

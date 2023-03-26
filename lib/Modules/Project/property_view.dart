@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../Model/Lead.dart';
+import '../../Model/helper models/attachment.dart';
 import 'Sales/sale_form.dart';
 
 class PropertyView extends StatefulWidget {
@@ -24,11 +27,12 @@ class PropertyView extends StatefulWidget {
 }
 
 class _PropertyViewState extends State<PropertyView> {
-  void downloadFiles(List<String> urls) {
-    String url = "https://www.africau.edu/images/default/sample.pdf";
-    final anchor = html.AnchorElement(href: url);
-    anchor.download = url.split('/').last;
-    anchor.click();
+  void downloadFile(Attachment attachment) {
+    // String url = "https://www.africau.edu/images/default/sample.pdf";
+    final anchor = html.AnchorElement(href: attachment.url)
+      ..setAttribute('download', attachment.name)
+      ..click();
+    anchor.remove();
   }
 
   @override
@@ -57,11 +61,14 @@ class _PropertyViewState extends State<PropertyView> {
             padding: const EdgeInsets.all(8.0),
             child: TextButton.icon(
               onPressed: () {
-                List<String> urls = [];
-                urls.addAll(
-                    widget.property.documents.map((e) => e.url).toList());
-                downloadFiles(urls);
-                print(urls[0]);
+                for (var i = 0; i < widget.property.documents.length; i++) {
+                  var attachment = widget.property.documents[i];
+                  final anchor = AnchorElement(href: attachment.url)
+                    ..setAttribute('download', 'file_$i');
+                  document.body!.append(anchor);
+                  window.open(anchor.href!, '_blank');
+                  anchor.remove();
+                }
               },
               icon: const Icon(
                 Icons.file_download,

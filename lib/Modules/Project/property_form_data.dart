@@ -218,6 +218,7 @@ class PropertyViewModel extends ChangeNotifier {
     propertyViewModel.sellingAmounts.text = property.sellingAmounts.toString();
     propertyViewModel.propertyAmounts.text =
         property.propertyAmounts.toString();
+    propertyViewModel.attachments = property.documents;
 
     return propertyViewModel;
   }
