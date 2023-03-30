@@ -59,8 +59,8 @@ class _HomeState extends State<Home> {
               AspectRatio(
                 aspectRatio: isDesktop(context) ? 1.5 : 2,
                 child: Center(
-                  child: Image.asset(
-                    'mmalogo.png',
+                  child: Image.network(
+                    'https://firebasestorage.googleapis.com/v0/b/realestate-d0cd9.appspot.com/o/assets%2Fmmalogo.png?alt=media&token=33f943d7-9346-43a2-b655-88b0126134da',
                     height: isDesktop(context) ? 100 : 80,
                   ),
                 ),
