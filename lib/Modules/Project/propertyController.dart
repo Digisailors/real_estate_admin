@@ -62,7 +62,7 @@ class PropertyController {
         photoFutures.add(uploadFile(element, (time++).toString()));
       }
       futures.add(Future.wait(photoFutures)
-          .then((value) => propertyFormData.photos = photoFutures));
+          .then((value) => propertyFormData.photos.addAll(value)));
     }
     futures.add(uploadDocuments()
         .then((value) => propertyFormData.attachments = value));

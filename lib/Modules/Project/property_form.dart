@@ -173,9 +173,15 @@ class _PropertyFormState extends State<PropertyForm> {
                             aspectRatio: 16 / 9, child: getCoverImage(data))),
                   ),
                   TileFormField(
-                      controller: data.title,
-                      title: "Title",
-                      validator: requiredValidator),
+                    controller: data.title,
+                    title: "Title",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -323,21 +329,21 @@ class _PropertyFormState extends State<PropertyForm> {
                     controller: data.propertyAmount,
                     title: 'Property Value',
                     keyboardType: TextInputType.number,
-                    validator: (p0) {
-                      var required = requiredValidator(p0);
-                      if (required != null) {
-                        return required;
-                      } else {
-                        var plainText =
-                            p0!.split('Rs. ').last.replaceAll(",", "");
-                        if (plainText != null) {
-                          var num = double.tryParse(plainText);
-                          if (num == null) {
-                            return 'Please enter a valid number';
-                          }
-                        }
-                      }
-                    },
+                    // validator: (val) {
+                    //   var required = requiredValidator(val);
+                    //   if (required != null) {
+                    //     return required;
+                    //   } else {
+                    //     var plainText =
+                    //         val!.split('Rs. ').last.replaceAll(",", "");
+                    //     if (plainText != null) {
+                    //       var num = double.tryParse(plainText);
+                    //       if (num == null) {
+                    //         return 'Please enter a valid number';
+                    //       }
+                    //     }
+                    //   }
+                    // },
                     onChanged: (val) {
                       setState(() {
                         double propertyAmount =
@@ -370,23 +376,23 @@ class _PropertyFormState extends State<PropertyForm> {
                       Expanded(
                         child: TileFormField(
                           enabled: false,
-                          validator: (val) {
-                            if (val != null) {
-                              // ignore: unrelated_type_equality_checks
-                              if (data.sellingAmounts.text == '0') {
-                                return 'Please enter a amount greater than 0';
-                              } else {
-                                var number = double.tryParse(val) ?? 0;
+                          // validator: (val) {
+                          //   if (val != null) {
+                          //     if (data.sellingAmounts.text == '0') {
+                          //       return 'Please enter a amount greater than 0';
+                          //     } else {
+                          //       var number =
+                          //           double.tryParse(data.sellingAmounts.text) ??
+                          //               0;
 
-                                if (double.parse(data.propertyAmounts.text) <
-                                    number) {
-                                  return 'Selling amount is less than property amount';
-                                }
-                              }
-                            } else {
-                              return 'Please enter a valid amount';
-                            }
-                          },
+                          //       if (double.parse(data.propertyAmounts.text) <
+                          //           number) {
+                          //         return 'Selling amount is less than property amount';
+                          //       }
+                          //     }
+                          //   }
+                          //   return null;
+                          // },
                           controller: data.sellingAmounts,
                           title: "Selling Amount",
                         ),
@@ -496,28 +502,27 @@ class _PropertyFormState extends State<PropertyForm> {
                     margin: const EdgeInsets.all(16),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          var propertyController = PropertyController(
-                              propertyFormData: data, project: widget.project);
-                          Future<Result> future;
-                          if (widget.property != null) {
-                            future = propertyController
-                                .updateProperty()
-                                .whenComplete(() {
-                              setState(() {});
-                            });
-                          } else {
-                            future = propertyController
-                                .addProperty()
-                                .whenComplete(() {
-                              setState(() {});
+                        print("*********");
+                        try {
+                          if (_formKey.currentState!.validate()) {
+                            print("*****Valid****");
+                            var propertyController = PropertyController(
+                                propertyFormData: data,
+                                project: widget.project);
+                            Future<Result> future;
+                            if (widget.property != null) {
+                              future = propertyController.updateProperty();
+                            } else {
+                              future = propertyController.addProperty();
+                            }
+                            showFutureDialog(context, future: future,
+                                onSucess: (val) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
                             });
                           }
-                          showFutureDialog(context, future: future,
-                              onSucess: (val) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          });
+                        } catch (e) {
+                          print("*****This is excepction ${e}*****");
                         }
                       },
                       child: const Text("SAVE PROPERTY"),
