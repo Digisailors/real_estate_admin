@@ -363,7 +363,7 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle:
                                       Text(widget.property.dtcpNumber ?? 'Nil'),
-                                  title: const Text('DTCP Number'),
+                                  title: const Text('DTCP Number s/b Approval Number'),
                                 )),
                             Expanded(
                                 flex: 1,
@@ -381,7 +381,7 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle: Text(
                                       widget.property.surveyNumber ?? 'Nil'),
-                                  title: const Text('Survey Number'),
+                                  title: const Text('Survey / Patta Number'),
                                 )),
                             Expanded(
                                 flex: 1,
@@ -587,116 +587,119 @@ class _PropertyViewState extends State<PropertyView> {
       children: [
         TableRow(
           children: [
-            DataTable(
-              columns: [
-                const DataColumn(label: Text('Name')),
-                const DataColumn(label: Text('Contact')),
-                const DataColumn(label: Text('Agent')),
-                const DataColumn(label: Text('Staff')),
-                DataColumn(label: Container()),
-              ],
-              rows: snapshot.data!
-                  .map((e) => DataRow(
-                          color: MaterialStateProperty.all(getColor(e)),
-                          cells: [
-                            DataCell(Text(e.name)),
-                            DataCell(Text(e.phoneNumber ?? e.email ?? '')),
-                            DataCell(Text(AppSession()
-                                    .agents
-                                    .firstWhereOrNull((element) =>
-                                        element.reference == e.reference)
-                                    ?.firstName ??
-                                "Agent not found")),
-                            DataCell(
-                              DropdownButtonFormField<DocumentReference?>(
-                                  value: e.staffRef,
-                                  items: AppSession()
-                                      .staffs
-                                      .map((staff) =>
-                                          DropdownMenuItem<DocumentReference?>(
-                                            value: staff.reference,
-                                            child: Text(staff.firstName),
-                                          ))
-                                      .toList(),
-                                  isExpanded: true,
-                                  decoration: const InputDecoration(
-                                      border: OutlineInputBorder()),
-                                  onChanged: e.leadStatus == LeadStatus.sold ||
-                                          !AppSession().isAdmin
-                                      ? null
-                                      : (val) {
-                                          if (val != null) {
-                                            e.assignStaff(val);
-                                          }
-                                        }),
-                            ),
-                            DataCell(Padding(
-                              padding: const EdgeInsets.only(right: 16),
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          if (e.leadStatus == LeadStatus.sold) {
-                                            return AlertDialog(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0))),
-                                              title: const Text(
-                                                  "Operation Not Allowed"),
-                                              content: const Text(
-                                                  "Edit operation on sold transaction is not permitted"),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed:
-                                                        Navigator.of(context)
-                                                            .pop,
-                                                    child: const Text("Okay"))
-                                              ],
-                                            );
-                                          }
-                                          if (e.leadStatus ==
-                                              LeadStatus.pendingApproval) {
-                                            return AlertDialog(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0))),
-                                              content: SizedBox(
-                                                  height: 800,
-                                                  width: 600,
-                                                  child: SaleForm(
-                                                    lead: e,
-                                                  )),
-                                            );
-                                          } else {
-                                            return AlertDialog(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0))),
-                                              content: SizedBox(
-                                                  height: 800,
-                                                  width: 600,
-                                                  child: LeadForm(
-                                                    lead: e,
-                                                    property: widget.property,
-                                                  )),
-                                            );
-                                          }
-                                        });
-                                  },
-                                  child: const Text("EDIT")),
-                            )),
-                          ]))
-                  .toList(),
+            FittedBox(
+              child: DataTable(
+                
+                columns: [
+                  const DataColumn(label: Text('Name')),
+                  const DataColumn(label: Text('Contact')),
+                  const DataColumn(label: Text('Agent')),
+                  const DataColumn(label: Text('Staff')),
+                  DataColumn(label: Container()),
+                ],
+                rows: snapshot.data!
+                    .map((e) => DataRow(
+                            color: MaterialStateProperty.all(getColor(e)),
+                            cells: [
+                              DataCell(Text(e.name)),
+                              DataCell(Text(e.phoneNumber ?? e.email ?? '')),
+                              DataCell(Text(AppSession()
+                                      .agents
+                                      .firstWhereOrNull((element) =>
+                                          element.reference == e.reference)
+                                      ?.firstName ??
+                                  "Agent not found")),
+                              DataCell(
+                                DropdownButtonFormField<DocumentReference?>(
+                                    value: e.staffRef,
+                                    items: AppSession()
+                                        .staffs
+                                        .map((staff) =>
+                                            DropdownMenuItem<DocumentReference?>(
+                                              value: staff.reference,
+                                              child: Text(staff.firstName),
+                                            ))
+                                        .toList(),
+                                    isExpanded: true,
+                                    decoration: const InputDecoration(
+                                        border: OutlineInputBorder()),
+                                    onChanged: e.leadStatus == LeadStatus.sold ||
+                                            !AppSession().isAdmin
+                                        ? null
+                                        : (val) {
+                                            if (val != null) {
+                                              e.assignStaff(val);
+                                            }
+                                          }),
+                              ),
+                              DataCell(Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            if (e.leadStatus == LeadStatus.sold) {
+                                              return AlertDialog(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                title: const Text(
+                                                    "Operation Not Allowed"),
+                                                content: const Text(
+                                                    "Edit operation on sold transaction is not permitted"),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed:
+                                                          Navigator.of(context)
+                                                              .pop,
+                                                      child: const Text("Okay"))
+                                                ],
+                                              );
+                                            }
+                                            if (e.leadStatus ==
+                                                LeadStatus.pendingApproval) {
+                                              return AlertDialog(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                content: SizedBox(
+                                                    height: 800,
+                                                    width: 600,
+                                                    child: SaleForm(
+                                                      lead: e,
+                                                    )),
+                                              );
+                                            } else {
+                                              return AlertDialog(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                content: SizedBox(
+                                                    height: 800,
+                                                    width: 600,
+                                                    child: LeadForm(
+                                                      lead: e,
+                                                      property: widget.property,
+                                                    )),
+                                              );
+                                            }
+                                          });
+                                    },
+                                    child: const Text("EDIT")),
+                              )),
+                            ]))
+                    .toList(),
+              ),
             ),
           ],
         ),

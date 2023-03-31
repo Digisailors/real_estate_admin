@@ -120,7 +120,7 @@ class PropertyController {
         .then((value) => Result(
             tilte: Result.success, message: "Property updated Successfully"))
         .onError((error, stackTrace) =>
-            Result(tilte: Result.failure, message: "Property update failed!"));
+            Result(tilte: Result.failure, message: "Property update Failed!"));
   }
 
   Future<Result> deleteProperty() {
@@ -135,7 +135,7 @@ class PropertyController {
         .then((value) => Result(
             tilte: Result.success, message: "Property updated Successfully"))
         .onError((error, stackTrace) =>
-            Result(tilte: Result.failure, message: "Property update failed!"));
+            Result(tilte: Result.failure, message: "Property update Failed!"));
   }
 
   Stream<List<Lead>> getLeads() {

@@ -90,7 +90,11 @@ class _ProjectListState extends State<ProjectList> {
                                     child: Text("Apartments")),
                                 DropdownMenuItem(
                                     value: 'Land', child: Text("Land")),
-                              ],
+                                DropdownMenuItem(
+                                    value: 'Plots', child: Text("Plots")),
+                                DropdownMenuItem(
+                                    value: 'FormLand', child: Text("Form Land")),
+                             ],
                               onChanged: setType,
                             ),
                           ),
