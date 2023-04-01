@@ -76,7 +76,7 @@ class _PropertyViewState extends State<PropertyView> {
                 color: Colors.lightBlue,
               ),
               label: Text(
-                'Property Files',
+                'Download Brochure',
                 style: getText(context)
                     .headline5!
                     .apply(color: Colors.lightBlue, fontSizeFactor: 0.5),
@@ -363,7 +363,8 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle:
                                       Text(widget.property.dtcpNumber ?? 'Nil'),
-                                  title: const Text('DTCP Number s/b Approval Number'),
+                                  title: const Text(
+                                      'DTCP Number s/b Approval Number'),
                                 )),
                             Expanded(
                                 flex: 1,
@@ -589,7 +590,6 @@ class _PropertyViewState extends State<PropertyView> {
           children: [
             FittedBox(
               child: DataTable(
-                
                 columns: [
                   const DataColumn(label: Text('Name')),
                   const DataColumn(label: Text('Contact')),
@@ -614,8 +614,8 @@ class _PropertyViewState extends State<PropertyView> {
                                     value: e.staffRef,
                                     items: AppSession()
                                         .staffs
-                                        .map((staff) =>
-                                            DropdownMenuItem<DocumentReference?>(
+                                        .map((staff) => DropdownMenuItem<
+                                                DocumentReference?>(
                                               value: staff.reference,
                                               child: Text(staff.firstName),
                                             ))
@@ -623,14 +623,15 @@ class _PropertyViewState extends State<PropertyView> {
                                     isExpanded: true,
                                     decoration: const InputDecoration(
                                         border: OutlineInputBorder()),
-                                    onChanged: e.leadStatus == LeadStatus.sold ||
-                                            !AppSession().isAdmin
-                                        ? null
-                                        : (val) {
-                                            if (val != null) {
-                                              e.assignStaff(val);
-                                            }
-                                          }),
+                                    onChanged:
+                                        e.leadStatus == LeadStatus.sold ||
+                                                !AppSession().isAdmin
+                                            ? null
+                                            : (val) {
+                                                if (val != null) {
+                                                  e.assignStaff(val);
+                                                }
+                                              }),
                               ),
                               DataCell(Padding(
                                 padding: const EdgeInsets.only(right: 16),
@@ -639,7 +640,8 @@ class _PropertyViewState extends State<PropertyView> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            if (e.leadStatus == LeadStatus.sold) {
+                                            if (e.leadStatus ==
+                                                LeadStatus.sold) {
                                               return AlertDialog(
                                                 shape:
                                                     const RoundedRectangleBorder(

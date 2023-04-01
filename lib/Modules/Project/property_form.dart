@@ -197,7 +197,8 @@ class _PropertyFormState extends State<PropertyForm> {
                     ],
                   ),
                   TileFormField(
-                      controller: data.dtcpNumber, title: 'DTCP Number s/b Approval Number'),
+                      controller: data.dtcpNumber,
+                      title: 'DTCP Number s/b Approval Number'),
                   Row(
                     children: [
                       Expanded(
@@ -376,23 +377,23 @@ class _PropertyFormState extends State<PropertyForm> {
                       Expanded(
                         child: TileFormField(
                           enabled: false,
-                          // validator: (val) {
-                          //   if (val != null) {
-                          //     if (data.sellingAmounts.text == '0') {
-                          //       return 'Please enter a amount greater than 0';
-                          //     } else {
-                          //       var number =
-                          //           double.tryParse(data.sellingAmounts.text) ??
-                          //               0;
+                          validator: (val) {
+                            if (val != null) {
+                              if (data.sellingAmounts.text == '0') {
+                                return 'Please enter a amount greater than 0';
+                              } else {
+                                var number =
+                                    double.tryParse(data.sellingAmounts.text) ??
+                                        0;
 
-                          //       if (double.parse(data.propertyAmounts.text) <
-                          //           number) {
-                          //         return 'Selling amount is less than property amount';
-                          //       }
-                          //     }
-                          //   }
-                          //   return null;
-                          // },
+                                if (double.parse(data.propertyAmounts.text) >
+                                    number) {
+                                  return 'Selling amount is less than property amount';
+                                }
+                              }
+                            }
+                            return null;
+                          },
                           controller: data.sellingAmounts,
                           title: "Selling Amount",
                         ),
@@ -423,7 +424,7 @@ class _PropertyFormState extends State<PropertyForm> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: ListTile(
-                          title: const Text("Supporting documents"),
+                          title: const Text("Upload Brochure"),
                           subtitle: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

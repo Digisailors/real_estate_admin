@@ -26,7 +26,7 @@ class LeadFormController {
   ComissionController staffComission = ComissionController();
   ComissionController agentComission = ComissionController();
   ComissionController superAgentComission = ComissionController();
-  final TextEditingController sellingAmount = TextEditingController(text: '0.00');
+  TextEditingController sellingAmount = TextEditingController(text: '0.00');
 
   DateTime? soldOn;
 
