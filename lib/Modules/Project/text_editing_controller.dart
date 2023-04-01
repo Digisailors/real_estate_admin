@@ -22,7 +22,10 @@ class CurrencyTextFieldController extends TextEditingController {
   String get decimalSymbol => _decimalSymbol;
   String get thousandSymbol => _thousandSymbol;
 
-  CurrencyTextFieldController({String rightSymbol = "R\$ ", String decimalSymbol = ",", String thousandSymbol = "."})
+  CurrencyTextFieldController(
+      {String rightSymbol = "R\$ ",
+      String decimalSymbol = ",",
+      String thousandSymbol = "."})
       : _leftSymbol = rightSymbol,
         _decimalSymbol = decimalSymbol,
         _thousandSymbol = thousandSymbol {
@@ -71,7 +74,11 @@ class CurrencyTextFieldController extends TextEditingController {
   }
 
   String _clear({required String text}) {
-    return text.replaceAll(_leftSymbol, "").replaceAll(_thousandSymbol, "").replaceAll(_decimalSymbol, "").trim();
+    return text
+        .replaceAll(_leftSymbol, "")
+        .replaceAll(_thousandSymbol, "")
+        .replaceAll(_decimalSymbol, "")
+        .trim();
   }
 
   _setSelectionBy({required int offset}) {
@@ -86,7 +93,8 @@ class CurrencyTextFieldController extends TextEditingController {
     return clearText != null ? (clearText.length == string.length) : false;
   }
 
-  String? _getOnlyNumbers({String? string}) => string?.replaceAll(_onlyNumbersRegex, "");
+  String? _getOnlyNumbers({String? string}) =>
+      string?.replaceAll(_onlyNumbersRegex, "");
 
   String _formatToNumber({required String string}) {
     double value = _getDoubleValueFor(string: string);
@@ -99,7 +107,10 @@ class CurrencyTextFieldController extends TextEditingController {
   }
 
   String _applyMaskTo({required double value}) {
-    return NumberFormat.simpleCurrency(locale: 'en_IN').format(value).split('₹ ').last;
+    return NumberFormat.simpleCurrency(locale: 'en_IN')
+        .format(value)
+        .split('₹ ')
+        .last;
   }
 
   @override

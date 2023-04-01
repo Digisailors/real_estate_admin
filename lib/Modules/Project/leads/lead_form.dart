@@ -10,6 +10,8 @@ import 'package:real_estate_admin/widgets/utils.dart';
 
 import '../../../Providers/session.dart';
 
+GlobalKey Mykey = GlobalKey();
+
 class LeadForm extends StatefulWidget {
   const LeadForm({Key? key, this.lead, required this.property})
       : super(key: key);
@@ -39,6 +41,7 @@ class _LeadFormState extends State<LeadForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Mykey,
       appBar: AppBar(
         title: const Text("LEAD"),
       ),
@@ -221,22 +224,28 @@ class _LeadFormState extends State<LeadForm> {
                       if (_formKey.currentState!.validate()) {
                         controller.propertyID = widget.property.propertyID;
                         controller.propertyName = widget.property.title;
+                        controller.sellingAmount.text =
+                            widget.property.sellingAmounts.toString();
+                      
                         var future = widget.lead == null
                             ? widget.property.addLead(controller.lead)
                             : widget.lead!.reference
                                 .update(controller.lead.toJson())
-                                .then((value) => Result(
+                                .then((value) {
+                                return Result(
                                     tilte: 'Success',
-                                    message: 'Record modified Successfully'))
-                                .onError((error, stackTrace) => Result(
+                                    message: 'Record modified Successfully');
+                              }).onError((error, stackTrace) {
+                                return Result(
                                     tilte: 'Failed',
                                     message:
-                                        'Record not modified\n${error.toString()}'));
+                                        'Record not modified\n${error.toString()}');
+                              });
                         // ignore: use_build_context_synchronously
-                        showFutureDialog(context, future: future,
-                            onSucess: (val) {
-                          Navigator.of(context).pop();
-                        });
+                        showFutureDialog1(
+                          context,
+                          future: future,
+                        );
                       }
                     },
                     child: const Text("SUBMIT")),

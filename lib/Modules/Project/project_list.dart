@@ -38,6 +38,18 @@ class _ProjectListState extends State<ProjectList> {
     });
   }
 
+  reloadQuery2(String? search1) {
+    setState(() {
+      query = projects;
+      if (type != null) {
+        query = query.where('type', isEqualTo: type);
+      }
+      if (search1!.isNotEmpty) {
+        query = query.where('search', arrayContainsAny: search1.split(' '));
+      }
+    });
+  }
+
   void setType(String? val) {
     type = val;
     reloadQuery();
@@ -90,6 +102,11 @@ class _ProjectListState extends State<ProjectList> {
                                     child: Text("Apartments")),
                                 DropdownMenuItem(
                                     value: 'Land', child: Text("Land")),
+                                DropdownMenuItem(
+                                    value: 'Plots', child: Text("Plots")),
+                                DropdownMenuItem(
+                                    value: 'FormLand',
+                                    child: Text("Form Land")),
                               ],
                               onChanged: setType,
                             ),
@@ -99,8 +116,15 @@ class _ProjectListState extends State<ProjectList> {
                     ),
                     SizedBox(
                         width: 300,
-                        child:
-                            TileFormField(controller: search, title: 'Search')),
+                        child: TileFormField(
+                          controller: search,
+                          title: 'Search',
+                          onChanged: (v) {
+                            setState(() {
+                              reloadQuery2(v);
+                            });
+                          },
+                        )),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(

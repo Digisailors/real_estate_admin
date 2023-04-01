@@ -11,6 +11,7 @@ class TileFormField extends StatelessWidget {
     this.keyboardType = TextInputType.multiline,
     this.inputFormatters,
     this.suffix,
+    this.preffix,
     this.enabled,
     this.validator,
     this.obscureText = false,
@@ -23,6 +24,7 @@ class TileFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final Widget? suffix;
+  final Widget? preffix;
   final bool? enabled;
   final String? Function(String?)? validator;
   final bool obscureText;
@@ -42,10 +44,14 @@ class TileFormField extends StatelessWidget {
           onChanged: onChanged,
           controller: controller,
           decoration: InputDecoration(
+            prefix: preffix,
+            errorStyle: const TextStyle(fontSize: 8),
             filled: true,
-            fillColor: (enabled ?? true) ? Colors.transparent : Colors.grey.shade300,
+            fillColor:
+                (enabled ?? true) ? Colors.transparent : Colors.grey.shade300,
             border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 22),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 22),
             suffix: suffix,
           ),
           maxLines: maxLines,
