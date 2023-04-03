@@ -364,7 +364,7 @@ class _PropertyViewState extends State<PropertyView> {
                                   subtitle:
                                       Text(widget.property.dtcpNumber ?? 'Nil'),
                                   title: const Text(
-                                      'DTCP Number s/b Approval Number'),
+                                      'DLTP Number s/b Approval Number'),
                                 )),
                             Expanded(
                                 flex: 1,
