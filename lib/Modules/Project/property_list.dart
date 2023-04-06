@@ -471,14 +471,14 @@ class PropertyTile extends StatelessWidget {
                       .format(property.propertyAmount),
                   overflow: TextOverflow.ellipsis,
                 ),
-                trailing: Column(
-                  children: [
-                    Text(
-                      "Leads\n${property.leadCount}",
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                // trailing: Column(
+                //   children: [
+                //     Text(
+                //       "Leads\n${property.leadCount}",
+                //       textAlign: TextAlign.center,
+                //     ),
+                //   ],
+                // ),
               ),
               ButtonBar(
                 children: [
