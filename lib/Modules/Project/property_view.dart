@@ -399,7 +399,7 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle:
                                       Text(widget.property.dtcpNumber ?? 'Nil'),
-                                  title: const Text('Approval Number'),
+                                  title: const Text('Approval Number'), 
                                 )),
                             Expanded(
                                 flex: 1,
