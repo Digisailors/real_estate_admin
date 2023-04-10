@@ -45,7 +45,7 @@ class TileFormField extends StatelessWidget {
           controller: controller,
           decoration: InputDecoration(
             prefix: preffix,
-            errorStyle: const TextStyle(fontSize: 8),
+            errorStyle: const TextStyle(fontSize: 12),
             filled: true,
             fillColor:
                 (enabled ?? true) ? Colors.transparent : Colors.grey.shade300,

@@ -30,7 +30,7 @@ class _StaffListState extends State<StaffList> {
   final agentsRef = FirebaseFirestore.instance.collection("staffs");
 
   late Query<Map<String, dynamic>> query;
-  
+
   final searchController = TextEditingController();
 
   reload() {
@@ -40,11 +40,11 @@ class _StaffListState extends State<StaffList> {
     // }
 //    query = query.where('activeStatus', isEqualTo: activeStatus.index);
     if (searchController.text.isNotEmpty) {
-      query = query.where('search', arrayContains: searchController.text.toLowerCase().trim());
+      query = query.where('search',
+          arrayContains: searchController.text.toLowerCase().trim());
     }
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _StaffListState extends State<StaffList> {
       // appBar: AppBar(
       //   backgroundColor: Colors.white,
       //   title: const Text(
-      //     "AGENTS LIST",
+      //     "STAFF LIST",
       //     style: TextStyle(color: Colors.black),
       //   ),
       //   centerTitle: true,
@@ -67,8 +67,11 @@ class _StaffListState extends State<StaffList> {
                       context: context,
                       builder: (context) {
                         return const AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                          content: SizedBox(height: 800, width: 600, child: StaffForm()),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          content: SizedBox(
+                              height: 800, width: 600, child: StaffForm()),
                         );
                       });
                 },
@@ -92,8 +95,11 @@ class _StaffListState extends State<StaffList> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(width: 300, 
-                      child: TileFormField(controller: searchController, title: "ENTER NAME")),
+                      SizedBox(
+                          width: 300,
+                          child: TileFormField(
+                              controller: searchController,
+                              title: "ENTER NAME")),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: ElevatedButton(
@@ -111,48 +117,57 @@ class _StaffListState extends State<StaffList> {
           ),
           Expanded(
             child: StreamBuilder(
-            stream: query.snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.active ||
-                  snapshot.hasData) {
-                List<Staff> staffs = [];
-                staffs = snapshot.data!.docs
-                    .map((e) => Staff.fromSnapshot(e))
-                    .toList();
-                if (staffs.isEmpty) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: Text("No staffs are added yet"),
-                    ),
-                  );
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: PaginatedDataTable(
-                          rowsPerPage:
-                              (Get.height ~/ kMinInteractiveDimension) - 4,
-                          columns: StaffListSource.getColumns(),
-                          source: StaffListSource(staffs, context: context),
+              stream: query.snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.hasData) {
+                  List<Staff> staffs = [];
+                  staffs = snapshot.data!.docs
+                      .map((e) => Staff.fromSnapshot(e))
+                      .toList();
+                  if (staffs.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: Text("No staffs are added yet"),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                // height: double.maxFinite,
+                                width: double.maxFinite,
+                                child: PaginatedDataTable(
+                                  rowsPerPage:
+                                      (Get.height ~/ kMinInteractiveDimension) -
+                                          4,
+                                  columns: StaffListSource.getColumns(),
+                                  source:
+                                      StaffListSource(staffs, context: context),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    );
+                  }
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: SelectableText(snapshot.data.toString()),
                   );
                 }
-              }
-              if (snapshot.hasError) {
-                return Center(
-                  child: SelectableText(snapshot.data.toString()),
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+              },
             ),
           ),
         ],

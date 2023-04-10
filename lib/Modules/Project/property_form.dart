@@ -164,11 +164,11 @@ class _PropertyFormState extends State<PropertyForm> {
               child: Row(
                 children: [
                   const Text('Add Property'),
-                  const SizedBox(width:80),
-                   Text("Project Name : ${widget.project.name}",
-                          style: const TextStyle(
-                          fontSize: 20),
-                       ),
+                  const SizedBox(width: 80),
+                  Text(
+                    "Project Name : ${widget.project.name}",
+                    style: const TextStyle(fontSize: 20),
+                  ),
                 ],
               ),
             ),
@@ -379,6 +379,12 @@ class _PropertyFormState extends State<PropertyForm> {
                     },
                   ),
                   TileFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter Cost per Sqft';
+                      }
+                      return null;
+                    },
                     controller: data.costPerSqft,
                     title: "Cost Per Sqft.",
                     onChanged: (val) {

@@ -39,7 +39,9 @@ class _AgentListState extends State<AgentList> {
     // if (activeStatus == ActiveStatus.all) {
     //   query = agentsRef;
     // }
-//    query = query.where('activeStatus', isEqualTo: activeStatus.index);
+    if (activeStatus != ActiveStatus.all) {
+      query = query.where('activeStatus', isEqualTo: activeStatus.index);
+     }
     if (searchController.text.isNotEmpty) {
       query = query.where('search',
           arrayContains: searchController.text.toLowerCase().trim());
@@ -102,34 +104,42 @@ class _AgentListState extends State<AgentList> {
                               controller: searchController, title: "SEARCH")),
                       SizedBox(
                         width: 300,
-                        child: ListTile(
-                          title: const Text("STATUS"),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: DropdownButtonFormField<ActiveStatus>(
-                              value: activeStatus,
-                              items: const [
-                                DropdownMenuItem(
-                                    value: ActiveStatus.all,
-                                    child: Text("ALL")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.active,
-                                    child: Text("ACTIVE")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.blocked,
-                                    child: Text("BLOCKED")),
-                                DropdownMenuItem(
-                                    value: ActiveStatus.pendingApproval,
-                                    child: Text("YET TO APPROVE")),
-                              ],
-                              onChanged: (val) {
-                                activeStatus = val ?? activeStatus;
-                                reload();
-                              },
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("STATUS"),
+                              const SizedBox(
+                                height: 6,
                               ),
-                            ),
+                              DropdownButtonFormField<ActiveStatus>(
+                                value: activeStatus,
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: ActiveStatus.all,
+                                      child: Text("ALL")),
+                                  DropdownMenuItem(
+                                      value: ActiveStatus.active,
+                                      child: Text("ACTIVE")),
+                                  DropdownMenuItem(
+                                      value: ActiveStatus.blocked,
+                                      child: Text("BLOCKED")),
+                                  DropdownMenuItem(
+                                      value: ActiveStatus.pendingApproval,
+                                      child: Text("YET TO APPROVE")),
+                                ],
+                                onChanged: (val) {
+                                  setState(() {
+                                    activeStatus = val ?? activeStatus;
+                                    reload();
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -169,11 +179,14 @@ class _AgentListState extends State<AgentList> {
                         ),
                       );
                     } else {
-                      return PaginatedDataTable(
-                        rowsPerPage:
-                            (Get.height ~/ kMinInteractiveDimension) - 7,
-                        source: AgentListSource(agents, context: context),
-                        columns: AgentListSource.getColumns(),
+                      return SizedBox(
+                        width: double.maxFinite,
+                        child: PaginatedDataTable(
+                          rowsPerPage:
+                              (Get.height ~/ kMinInteractiveDimension) - 7,
+                          source: AgentListSource(agents, context: context),
+                          columns: AgentListSource.getColumns(),
+                        ),
                       );
                     }
                   }

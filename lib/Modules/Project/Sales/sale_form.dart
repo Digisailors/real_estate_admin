@@ -169,6 +169,10 @@ class _SaleFormState extends State<SaleForm> {
                                 ),
                               ),
                       )),
+                    ],
+                  ),
+                  Row(
+                    children: [
                       Expanded(
                         child: TileFormField(
                           controller: comission.value,
@@ -194,7 +198,7 @@ class _SaleFormState extends State<SaleForm> {
                   Row(
                     children: [
                       Expanded(
-                          flex: 4,
+                          flex: 1,
                           child: ListTile(
                             title: const Text("AMOUNT"),
                             subtitle: Padding(
@@ -229,36 +233,36 @@ class _SaleFormState extends State<SaleForm> {
                               ),
                             ),
                           )),
-                      Expanded(
-                        flex: 3,
-                        child: ListTile(
-                          leading: Radio<ComissionType>(
-                              value: ComissionType.amount,
-                              groupValue: comission.comissionType,
-                              onChanged: (val) {
-                                reload(() {
-                                  comission.comissionType =
-                                      val ?? comission.comissionType;
-                                });
-                              }),
-                          title: const Text("Amount"),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: ListTile(
-                          leading: Radio<ComissionType>(
-                              value: ComissionType.percent,
-                              groupValue: comission.comissionType,
-                              onChanged: (val) {
-                                reload(() {
-                                  comission.comissionType =
-                                      val ?? comission.comissionType;
-                                });
-                              }),
-                          title: const Text("Percent"),
-                        ),
-                      ),
+                      // Expanded(
+                      //   flex: 3,
+                      //   child: ListTile(
+                      //     leading: Radio<ComissionType>(
+                      //         value: ComissionType.amount,
+                      //         groupValue: comission.comissionType,
+                      //         onChanged: (val) {
+                      //           reload(() {
+                      //             comission.comissionType =
+                      //                 val ?? comission.comissionType;
+                      //           });
+                      //         }),
+                      //     title: const Text("Amount"),
+                      //   ),
+                      // ),
+                      // Expanded(
+                      //   flex: 3,
+                      //   child: ListTile(
+                      //     leading: Radio<ComissionType>(
+                      //         value: ComissionType.percent,
+                      //         groupValue: comission.comissionType,
+                      //         onChanged: (val) {
+                      //           reload(() {
+                      //             comission.comissionType =
+                      //                 val ?? comission.comissionType;
+                      //           });
+                      //         }),
+                      //     title: const Text("Percent"),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
