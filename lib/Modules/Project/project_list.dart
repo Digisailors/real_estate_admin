@@ -38,21 +38,23 @@ class _ProjectListState extends State<ProjectList> {
     });
   }
 
-  reloadQuery2(String? search1) {
-    setState(() {
-      query = projects;
-      if (type != null) {
-        query = query.where('type', isEqualTo: type);
-      }
-      if (search1!.isNotEmpty) {
-        query = query.where('search', arrayContainsAny: search1.split(' '));
-      }
-    });
-  }
+  // reloadQuery2(String? search1) {
+  //   setState(() {
+  //     query = projects;
+  //     if (type != null) {
+  //       query = query.where('type', isEqualTo: type);
+  //     }
+  //     if (search1!.isNotEmpty) {
+  //       query = query.where('search', arrayContainsAny: search1.split(' '));
+  //     }
+  //   });
+  // }
 
   void setType(String? val) {
-    type = val;
-    reloadQuery();
+    setState(() {
+      type = val;
+      reloadQuery();
+    });
   }
 
   Query<Map<String, dynamic>> query = projects;
@@ -109,7 +111,11 @@ class _ProjectListState extends State<ProjectList> {
                                     value: 'FormLand',
                                     child: Text("Form Land")),
                               ],
-                              onChanged: setType,
+                              onChanged: (value) {
+                                setState(() {
+                                  setType(value);
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -122,7 +128,7 @@ class _ProjectListState extends State<ProjectList> {
                           title: 'Search',
                           onChanged: (v) {
                             setState(() {
-                              reloadQuery2(v);
+                              reloadQuery();
                             });
                           },
                         )),

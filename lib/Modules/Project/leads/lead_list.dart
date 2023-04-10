@@ -35,10 +35,6 @@ class _LeadListState extends State<LeadList> {
 
   reload() {
     query = leadsRef;
-    // if (activeStatus == ActiveStatus.all) {
-    //   query = agentsRef;
-    // }
-//    query = query.where('activeStatus', isEqualTo: activeStatus.index);
     if (searchController.text.isNotEmpty) {
       query = query.where('search',
           arrayContains: searchController.text.toLowerCase().trim());
@@ -71,6 +67,15 @@ class _LeadListState extends State<LeadList> {
                             width: 300,
                             child: TileFormField(
                                 controller: searchController, title: "SEARCH")),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                              onPressed: reload,
+                              child: const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Text("SEARCH"),
+                              )),
+                        ),
                         SizedBox(
                           width: 300,
                           child: ListTile(
