@@ -66,16 +66,15 @@ class _LeadListState extends State<LeadList> {
                         SizedBox(
                             width: 300,
                             child: TileFormField(
-                                controller: searchController, title: "SEARCH")),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ElevatedButton(
-                              onPressed: reload,
-                              child: const Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text("SEARCH"),
-                              )),
-                        ),
+                                onChanged: (v) {
+                                  setState(() {
+                                    reload();
+                                  });
+                                },
+                                controller: searchController,
+                                title: "SEARCH")),
+                        // ElevatedButton(
+                        //     onPressed: reload, child: const Text("SEARCH")),
                         SizedBox(
                           width: 300,
                           child: ListTile(
@@ -163,7 +162,8 @@ class _LeadListState extends State<LeadList> {
           Expanded(
             // child: Container(),
             child: StreamBuilder<List<Lead>>(
-                stream: Lead.getLeads(agent: agent, staff: staff),
+                stream: Lead.getLeads(
+                    agent: agent, staff: staff, search: searchController.text),
                 builder: (context, AsyncSnapshot<List<Lead>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.active &&
                       snapshot.hasData) {

@@ -41,7 +41,7 @@ class _AgentListState extends State<AgentList> {
     // }
     if (activeStatus != ActiveStatus.all) {
       query = query.where('activeStatus', isEqualTo: activeStatus.index);
-     }
+    }
     if (searchController.text.isNotEmpty) {
       query = query.where('search',
           arrayContains: searchController.text.toLowerCase().trim());
@@ -101,7 +101,13 @@ class _AgentListState extends State<AgentList> {
                       SizedBox(
                           width: 300,
                           child: TileFormField(
-                              controller: searchController, title: "SEARCH")),
+                              onChanged: (p0) {
+                                setState(() {
+                                  reload();
+                                });
+                              },
+                              controller: searchController,
+                              title: "SEARCH")),
                       SizedBox(
                         width: 300,
                         child: Padding(
@@ -143,15 +149,15 @@ class _AgentListState extends State<AgentList> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButton(
-                            onPressed: reload,
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text("SEARCH"),
-                            )),
-                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.all(16.0),
+                      //   child: ElevatedButton(
+                      //       onPressed: reload,
+                      //       child: const Padding(
+                      //         padding: EdgeInsets.all(16.0),
+                      //         child: Text("SEARCH"),
+                      //       )),
+                      // )
                     ],
                   ),
                 ),

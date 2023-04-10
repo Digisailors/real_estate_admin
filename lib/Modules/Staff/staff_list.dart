@@ -98,17 +98,22 @@ class _StaffListState extends State<StaffList> {
                       SizedBox(
                           width: 300,
                           child: TileFormField(
+                              onChanged: (p0) {
+                                setState(() {
+                                  reload();
+                                });
+                              },
                               controller: searchController,
-                              title: "ENTER NAME")),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButton(
-                            onPressed: reload,
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text("SEARCH"),
-                            )),
-                      )
+                              title: "SEARCH NAME")),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(16.0),
+                      //   child: ElevatedButton(
+                      //       onPressed: reload,
+                      //       child: const Padding(
+                      //         padding: EdgeInsets.all(16.0),
+                      //         child: Text("SEARCH"),
+                      //       )),
+                      // )
                     ],
                   ),
                 ),

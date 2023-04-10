@@ -33,7 +33,8 @@ class _ProjectListState extends State<ProjectList> {
         query = query.where('type', isEqualTo: type);
       }
       if (search.text.isNotEmpty) {
-        query = query.where('search', arrayContainsAny: search.text.split(' '));
+        query = query.where('search',
+            arrayContainsAny: search.text.toLowerCase().split(' '));
       }
     });
   }
@@ -132,11 +133,11 @@ class _ProjectListState extends State<ProjectList> {
                             });
                           },
                         )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: reloadQuery, child: const Text("Search")),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: ElevatedButton(
+                    //       onPressed: reloadQuery, child: const Text("Search")),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: !AppSession().isAdmin
