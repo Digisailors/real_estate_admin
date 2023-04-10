@@ -170,7 +170,7 @@ class _ProjectListState extends State<ProjectList> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: StreamBuilder(
-                  stream: query.snapshots(),
+                  stream: query.orderBy("name", descending: false).snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {
