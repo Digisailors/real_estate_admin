@@ -39,7 +39,7 @@ class _AgentListState extends State<AgentList> {
     // if (activeStatus == ActiveStatus.all) {
     //   query = agentsRef;
     // }
-    query = query.where('activeStatus', isEqualTo: activeStatus.index);
+//    query = query.where('activeStatus', isEqualTo: activeStatus.index);
     if (searchController.text.isNotEmpty) {
       query = query.where('search',
           arrayContains: searchController.text.toLowerCase().trim());

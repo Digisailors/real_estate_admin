@@ -160,7 +160,18 @@ class _PropertyFormState extends State<PropertyForm> {
       child: Consumer<PropertyViewModel>(builder: (context, data, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Add Property (Project : ${widget.propertyName})'),
+            title: FittedBox(
+              child: Row(
+                children: [
+                  const Text('Add Property'),
+                  const SizedBox(width:80),
+                   Text("Project Name : ${widget.project.name}",
+                          style: const TextStyle(
+                          fontSize: 20),
+                       ),
+                ],
+              ),
+            ),
             elevation: 0,
           ),
           body: SingleChildScrollView(

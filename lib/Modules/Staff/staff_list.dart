@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Modules/Staff/staff_form.dart';
 
+import '../../Providers/session.dart';
+import '../../widgets/formfield.dart';
+
 class StaffList extends StatefulWidget {
   const StaffList({Key? key}) : super(key: key);
 
@@ -16,12 +19,32 @@ class _StaffListState extends State<StaffList> {
   @override
   void initState() {
     query = agentsRef;
+    searchController.addListener(() {
+      if (searchController.text.isEmpty) {
+        reload();
+      }
+    });
     super.initState();
   }
 
   final agentsRef = FirebaseFirestore.instance.collection("staffs");
 
   late Query<Map<String, dynamic>> query;
+  
+  final searchController = TextEditingController();
+
+  reload() {
+    query = agentsRef;
+    // if (activeStatus == ActiveStatus.all) {
+    //   query = agentsRef;
+    // }
+//    query = query.where('activeStatus', isEqualTo: activeStatus.index);
+    if (searchController.text.isNotEmpty) {
+      query = query.where('search', arrayContains: searchController.text.toLowerCase().trim());
+    }
+    setState(() {});
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,78 +52,110 @@ class _StaffListState extends State<StaffList> {
       // appBar: AppBar(
       //   backgroundColor: Colors.white,
       //   title: const Text(
-      //     "STAFFS LIST",
+      //     "AGENTS LIST",
       //     style: TextStyle(color: Colors.black),
       //   ),
       //   centerTitle: true,
       // ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(56.0),
-        child: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    content:
-                        SizedBox(height: 800, width: 600, child: StaffForm()),
+      floatingActionButton: (AppSession().isAdmin)
+          ? Padding(
+              padding: const EdgeInsets.all(56.0),
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Get.to(() => const AgentForm());
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          content: SizedBox(height: 800, width: 600, child: StaffForm()),
+                        );
+                      });
+                },
+                child: const Icon(Icons.add),
+              ),
+            )
+          : null,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 100,
+                width: 800,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(width: 300, 
+                      child: TileFormField(controller: searchController, title: "ENTER NAME")),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButton(
+                            onPressed: reload,
+                            child: const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text("SEARCH"),
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+            stream: query.snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.active ||
+                  snapshot.hasData) {
+                List<Staff> staffs = [];
+                staffs = snapshot.data!.docs
+                    .map((e) => Staff.fromSnapshot(e))
+                    .toList();
+                if (staffs.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(32.0),
+                      child: Text("No staffs are added yet"),
+                    ),
                   );
-                });
-          },
-          child: const Icon(Icons.add),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            StreamBuilder(
-              stream: query.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.hasData) {
-                  List<Staff> staffs = [];
-                  staffs = snapshot.data!.docs
-                      .map((e) => Staff.fromSnapshot(e))
-                      .toList();
-                  if (staffs.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: Text("No staffs are added yet"),
-                      ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Card(
-                        child: SizedBox(
-                          width: double.maxFinite,
-                          child: PaginatedDataTable(
-                            rowsPerPage:
-                                (Get.height ~/ kMinInteractiveDimension) - 4,
-                            columns: StaffListSource.getColumns(),
-                            source: StaffListSource(staffs, context: context),
-                          ),
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Card(
+                      child: SizedBox(
+                        width: double.maxFinite,
+                        child: PaginatedDataTable(
+                          rowsPerPage:
+                              (Get.height ~/ kMinInteractiveDimension) - 4,
+                          columns: StaffListSource.getColumns(),
+                          source: StaffListSource(staffs, context: context),
                         ),
                       ),
-                    );
-                  }
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: SelectableText(snapshot.data.toString()),
+                    ),
                   );
                 }
-                return const Center(
-                  child: CircularProgressIndicator(),
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: SelectableText(snapshot.data.toString()),
                 );
-              },
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
