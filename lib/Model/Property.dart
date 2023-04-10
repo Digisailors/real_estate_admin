@@ -146,7 +146,7 @@ class Property {
         "facing": facing?.index,
         "documents": documents.map((e) => e.toJson()).toList(),
         "sellingAmount": sellingAmount,
-        "sellingAmounts": sellingAmounts,
+        "sellingAmounts": sellingAmounts ?? 0,
         "uds": uds,
         "buildUpArea": buildUpArea,
         "bedroomCount": bedroomCount,
