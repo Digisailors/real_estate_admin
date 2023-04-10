@@ -16,11 +16,13 @@ import 'property_form_data.dart';
 import 'package:badges/badges.dart';
 
 class PropertyForm extends StatefulWidget {
-  const PropertyForm({Key? key, this.property, required this.project})
+  const PropertyForm(
+      {Key? key, this.property, required this.project, this.propertyName})
       : super(key: key);
 
   final Project project;
   final Property? property;
+  final String? propertyName;
 
   @override
   State<PropertyForm> createState() => _PropertyFormState();
@@ -158,7 +160,7 @@ class _PropertyFormState extends State<PropertyForm> {
       child: Consumer<PropertyViewModel>(builder: (context, data, child) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Add Property'),
+            title: Text('Add Property (Project : ${widget.propertyName})'),
             elevation: 0,
           ),
           body: SingleChildScrollView(
@@ -177,7 +179,7 @@ class _PropertyFormState extends State<PropertyForm> {
                     title: "Title",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Please enter Title text';
                       }
                       return null;
                     },
@@ -197,8 +199,7 @@ class _PropertyFormState extends State<PropertyForm> {
                     ],
                   ),
                   TileFormField(
-                      controller: data.dtcpNumber,
-                      title: 'DTCP Number s/b Approval Number'),
+                      controller: data.dtcpNumber, title: 'Approval Number'),
                   Row(
                     children: [
                       Expanded(
@@ -220,6 +221,12 @@ class _PropertyFormState extends State<PropertyForm> {
                               controller: data.uds, title: "UDS")),
                       Expanded(
                         child: TileFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter build-up area text';
+                            }
+                            return null;
+                          },
                           controller: data.buildUpArea,
                           title: "Build-up Area",
                           onChanged: (val) {
@@ -327,6 +334,12 @@ class _PropertyFormState extends State<PropertyForm> {
                     maxLines: 8,
                   ),
                   TileFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter property value text';
+                      }
+                      return null;
+                    },
                     controller: data.propertyAmount,
                     title: 'Property Value',
                     keyboardType: TextInputType.number,
@@ -374,45 +387,48 @@ class _PropertyFormState extends State<PropertyForm> {
                         controller: data.propertyAmounts,
                         title: "Property Amount",
                       )),
-                      Expanded(
-                        child: TileFormField(
-                          enabled: false,
-                          validator: (val) {
-                            if (val != null) {
-                              if (data.sellingAmounts.text == '0') {
-                                return 'Please enter a amount greater than 0';
-                              } else {
-                                var number =
-                                    double.tryParse(data.sellingAmounts.text) ??
-                                        0;
+                      // Expanded(
+                      //   child: TileFormField(
+                      //     enabled: false,
+                      //     validator: (val) {
+                      //       if (val != null) {
+                      //         if (data.sellingAmounts.text == '0') {
+                      //           return 'Please enter a amount greater than 0';
+                      //         } else {
+                      //           var number =
+                      //               double.tryParse(data.sellingAmounts.text) ??
+                      //                   0;
 
-                                if (double.parse(data.propertyAmounts.text) >
-                                    number) {
-                                  return 'Selling amount is less than property amount';
-                                }
-                              }
-                            }
-                            return null;
-                          },
-                          controller: data.sellingAmounts,
-                          title: "Selling Amount",
-                        ),
-                      ),
+                      //           if (double.parse(data.propertyAmounts.text) >
+                      //               number) {
+                      //             return 'Selling amount is less than property amount';
+                      //           }
+                      //         }
+                      //       }
+                      //       return null;
+                      //     },
+                      //     controller: data.sellingAmounts,
+                      //     title: "Selling Amount",
+                      //   ),
+                      // ),
                     ],
                   ),
 
                   const Divider(),
                   ComissionTile(
+                      radioButton: false,
                       comissionController: data.agentComission,
                       title: "Agent Comission",
                       name: "Agent"),
                   const Divider(),
                   ComissionTile(
+                      radioButton: false,
                       comissionController: data.staffComission,
                       title: "Staff Comission",
                       name: "Staff"),
                   const Divider(),
                   ComissionTile(
+                      radioButton: false,
                       comissionController: data.superAgentComission,
                       title: "Super Agent Commission",
                       name: "Super Agent"),
@@ -424,7 +440,8 @@ class _PropertyFormState extends State<PropertyForm> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: ListTile(
-                          title: const Text("Upload Brochure"),
+                          title: const Text(
+                              "Upload Brochure (Upload files below 5MB)"),
                           subtitle: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

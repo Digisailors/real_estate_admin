@@ -20,12 +20,14 @@ class ComissionTile extends StatelessWidget {
     required this.title,
     required this.name,
     this.validator,
+    this.radioButton = true,
   }) : super(key: key);
 
   final ComissionController comissionController;
   final String title;
   final String name;
   final String? Function(String?)? validator;
+  final bool? radioButton;
 
   @override
   Widget build(BuildContext context) {
@@ -52,36 +54,38 @@ class ComissionTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: ListTile(
-                      leading: Radio<ComissionType>(
-                          value: ComissionType.amount,
-                          groupValue: comissionController.comissionType,
-                          onChanged: (val) {
-                            reload(() {
-                              comissionController.comissionType =
-                                  val ?? comissionController.comissionType;
-                            });
-                          }),
-                      title: const Text("Amount"),
+                  if (radioButton!)
+                    Expanded(
+                      flex: 2,
+                      child: ListTile(
+                        leading: Radio<ComissionType>(
+                            value: ComissionType.amount,
+                            groupValue: comissionController.comissionType,
+                            onChanged: (val) {
+                              reload(() {
+                                comissionController.comissionType =
+                                    val ?? comissionController.comissionType;
+                              });
+                            }),
+                        title: const Text("Amount"),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: ListTile(
-                      leading: Radio<ComissionType>(
-                          value: ComissionType.percent,
-                          groupValue: comissionController.comissionType,
-                          onChanged: (val) {
-                            reload(() {
-                              comissionController.comissionType =
-                                  val ?? comissionController.comissionType;
-                            });
-                          }),
-                      title: const Text("Percent"),
+                  if (radioButton!)
+                    Expanded(
+                      flex: 2,
+                      child: ListTile(
+                        leading: Radio<ComissionType>(
+                            value: ComissionType.percent,
+                            groupValue: comissionController.comissionType,
+                            onChanged: (val) {
+                              reload(() {
+                                comissionController.comissionType =
+                                    val ?? comissionController.comissionType;
+                              });
+                            }),
+                        title: const Text("Percent"),
+                      ),
                     ),
-                  ),
                 ],
               );
             }),
