@@ -96,7 +96,8 @@ class _ProjectListState extends State<ProjectList> {
                                 DropdownMenuItem(
                                     value: 'Villa', child: Text("Villa")),
                                 DropdownMenuItem(
-                                    value: 'Shop', child: Text("Shop")),
+                                    value: 'Shop',
+                                    child: Text("Commercial Building ")),
                                 DropdownMenuItem(
                                     value: 'Building',
                                     child: Text("Apartments")),
