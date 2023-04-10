@@ -638,12 +638,8 @@ class _PropertyViewState extends State<PropertyView> {
                             cells: [
                               DataCell(Text(e.name)),
                               DataCell(Text(e.phoneNumber ?? e.email ?? '')),
-                              DataCell(Text(AppSession()
-                                      .agents
-                                      .firstWhereOrNull((element) =>
-                                          element.reference == e.reference)
-                                      ?.firstName ??
-                                  "Agent not found")),
+                              DataCell(Text(AppSession().agents.where((element) =>
+                                 element.reference == e.agentRef).first.firstName)),
                               DataCell(
                                 DropdownButtonFormField<DocumentReference?>(
                                     value: e.staffRef,
