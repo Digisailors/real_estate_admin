@@ -83,6 +83,8 @@ class Property {
     });
   }
 
+  
+
   Property({
     required this.propertyID,
     required this.title,

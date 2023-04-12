@@ -106,8 +106,7 @@ class ProjectController extends ChangeNotifier {
     Query<Map<String, dynamic>> query =
         projectFormData.reference.collection('properties');
     if ((search ?? '').isNotEmpty) {
-      query =
-          query.where('search', arrayContains: search!.toLowerCase().trim());
+      query = query.where('search', arrayContains: search!);
     }
     if (isSold != null) {
       query = query.where('isSold', isEqualTo: isSold);

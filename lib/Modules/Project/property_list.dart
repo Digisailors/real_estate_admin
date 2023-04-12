@@ -32,7 +32,7 @@ class _PropertyListState extends State<PropertyList> {
 
   final search = TextEditingController();
   bool? isSold;
-  bool? isSort;
+  // bool? isSort;
 
   @override
   Widget build(BuildContext context) {
@@ -361,7 +361,7 @@ class _PropertyListState extends State<PropertyList> {
                                                                                 child: PropertyForm(
                                                                                   property: property,
                                                                                   project: projectController.projectFormData.object,
-                                                                                  propertyName: widget.project.name ,
+                                                                                  propertyName: widget.project.name,
                                                                                 )),
                                                                           );
                                                                         });
@@ -380,6 +380,7 @@ class _PropertyListState extends State<PropertyList> {
                                         }
                                       }
                                       if (snapshot.hasError) {
+                                        print(snapshot.error);
                                         return Center(
                                           child: SelectableText(
                                               snapshot.data.toString()),
