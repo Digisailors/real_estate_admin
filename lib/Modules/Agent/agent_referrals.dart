@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:real_estate_admin/Model/Agent.dart';
 
 class AgentReferrals extends StatelessWidget {
@@ -18,8 +19,10 @@ class AgentReferrals extends StatelessWidget {
                 child: ListTile(
                     leading: const Icon(Icons.circle),
                     title: const Text("SUPER AGENT"),
-                    subtitle:
-                        Text((agent.superAgentReference == null ? "NIL" : agent.superAgent?.firstName ?? '') + (agent.superAgent?.lastName ?? ''))),
+                    subtitle: Text((agent.superAgentReference == null
+                            ? "NIL"
+                            : agent.superAgent?.firstName ?? '') +
+                        (agent.superAgent?.lastName ?? ''))),
               ),
               Expanded(
                 child: ListTile(
@@ -35,7 +38,11 @@ class AgentReferrals extends StatelessWidget {
             subtitle: Text(agent.referenceCode),
             trailing: IconButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("REFERAAL CODE COPIED")));
+                  Clipboard.setData(ClipboardData(text: agent.referenceCode))
+                      .then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("REFERAAL CODE COPIED")));
+                  });
                 },
                 icon: const Icon(Icons.copy)),
           ),
@@ -44,11 +51,14 @@ class AgentReferrals extends StatelessWidget {
             child: FutureBuilder(
               future: agent.getReferrals(),
               builder: (context, AsyncSnapshot<List<Agent>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     var agents = snapshot.data;
-                    double comissionEarned =
-                        snapshot.data!.fold<double>(0.0, (double previousValue, Agent element) => previousValue + element.sharedComissionAmount);
+                    double comissionEarned = snapshot.data!.fold<double>(
+                        0.0,
+                        (double previousValue, Agent element) =>
+                            previousValue + element.sharedComissionAmount);
                     return SingleChildScrollView(
                       child: Table(
                         children: [
@@ -67,7 +77,9 @@ class AgentReferrals extends StatelessWidget {
                                             DataCell(Text((++i).toString())),
                                             DataCell(Text(e.firstName)),
                                             // DataCell(Text((Random().nextInt(10) + 5).toString())),
-                                            DataCell(Text(e.sharedComissionAmount.toString())),
+                                            DataCell(Text(e
+                                                .sharedComissionAmount
+                                                .toString())),
                                           ],
                                         ))
                                     .toList(),

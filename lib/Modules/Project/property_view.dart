@@ -57,34 +57,70 @@ class _PropertyViewState extends State<PropertyView> {
             ),
           ),
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton.icon(
-              onPressed: () {
-                for (var i = 0; i < widget.property.documents.length; i++) {
-                  var attachment = widget.property.documents[i];
-                  final anchor = AnchorElement(href: attachment.url)
-                    ..setAttribute('download', 'file_$i');
-                  document.body!.append(anchor);
-                  window.open(anchor.href!, '_blank');
-                  anchor.remove();
-                }
-              },
-              icon: const Icon(
-                Icons.file_download,
-                size: 16,
-                color: Colors.lightBlue,
-              ),
-              label: Text(
-                'Download Brochure',
-                style: getText(context)
-                    .headline5!
-                    .apply(color: Colors.lightBlue, fontSizeFactor: 0.5),
-              ),
-            ),
-          )
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextButton.icon(
+          //     onPressed: () {
+          //       for (var i = 0; i < widget.property.documents.length; i++) {
+          //         var attachment = widget.property.documents[i];
+          //         final anchor = AnchorElement(href: attachment.url)
+          //           ..setAttribute('download', 'file_$i');
+          //         document.body!.append(anchor);
+          //         window.open(anchor.href!, '_blank');
+          //         anchor.remove();
+          //       }
+          //     },
+          //     icon: const Icon(
+          //       Icons.file_download,
+          //       size: 16,
+          //       color: Colors.lightBlue,
+          //     ),
+          //     label: Text(
+          //       'Download Brochure',
+          //       style: getText(context)
+          //           .headline5!
+          //           .apply(color: Colors.lightBlue, fontSizeFactor: 0.5),
+          //     ),
+          //   ),
+          // )
         ],
       ),
+      SizedBox(
+        height: Get.height * 0.15,
+        width: double.maxFinite,
+        child: ListView.builder(
+          itemCount: widget.property.documents.length,
+          itemBuilder: (BuildContext context, int index) {
+            var attachment = widget.property.documents[index];
+            return ListTile(
+              title: Text(attachment.name),
+              trailing: TextButton.icon(
+                onPressed: () {
+                  // for (var i = 0; i < widget.property.documents.length; i++) {
+                  //   var attachment = widget.property.documents[i];
+                  final anchor = AnchorElement(href: attachment.url)
+                    ..setAttribute('download', 'file_$index');
+                  document.body!.append(anchor);
+                  window.open(anchor.href!, '_self');
+                  anchor.remove();
+                  // }
+                },
+                icon: const Icon(
+                  Icons.file_download,
+                  size: 16,
+                  color: Colors.lightBlue,
+                ),
+                label: Text(
+                  'Download',
+                  style: getText(context)
+                      .headline5!
+                      .apply(color: Colors.lightBlue, fontSizeFactor: 0.5),
+                ),
+              ),
+            );
+          },
+        ),
+      )
     ];
     widgets.addAll([
       Row(
@@ -154,15 +190,18 @@ class _PropertyViewState extends State<PropertyView> {
         context: context,
         builder: (context) {
           return PhotoViewGallery.builder(
+            
             itemCount: widget.property.photos.length,
             builder: (BuildContext context, int index) {
               return PhotoViewGalleryPageOptions(
+                
                 imageProvider: NetworkImage(widget.property.photos[index]),
                 initialScale: PhotoViewComputedScale.contained * 0.8,
                 heroAttributes:
                     PhotoViewHeroAttributes(tag: widget.property.photos[index]),
               );
             },
+            
             loadingBuilder: (context, event) => const Center(
               child: SizedBox(
                 width: 20.0,
@@ -363,8 +402,7 @@ class _PropertyViewState extends State<PropertyView> {
                                 child: ListTile(
                                   subtitle:
                                       Text(widget.property.dtcpNumber ?? 'Nil'),
-                                  title: const Text(
-                                      'DLTP Number s/b Approval Number'),
+                                  title: const Text('Approval Number'),
                                 )),
                             Expanded(
                                 flex: 1,
@@ -420,13 +458,13 @@ class _PropertyViewState extends State<PropertyView> {
                                       .toString()),
                                   title: const Text('Propery Amount'),
                                 )),
-                            Expanded(
-                                flex: 1,
-                                child: ListTile(
-                                  subtitle: Text(widget.property.sellingAmounts
-                                      .toString()),
-                                  title: const Text('Selling Amount'),
-                                ))
+                            // Expanded(
+                            //     flex: 1,
+                            //     child: ListTile(
+                            //       subtitle: Text(widget.property.sellingAmounts
+                            //           .toString()),
+                            //       title: const Text('Selling Amount'),
+                            //     ))
                           ],
                         ),
                         Row(
@@ -604,11 +642,17 @@ class _PropertyViewState extends State<PropertyView> {
                               DataCell(Text(e.name)),
                               DataCell(Text(e.phoneNumber ?? e.email ?? '')),
                               DataCell(Text(AppSession()
-                                      .agents
-                                      .firstWhereOrNull((element) =>
-                                          element.reference == e.reference)
-                                      ?.firstName ??
-                                  "Agent not found")),
+                                  .agents
+                                  .where((element) =>
+                                      element.reference == e.agentRef)
+                                  .first
+                                  .firstName)),
+                              // DataCell(Text(
+                              //   AppSession()
+                              //         .agents
+                              //         .firstWhereOrNull((element) =>
+                              //             element.reference == e.reference)
+                              //         ?.firstName ??"Agent not found")),
                               DataCell(
                                 DropdownButtonFormField<DocumentReference?>(
                                     value: e.staffRef,

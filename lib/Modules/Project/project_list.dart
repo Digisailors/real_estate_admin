@@ -33,26 +33,29 @@ class _ProjectListState extends State<ProjectList> {
         query = query.where('type', isEqualTo: type);
       }
       if (search.text.isNotEmpty) {
-        query = query.where('search', arrayContainsAny: search.text.split(' '));
+        query = query.where('search',
+            arrayContainsAny: search.text.toLowerCase().split(' '));
       }
     });
   }
 
-  reloadQuery2(String? search1) {
-    setState(() {
-      query = projects;
-      if (type != null) {
-        query = query.where('type', isEqualTo: type);
-      }
-      if (search1!.isNotEmpty) {
-        query = query.where('search', arrayContainsAny: search1.split(' '));
-      }
-    });
-  }
+  // reloadQuery2(String? search1) {
+  //   setState(() {
+  //     query = projects;
+  //     if (type != null) {
+  //       query = query.where('type', isEqualTo: type);
+  //     }
+  //     if (search1!.isNotEmpty) {
+  //       query = query.where('search', arrayContainsAny: search1.split(' '));
+  //     }
+  //   });
+  // }
 
   void setType(String? val) {
-    type = val;
-    reloadQuery();
+    setState(() {
+      type = val;
+      reloadQuery();
+    });
   }
 
   Query<Map<String, dynamic>> query = projects;
@@ -96,7 +99,8 @@ class _ProjectListState extends State<ProjectList> {
                                 DropdownMenuItem(
                                     value: 'Villa', child: Text("Villa")),
                                 DropdownMenuItem(
-                                    value: 'Shop', child: Text("Shop")),
+                                    value: 'Shop',
+                                    child: Text("Commercial Building ")),
                                 DropdownMenuItem(
                                     value: 'Building',
                                     child: Text("Apartments")),
@@ -108,7 +112,11 @@ class _ProjectListState extends State<ProjectList> {
                                     value: 'FormLand',
                                     child: Text("Form Land")),
                               ],
-                              onChanged: setType,
+                              onChanged: (value) {
+                                setState(() {
+                                  setType(value);
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -121,15 +129,15 @@ class _ProjectListState extends State<ProjectList> {
                           title: 'Search',
                           onChanged: (v) {
                             setState(() {
-                              reloadQuery2(v);
+                              reloadQuery();
                             });
                           },
                         )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: reloadQuery, child: const Text("Search")),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: ElevatedButton(
+                    //       onPressed: reloadQuery, child: const Text("Search")),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: !AppSession().isAdmin
@@ -169,7 +177,7 @@ class _ProjectListState extends State<ProjectList> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: StreamBuilder(
-                  stream: query.snapshots(),
+                  stream: query.orderBy("name", descending: false).snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {

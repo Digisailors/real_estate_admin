@@ -32,7 +32,7 @@ class _PropertyListState extends State<PropertyList> {
 
   final search = TextEditingController();
   bool? isSold;
-  bool? isSort;
+  // bool? isSort;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,9 @@ class _PropertyListState extends State<PropertyList> {
                                       height: 800,
                                       width: 600,
                                       child: PropertyForm(
-                                          project: widget.project)),
+                                        project: widget.project,
+                                        propertyName: widget.project.name,
+                                      )),
                                 );
                               });
                         },
@@ -94,7 +96,7 @@ class _PropertyListState extends State<PropertyList> {
                                     TextButton(
                                         onPressed: Navigator.of(context).pop,
                                         child: const Text("<< GO BACK")),
-                                    Spacer(),
+                                    const Spacer(),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 30),
                                       child: Text(
@@ -209,8 +211,8 @@ class _PropertyListState extends State<PropertyList> {
                                           return StatefulBuilder(
                                               builder: (context, reload) {
                                             if (isDesktop(context)) {
-                                              snapshot.data!.sort((a, b) =>
-                                                  a.title.compareTo(b.title));
+                                              // snapshot.data!.sort((a, b) =>
+                                              //     a.title.compareTo(b.title));
                                               return GridView.count(
                                                 crossAxisCount: 2,
                                                 padding:
@@ -242,8 +244,8 @@ class _PropertyListState extends State<PropertyList> {
                                                     .toList(),
                                               );
                                             } else {
-                                              snapshot.data!.sort((a, b) =>
-                                                  b.title.compareTo(a.title));
+                                              // snapshot.data!.sort((a, b) =>
+                                              //     b.title.compareTo(a.title));
                                               List<Property> list =
                                                   snapshot.data ?? [];
                                               return ListView.builder(
@@ -326,7 +328,7 @@ class _PropertyListState extends State<PropertyList> {
                                                                                 message: error.toString());
                                                                           }
                                                                         });
-                                                                        showFutureDialog(
+                                                                        showFutureDialog3(
                                                                             context,
                                                                             future:
                                                                                 future);
@@ -359,6 +361,7 @@ class _PropertyListState extends State<PropertyList> {
                                                                                 child: PropertyForm(
                                                                                   property: property,
                                                                                   project: projectController.projectFormData.object,
+                                                                                  propertyName: widget.project.name,
                                                                                 )),
                                                                           );
                                                                         });
@@ -377,6 +380,7 @@ class _PropertyListState extends State<PropertyList> {
                                         }
                                       }
                                       if (snapshot.hasError) {
+                                        print(snapshot.error);
                                         return Center(
                                           child: SelectableText(
                                               snapshot.data.toString()),
@@ -471,14 +475,14 @@ class PropertyTile extends StatelessWidget {
                       .format(property.propertyAmount),
                   overflow: TextOverflow.ellipsis,
                 ),
-                trailing: Column(
-                  children: [
-                    Text(
-                      "Leads\n${property.leadCount}",
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                // trailing: Column(
+                //   children: [
+                //     Text(
+                //       "Leads\n${property.leadCount}",
+                //       textAlign: TextAlign.center,
+                //     ),
+                //   ],
+                // ),
               ),
               ButtonBar(
                 children: [
@@ -498,7 +502,7 @@ class PropertyTile extends StatelessWidget {
                                 tilte: 'Failed', message: error.toString());
                           }
                         });
-                        showFutureDialog(context, future: future);
+                        showFutureDialog3(context, future: future);
                       },
                       child: const Text("DELETE")),
                   TextButton(

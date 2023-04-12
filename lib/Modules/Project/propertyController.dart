@@ -48,11 +48,22 @@ class PropertyController {
   }
 
   Future<Result> addProperty() async {
-    propertyFormData.propertyID ??= await Property.getNextPropertyId();
-    if (propertyFormData.coverPhototData != null) {
-      propertyFormData.coverPhoto = await uploadFile(
-          propertyFormData.coverPhototData!,
-          'coverPhoto${propertyFormData.propertyID}');
+    try {
+      propertyFormData.propertyID ??= await Property.getNextPropertyId();
+    } catch (e) {
+      return Result(tilte: "Failed", message: "Unable to get the property id");
+    }
+
+    try {
+      if (propertyFormData.coverPhototData != null) {
+        propertyFormData.coverPhoto = await uploadFile(
+            propertyFormData.coverPhototData!,
+            'coverPhoto${propertyFormData.propertyID}');
+      }
+    } catch (e) {
+      return Result(
+          tilte: "Error uploading coverphoto",
+          message: 'Unknown error occurred, Cannot upload coverphoto');
     }
     List<Future> futures = [];
     if (propertyFormData.photosData.isNotEmpty) {
@@ -64,10 +75,25 @@ class PropertyController {
       futures.add(Future.wait(photoFutures)
           .then((value) => propertyFormData.photos.addAll(value)));
     }
-    futures.add(uploadDocuments()
-        .then((value) => propertyFormData.attachments = value));
-
-    await Future.wait(futures);
+    if (propertyFormData.attachments.isNotEmpty) {
+      try {
+        futures.add(uploadDocuments()
+            .then((value) => propertyFormData.attachments = value));
+      } catch (e) {
+        return Result(
+            tilte: "Error uploading documents",
+            message: 'Unknown error occurred, Cannot upload attachemtns');
+      }
+    }
+    try {
+      await Future.wait(futures);
+    } catch (e) {
+      return Result(
+          tilte: "Error uploading documents",
+          message: 'Unknown error occurred, Cannot upload attachemtns');
+    }
+    print("prinnt");
+    print(propertyFormData.property.toJson());
     return propertyFormData.reference
         .set(propertyFormData.property.toJson())
         .then((value) async {
@@ -81,8 +107,7 @@ class PropertyController {
       }
       return Result(
           tilte: Result.success, message: "Property added Successfully");
-    }).onError((error, stackTrace) => Result(
-            tilte: Result.failure, message: "Property Addition Fialed!"));
+    });
   }
 
   Future<Result> updateProperty() async {

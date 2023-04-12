@@ -83,6 +83,8 @@ class Property {
     });
   }
 
+  
+
   Property({
     required this.propertyID,
     required this.title,
@@ -120,7 +122,7 @@ class Property {
   });
 
   Map<String, dynamic> toJson() => {
-        'leadCount': leadCount,
+        "leadCount": leadCount,
         "title": title,
         "docId": docId,
         "parentProject": parentProject?.toJson(),

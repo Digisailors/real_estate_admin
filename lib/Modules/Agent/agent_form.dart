@@ -75,31 +75,24 @@ class _AgentFormState extends State<AgentForm> {
                 ],
               ),
               TileFormField(
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
-                controller: controller.panCardNumber,
-                title: "PAN NUMBER",
-                validator: (val) {
-                  if (requiredValidator(val) != null) {
-                    return requiredValidator(val);
-                  }
-                  String pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
-                  RegExp regex = RegExp(pattern);
-                  if (!regex.hasMatch(val!)) {
-                    return 'Invalid PAN Number';
-                  }
-
-                  if (widget.agent == null) {
-                    if (AppSession()
-                        .staffs
-                        .where((element) =>
-                            element.panCardNumber!.toUpperCase() ==
-                            val.toUpperCase())
-                        .isNotEmpty) {
-                      return "Duplicate PAN Number";
+                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                  validator: (val) {
+                    if (requiredValidator(val) != null) {
+                      return requiredValidator(val);
                     }
-                  }
-                },
-              ),
+                    String pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
+                    RegExp regex = RegExp(pattern);
+                    if (!regex.hasMatch(val!)) {
+                      return 'Invalid PAN Number';
+                    }
+                    if (widget.agent == null) {
+                      if (AppSession().agents.where((element) => element.panCardNumber!.toLowerCase() == val.toLowerCase()).isNotEmpty) {
+                        return "Duplicate PAN Number";
+                      }
+                    }
+                  },
+                  controller: controller.panCardNumber,
+                  title: "PAN NUMBER"),
               TileFormField(
                 controller: controller.addressLine1,
                 title: "ADDRESS LINE 1",

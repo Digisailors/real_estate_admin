@@ -50,7 +50,7 @@ class ProjectController extends ChangeNotifier {
       projectFormData.coverPhoto =
           await uploadFile(projectFormData.coverPhototData!, "coverPhoto");
     }
-    
+
     if (projectFormData.deletedPhotos.isNotEmpty) {
       try {
         for (var element in projectFormData.deletedPhotos) {
@@ -61,7 +61,7 @@ class ProjectController extends ChangeNotifier {
       }
     }
     var project = projectFormData.object;
-    
+
     return project.reference.update(project.toJson()).then((value) {
       notifyListeners();
       return Result(
@@ -106,13 +106,12 @@ class ProjectController extends ChangeNotifier {
     Query<Map<String, dynamic>> query =
         projectFormData.reference.collection('properties');
     if ((search ?? '').isNotEmpty) {
-      query =
-          query.where('search', arrayContains: search!.toLowerCase().trim());
+      query = query.where('search', arrayContains: search!);
     }
     if (isSold != null) {
       query = query.where('isSold', isEqualTo: isSold);
     }
-    return query.snapshots().map((event) {
+    return query.orderBy("title", descending: false).snapshots().map((event) {
       return event.docs.map((e) => Property.fromSnapshot(e)).toList();
     });
   }
