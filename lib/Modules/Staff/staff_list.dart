@@ -104,7 +104,7 @@ class _StaffListState extends State<StaffList> {
                                 });
                               },
                               controller: searchController,
-                              title: "SEARCH NAME")),
+                              title: "SEARCH")),
                       // Padding(
                       //   padding: const EdgeInsets.all(16.0),
                       //   child: ElevatedButton(

@@ -190,15 +190,18 @@ class _PropertyViewState extends State<PropertyView> {
         context: context,
         builder: (context) {
           return PhotoViewGallery.builder(
+            
             itemCount: widget.property.photos.length,
             builder: (BuildContext context, int index) {
               return PhotoViewGalleryPageOptions(
+                
                 imageProvider: NetworkImage(widget.property.photos[index]),
                 initialScale: PhotoViewComputedScale.contained * 0.8,
                 heroAttributes:
                     PhotoViewHeroAttributes(tag: widget.property.photos[index]),
               );
             },
+            
             loadingBuilder: (context, event) => const Center(
               child: SizedBox(
                 width: 20.0,

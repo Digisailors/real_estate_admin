@@ -146,6 +146,7 @@ class _LeadListState extends State<LeadList> {
                         const SizedBox(width: 32),
                         ElevatedButton(
                           onPressed: () {
+                              searchController.clear();
                             setState(() {
                               staff = null;
                               agent = null;
