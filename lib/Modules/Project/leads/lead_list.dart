@@ -146,7 +146,7 @@ class _LeadListState extends State<LeadList> {
                         const SizedBox(width: 32),
                         ElevatedButton(
                           onPressed: () {
-                              searchController.clear();
+                            searchController.clear();
                             setState(() {
                               staff = null;
                               agent = null;
@@ -231,18 +231,29 @@ class LeadListSource extends DataTableSource {
         DataCell(Text(_lead.phoneNumber ?? '')),
         DataCell(
           DropdownButtonFormField<DocumentReference?>(
-              hint: _lead.staffRef == null ? const Text('Not Assigned') : null,
+              hint: _lead.staffRef == null
+                  ? const Text(
+                      'Not Assigned',
+                      style: TextStyle(fontSize: 13),
+                    )
+                  : null,
               value: _lead.staffRef,
               items: [
                     const DropdownMenuItem<DocumentReference?>(
-                      child: Text("None"),
+                      child: Text(
+                        "None",
+                        style: TextStyle(fontSize: 13),
+                      ),
                     )
                   ] +
                   AppSession()
                       .staffs
                       .map((staff) => DropdownMenuItem<DocumentReference?>(
                             value: staff.reference,
-                            child: Text(staff.firstName),
+                            child: Text(
+                              staff.firstName,
+                              style: const TextStyle(fontSize: 13),
+                            ),
                           ))
                       .toList(),
               isExpanded: true,

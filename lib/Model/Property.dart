@@ -83,8 +83,6 @@ class Property {
     });
   }
 
-  
-
   Property({
     required this.propertyID,
     required this.title,
@@ -289,7 +287,7 @@ class Commission {
 
 class ComissionController {
   ComissionType comissionType = ComissionType.amount;
-  TextEditingController value = TextEditingController(text: '0.00');
+  TextEditingController value = TextEditingController(text: '0');
 
   ComissionController();
 

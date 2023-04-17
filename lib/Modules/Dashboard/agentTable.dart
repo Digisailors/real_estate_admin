@@ -5,7 +5,11 @@ import 'package:real_estate_admin/Model/Agent.dart';
 import '../Agent/agent_screen.dart';
 
 class AgentDataTable extends StatelessWidget {
-  const AgentDataTable({super.key, required this.agents, required this.num1, required this.headColor});
+  const AgentDataTable(
+      {super.key,
+      required this.agents,
+      required this.num1,
+      required this.headColor});
 
   final List<Agent> agents;
   final int num1;
@@ -27,7 +31,7 @@ class AgentDataTable extends StatelessWidget {
     }
     if (num1 == 2) {
       columns.add(
-        const DataColumn(label: Text('Comission')),
+        const DataColumn(label: Text('Commission')),
       );
     }
     return columns;
@@ -41,8 +45,10 @@ class AgentDataTable extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    content: SizedBox(height: 800, width: 600, child: AgentScreen(agent: e)),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    content: SizedBox(
+                        height: 800, width: 600, child: AgentScreen(agent: e)),
                   );
                 });
           },
@@ -60,7 +66,9 @@ class AgentDataTable extends StatelessWidget {
     }
     if (num1 == 2) {
       cells.add(
-        DataCell(Text(NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
+        DataCell(Text(NumberFormat.currency(
+                locale: 'en-IN', decimalDigits: 0, symbol: '₹')
+            .format(e.commissionAmount))),
       );
     }
     return DataRow(cells: cells);
@@ -71,9 +79,9 @@ class AgentDataTable extends StatelessWidget {
       case 0:
         return "Top 5 agents in lead count";
       case 1:
-        return "Top 5 agents with successfull leads";
+        return "Top 5 agents with successful leads";
       case 2:
-        return "Top 5 agents with high comission";
+        return "Top 5 agents with high commission";
 
       default:
         return 'NULL';
@@ -103,7 +111,11 @@ class AgentDataTable extends StatelessWidget {
                 children: [
                   TableRow(
                     children: [
-                      DataTable(columns: getColumns(), rows: agents.map((e) => getDatRow(e, context)).toList()),
+                      DataTable(
+                          columns: getColumns(),
+                          rows: agents
+                              .map((e) => getDatRow(e, context))
+                              .toList()),
                     ],
                   ),
                 ],

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Modules/Project/leads/lead_form.dart';
@@ -190,18 +191,16 @@ class _PropertyViewState extends State<PropertyView> {
         context: context,
         builder: (context) {
           return PhotoViewGallery.builder(
-            
             itemCount: widget.property.photos.length,
             builder: (BuildContext context, int index) {
               return PhotoViewGalleryPageOptions(
-                
                 imageProvider: NetworkImage(widget.property.photos[index]),
                 initialScale: PhotoViewComputedScale.contained * 0.8,
                 heroAttributes:
                     PhotoViewHeroAttributes(tag: widget.property.photos[index]),
               );
             },
-            
+
             loadingBuilder: (context, event) => const Center(
               child: SizedBox(
                 width: 20.0,
@@ -443,8 +442,14 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.propertyAmount
-                                      .toString()),
+                                  subtitle: Text(
+                                    NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(widget.property.propertyAmount),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   title: const Text('Property Value'),
                                 ))
                           ],
@@ -454,9 +459,15 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget.property.propertyAmounts
-                                      .toString()),
-                                  title: const Text('Propery Amount'),
+                                  subtitle: Text(
+                                    NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(widget.property.propertyAmounts),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  title: const Text('Property Amount'),
                                 )),
                             // Expanded(
                             //     flex: 1,
@@ -472,18 +483,20 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget
-                                      .property.agentComission!.value
-                                      .toString()),
-                                  title: const Text('Agent Comission'),
+                                  subtitle: Text(
+                                    "₹ ${widget.property.agentComission!.value.toString()}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  title: const Text('Agent Commission'),
                                 )),
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget
-                                      .property.staffComission!.value
-                                      .toString()),
-                                  title: const Text('Staff Comission'),
+                                  subtitle: Text(
+                                    "₹ ${widget.property.staffComission!.value.toString()}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  title: const Text('Staff Commission'),
                                 ))
                           ],
                         ),
@@ -492,10 +505,11 @@ class _PropertyViewState extends State<PropertyView> {
                             Expanded(
                                 flex: 1,
                                 child: ListTile(
-                                  subtitle: Text(widget
-                                      .property.superAgentComission!.value
-                                      .toString()),
-                                  title: const Text('Super Agent Comission'),
+                                  subtitle: Text(
+                                    "₹ ${widget.property.superAgentComission!.value.toString()}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  title: const Text('Super Agent Commission'),
                                 )),
                           ],
                         ),

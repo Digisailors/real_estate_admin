@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Providers/session.dart';
 import 'package:real_estate_admin/widgets/formfield.dart';
@@ -45,6 +47,11 @@ class ComissionTile extends StatelessWidget {
                   Expanded(
                     flex: 3,
                     child: TileFormField(
+                      prefixText: '₹ ',
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        IndianCurrencyFormatter(),
+                      ],
                       controller: comissionController.value,
                       validator: validator,
                       onChanged: (val) {

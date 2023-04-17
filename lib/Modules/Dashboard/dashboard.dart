@@ -55,7 +55,8 @@ class Dashboard extends StatelessWidget {
                         isMobile(context)
                             ? Column(children: getChildAgentTables(controller))
                             : Row(
-                                children: getChildAgentTablesExpanded(controller),
+                                children:
+                                    getChildAgentTablesExpanded(controller),
                               ),
                       ],
                     ),
@@ -120,17 +121,38 @@ class Dashboard extends StatelessWidget {
 
   List<Widget> getChildAgentTables(DashboardController controller) {
     return [
-      AgentDataTable(headColor: Colors.deepPurple.shade100, agents: controller.top5AgentsByLeads, num1: 0),
-      AgentDataTable(headColor: Colors.pink.shade100, agents: controller.top5AgentsBySuccessfull, num1: 1),
-      AgentDataTable(headColor: Colors.green.shade100, agents: controller.top5AgentsByComission, num1: 2),
+      AgentDataTable(
+          headColor: Colors.deepPurple.shade100,
+          agents: controller.top5AgentsByLeads,
+          num1: 0),
+      AgentDataTable(
+          headColor: Colors.pink.shade100,
+          agents: controller.top5AgentsBySuccessfull,
+          num1: 1),
+      AgentDataTable(
+          headColor: Colors.green.shade100,
+          agents: controller.top5AgentsByComission,
+          num1: 2),
     ];
   }
 
   List<Widget> getChildAgentTablesExpanded(DashboardController controller) {
     return [
-      Expanded(child: AgentDataTable(headColor: Colors.deepPurple.shade100, agents: controller.top5AgentsByLeads, num1: 0)),
-      Expanded(child: AgentDataTable(headColor: Colors.pink.shade100, agents: controller.top5AgentsBySuccessfull, num1: 1)),
-      Expanded(child: AgentDataTable(headColor: Colors.green.shade100, agents: controller.top5AgentsByComission, num1: 2)),
+      Expanded(
+          child: AgentDataTable(
+              headColor: Colors.deepPurple.shade100,
+              agents: controller.top5AgentsByLeads,
+              num1: 0)),
+      Expanded(
+          child: AgentDataTable(
+              headColor: Colors.pink.shade100,
+              agents: controller.top5AgentsBySuccessfull,
+              num1: 1)),
+      Expanded(
+          child: AgentDataTable(
+              headColor: Colors.green.shade100,
+              agents: controller.top5AgentsByComission,
+              num1: 2)),
     ];
   }
 }

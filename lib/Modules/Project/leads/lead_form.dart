@@ -226,7 +226,7 @@ class _LeadFormState extends State<LeadForm> {
                         controller.propertyName = widget.property.title;
                         controller.sellingAmount.text =
                             widget.property.sellingAmounts.toString();
-                      
+
                         var future = widget.lead == null
                             ? widget.property.addLead(controller.lead)
                             : widget.lead!.reference

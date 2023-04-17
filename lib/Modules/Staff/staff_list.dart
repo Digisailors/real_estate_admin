@@ -202,8 +202,8 @@ class StaffListSource extends DataTableSource {
         DataCell(Text(e.phoneNumber)),
         DataCell(Text(e.panCardNumber ?? '')),
         DataCell(Text(e.email)),
-        DataCell(Text(
-            NumberFormat.currency(locale: 'en-IN').format(e.commissionAmount))),
+        DataCell(Text(NumberFormat.currency(locale: 'en-IN', decimalDigits: 0)
+            .format(e.commissionAmount))),
         DataCell(Text(e.leadCount.toString())),
         DataCell(Text(e.successfullLeadCount.toString())),
         DataCell(IconButton(
@@ -254,7 +254,7 @@ class StaffListSource extends DataTableSource {
       const DataColumn(label: Text('Phone')),
       const DataColumn(label: Text('PAN')),
       const DataColumn(label: Text('Email')),
-      const DataColumn(label: Text('Comission Earned')),
+      const DataColumn(label: Text('Commission Earned')),
       const DataColumn(label: Text('Lead count')),
       const DataColumn(label: Text('Converted LeadCount')),
       const DataColumn(label: Text('Edit')),
