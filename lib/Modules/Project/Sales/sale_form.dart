@@ -342,10 +342,14 @@ class _SaleFormState extends State<SaleForm> {
                         return 'Please enter selling amount';
                       }
                       if (val.isNotEmpty) {
-                        if (double.parse(sellingAmount.text) == 0) {
+                        if (double.parse(
+                                sellingAmount.text.replaceAll(",", "")) ==
+                            0) {
                           return 'Please enter a amount greater than 0';
                         } else {
-                          var number = double.tryParse(sellingAmount.text) ?? 0;
+                          var number = double.tryParse(
+                                  sellingAmount.text.replaceAll(",", "")) ??
+                              0;
                           if (property != null) {
                             if (property!.propertyAmount > number) {
                               return 'Selling amount is less than property amount';
@@ -358,7 +362,7 @@ class _SaleFormState extends State<SaleForm> {
                     controller: sellingAmount,
                     title: "Selling Amount",
                     onChanged: (val) {
-                      print(double.parse(sellingAmount.text));
+                      // print(double.parse(sellingAmount.text));
                     },
                   ),
                   TileFormField(
@@ -499,8 +503,9 @@ class _SaleFormState extends State<SaleForm> {
                                                       superAgentComission
                                                           .comission;
                                                   lead.sellingAmount =
-                                                      double.parse(
-                                                          sellingAmount.text);
+                                                      double.parse(sellingAmount
+                                                          .text
+                                                          .replaceAll(",", ""));
                                                   print(lead.toJson());
                                                   future = lead.reference
                                                       .update(lead.toJson())
