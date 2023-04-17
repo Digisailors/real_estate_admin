@@ -36,20 +36,15 @@ class _PropertyListState extends State<PropertyList> {
 
   @override
   Widget build(BuildContext context) {
-    var controller =
-        ProjectController(ProjectFormData.fromProject(widget.project));
+    var controller = ProjectController(ProjectFormData.fromProject(widget.project));
     return ChangeNotifierProvider<ProjectController>(
       create: (context) => controller,
       child: LayoutBuilder(builder: (context, constraints) {
         return Scaffold(
-          floatingActionButtonLocation: constraints.maxWidth < 860
-              ? FloatingActionButtonLocation.endFloat
-              : FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: constraints.maxWidth < 860 ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.centerFloat,
           floatingActionButton: (AppSession().isAdmin)
               ? Padding(
-                  padding: constraints.maxWidth < 860
-                      ? const EdgeInsets.all(8)
-                      : const EdgeInsets.only(right: 96, bottom: 16),
+                  padding: constraints.maxWidth < 860 ? const EdgeInsets.all(8) : const EdgeInsets.only(right: 96, bottom: 16),
                   child: SizedBox(
                     height: 54,
                     width: 60,
@@ -59,9 +54,7 @@ class _PropertyListState extends State<PropertyList> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                   content: SizedBox(
                                       height: 800,
                                       width: 600,
@@ -77,8 +70,7 @@ class _PropertyListState extends State<PropertyList> {
                 )
               : null,
           body: StreamBuilder<List<Property>>(
-              stream: controller.getPropertiesAsStream(
-                  search: search.text.toLowerCase(), isSold: isSold),
+              stream: controller.getPropertiesAsStream(search: search.text.toLowerCase(), isSold: isSold),
               builder: (context, AsyncSnapshot<List<Property>> snapshot1) {
                 return Row(
                   children: [
@@ -93,16 +85,13 @@ class _PropertyListState extends State<PropertyList> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    TextButton(
-                                        onPressed: Navigator.of(context).pop,
-                                        child: const Text("<< GO BACK")),
+                                    TextButton(onPressed: Navigator.of(context).pop, child: const Text("<< GO BACK")),
                                     const Spacer(),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 30),
                                       child: Text(
                                         "Project : ${widget.project.name}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     )
                                   ],
@@ -114,13 +103,11 @@ class _PropertyListState extends State<PropertyList> {
                                   ListTile(
                                     title: const Text('Project Type'),
                                     subtitle: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButtonFormField<bool?>(
                                           isDense: true,
-                                          decoration: const InputDecoration(
-                                              border: OutlineInputBorder()),
+                                          decoration: const InputDecoration(border: OutlineInputBorder()),
                                           value: isSold,
                                           items: const [
                                             DropdownMenuItem(
@@ -130,9 +117,7 @@ class _PropertyListState extends State<PropertyList> {
                                               value: false,
                                               child: Text("AVAILABLE"),
                                             ),
-                                            DropdownMenuItem(
-                                                value: true,
-                                                child: Text("SOLD")),
+                                            DropdownMenuItem(value: true, child: Text("SOLD")),
                                           ],
                                           onChanged: (val) {
                                             setState(() {
@@ -192,53 +177,36 @@ class _PropertyListState extends State<PropertyList> {
                               const Divider(),
                               Expanded(
                                 child: StreamBuilder<List<Property>>(
-                                    stream: controller.getPropertiesAsStream(
-                                        search: search.text.toLowerCase(),
-                                        isSold: isSold),
-                                    builder: (context,
-                                        AsyncSnapshot<List<Property>>
-                                            snapshot) {
-                                      if (snapshot.connectionState ==
-                                              ConnectionState.active &&
-                                          snapshot.hasData) {
+                                    stream: controller.getPropertiesAsStream(search: search.text.toLowerCase(), isSold: isSold),
+                                    builder: (context, AsyncSnapshot<List<Property>> snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
                                         if (snapshot.data!.isEmpty) {
                                           return const Center(
-                                            child: Text(
-                                                "No Properties for this project"),
+                                            child: Text("No Properties for this project"),
                                           );
                                         } else {
                                           // selectedProperty = snapshot.data!.first;
-                                          return StatefulBuilder(
-                                              builder: (context, reload) {
+                                          return StatefulBuilder(builder: (context, reload) {
                                             if (isDesktop(context)) {
                                               // snapshot.data!.sort((a, b) =>
                                               //     a.title.compareTo(b.title));
                                               return GridView.count(
                                                 crossAxisCount: 2,
-                                                padding:
-                                                    const EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(8),
                                                 children: snapshot.data!
                                                     .map((e) => GestureDetector(
                                                           onTap: () {
-                                                            selectedIndex =
-                                                                snapshot.data!
-                                                                    .indexOf(e);
+                                                            selectedIndex = snapshot.data!.indexOf(e);
                                                             reload(() {
-                                                              selectedProperty =
-                                                                  e;
+                                                              selectedProperty = e;
                                                             });
-                                                            if (reloadPropertyView !=
-                                                                null) {
-                                                              reloadPropertyView!(
-                                                                  () {});
+                                                            if (reloadPropertyView != null) {
+                                                              reloadPropertyView!(() {});
                                                             }
                                                           },
                                                           child: PropertyTile(
                                                             property: e,
-                                                            selected: e
-                                                                    .reference ==
-                                                                selectedProperty
-                                                                    ?.reference,
+                                                            selected: e.reference == selectedProperty?.reference,
                                                           ),
                                                         ))
                                                     .toList(),
@@ -246,117 +214,75 @@ class _PropertyListState extends State<PropertyList> {
                                             } else {
                                               // snapshot.data!.sort((a, b) =>
                                               //     b.title.compareTo(a.title));
-                                              List<Property> list =
-                                                  snapshot.data ?? [];
+                                              List<Property> list = snapshot.data ?? [];
                                               return ListView.builder(
                                                   itemCount: list.length,
                                                   reverse: true,
-                                                  itemBuilder:
-                                                      (context, index) {
+                                                  itemBuilder: (context, index) {
                                                     var property = list[index];
-                                                    var projectController =
-                                                        Provider.of<
-                                                                ProjectController>(
-                                                            context);
+                                                    var projectController = Provider.of<ProjectController>(context);
                                                     return ListTile(
-                                                      selected: selectedProperty
-                                                              ?.reference ==
-                                                          property.reference,
-                                                      title:
-                                                          Text(property.title),
+                                                      selected: selectedProperty?.reference == property.reference,
+                                                      title: Text(property.title),
                                                       subtitle: Text(
                                                         NumberFormat.currency(
                                                           locale: 'en-IN',
                                                           symbol: '₹',
                                                           decimalDigits: 0,
-                                                        ).format(property
-                                                            .propertyAmounts),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        ).format(property.propertyAmounts),
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
                                                       onTap: () {
                                                         selectedIndex = index;
-                                                        if (constraints
-                                                                .maxWidth >
-                                                            860) {
+                                                        if (constraints.maxWidth > 860) {
                                                           reload(() {
-                                                            selectedProperty =
-                                                                property;
+                                                            selectedProperty = property;
                                                           });
-                                                          if (reloadPropertyView !=
-                                                              null) {
-                                                            reloadPropertyView!(
-                                                                () {});
+                                                          if (reloadPropertyView != null) {
+                                                            reloadPropertyView!(() {});
                                                           }
                                                         } else {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      PropertyView(
-                                                                          property:
-                                                                              property)));
+                                                          Navigator.of(context)
+                                                              .push(MaterialPageRoute(builder: (context) => PropertyView(property: property)));
                                                         }
                                                       },
                                                       trailing: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
+                                                        mainAxisSize: MainAxisSize.min,
                                                         children: [
                                                           !AppSession().isAdmin
                                                               ? Container()
                                                               : IconButton(
-                                                                  onPressed:
-                                                                      () {
+                                                                  onPressed: () {
                                                                     showAlertDialog(
-                                                                      context:
-                                                                          context,
-                                                                      message:
-                                                                          "Do you really want to delete?",
-                                                                      onPressed:
-                                                                          () {
-                                                                        var future = property
-                                                                            .reference
+                                                                      context: context,
+                                                                      message: "Do you really want to delete?",
+                                                                      onPressed: () {
+                                                                        var future = property.reference
                                                                             .delete()
-                                                                            .then((value) =>
-                                                                                Result.completed("Property Deleted Successfully"))
+                                                                            .then((value) => Result.completed("Property Deleted Successfully"))
                                                                             .onError((error, stcak) {
-                                                                          if (error
-                                                                              is FirebaseException) {
-                                                                            return Result(
-                                                                                tilte: error.code,
-                                                                                message: error.message ?? '');
+                                                                          if (error is FirebaseException) {
+                                                                            return Result(tilte: error.code, message: error.message ?? '');
                                                                           } else {
-                                                                            return Result(
-                                                                                tilte: 'Failed',
-                                                                                message: error.toString());
+                                                                            return Result(tilte: 'Failed', message: error.toString());
                                                                           }
                                                                         });
-                                                                        showFutureDialog3(
-                                                                            context,
-                                                                            future:
-                                                                                future);
+                                                                        showFutureDialog3(context, future: future);
                                                                       },
                                                                     );
                                                                   },
-                                                                  icon: const Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      color: Colors
-                                                                          .red)),
-                                                          const SizedBox(
-                                                              width: 8),
+                                                                  icon: const Icon(Icons.delete, color: Colors.red)),
+                                                          const SizedBox(width: 8),
                                                           !AppSession().isAdmin
                                                               ? Container()
                                                               : IconButton(
-                                                                  onPressed:
-                                                                      () {
+                                                                  onPressed: () {
                                                                     showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
+                                                                        context: context,
+                                                                        builder: (context) {
                                                                           return AlertDialog(
-                                                                            shape:
-                                                                                const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                                                            shape: const RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                                                             content: SizedBox(
                                                                                 height: 800,
                                                                                 width: 600,
@@ -368,11 +294,7 @@ class _PropertyListState extends State<PropertyList> {
                                                                           );
                                                                         });
                                                                   },
-                                                                  icon: const Icon(
-                                                                      Icons
-                                                                          .edit,
-                                                                      color: Colors
-                                                                          .black)),
+                                                                  icon: const Icon(Icons.edit, color: Colors.black)),
                                                         ],
                                                       ),
                                                     );
@@ -384,8 +306,7 @@ class _PropertyListState extends State<PropertyList> {
                                       if (snapshot.hasError) {
                                         print(snapshot.error);
                                         return Center(
-                                          child: SelectableText(
-                                              snapshot.data.toString()),
+                                          child: SelectableText(snapshot.data.toString()),
                                         );
                                       }
                                       return const Center(
@@ -401,13 +322,11 @@ class _PropertyListState extends State<PropertyList> {
                         : Expanded(
                             flex: 4,
                             child: Builder(builder: (context) {
-                              return StatefulBuilder(
-                                  builder: (context, reload) {
+                              return StatefulBuilder(builder: (context, reload) {
                                 reloadPropertyView = reload;
                                 if (selectedProperty == null) {
                                   return const Center(
-                                    child: Text(
-                                        "Please select a property to view"),
+                                    child: Text("Please select a property to view"),
                                   );
                                 } else {
                                   return PropertyView(
@@ -426,8 +345,7 @@ class _PropertyListState extends State<PropertyList> {
 }
 
 class PropertyTile extends StatelessWidget {
-  const PropertyTile({Key? key, required this.property, this.selected = false})
-      : super(key: key);
+  const PropertyTile({Key? key, required this.property, this.selected = false}) : super(key: key);
 
   final Property property;
   final bool selected;
@@ -483,7 +401,7 @@ class PropertyTile extends StatelessWidget {
                 trailing: Column(
                   children: [
                     Text(
-                      "Leads\n${property.leads.length}",
+                      "Leads\n${property.leadCount}",
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -493,18 +411,12 @@ class PropertyTile extends StatelessWidget {
                 children: [
                   TextButton(
                       onPressed: () {
-                        var future = property.reference
-                            .delete()
-                            .then((value) => Result.completed(
-                                "Property Deleted Successfully"))
-                            .onError((error, stcak) {
+                        var future =
+                            property.reference.delete().then((value) => Result.completed("Property Deleted Successfully")).onError((error, stcak) {
                           if (error is FirebaseException) {
-                            return Result(
-                                tilte: error.code,
-                                message: error.message ?? '');
+                            return Result(tilte: error.code, message: error.message ?? '');
                           } else {
-                            return Result(
-                                tilte: 'Failed', message: error.toString());
+                            return Result(tilte: 'Failed', message: error.toString());
                           }
                         });
                         showFutureDialog3(context, future: future);
@@ -516,16 +428,13 @@ class PropertyTile extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                 content: SizedBox(
                                     height: 800,
                                     width: 600,
                                     child: PropertyForm(
                                       property: property,
-                                      project: projectController
-                                          .projectFormData.object,
+                                      project: projectController.projectFormData.object,
                                     )),
                               );
                             });
