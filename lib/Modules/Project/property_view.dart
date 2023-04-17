@@ -484,7 +484,12 @@ class _PropertyViewState extends State<PropertyView> {
                                 flex: 1,
                                 child: ListTile(
                                   subtitle: Text(
-                                    "₹ ${widget.property.agentComission!.value.toString()}",
+                                    NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(
+                                        widget.property.agentComission!.value),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   title: const Text('Agent Commission'),
@@ -493,7 +498,12 @@ class _PropertyViewState extends State<PropertyView> {
                                 flex: 1,
                                 child: ListTile(
                                   subtitle: Text(
-                                    "₹ ${widget.property.staffComission!.value.toString()}",
+                                    NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(
+                                        widget.property.staffComission!.value),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   title: const Text('Staff Commission'),
@@ -506,7 +516,12 @@ class _PropertyViewState extends State<PropertyView> {
                                 flex: 1,
                                 child: ListTile(
                                   subtitle: Text(
-                                    "₹ ${widget.property.superAgentComission!.value.toString()}",
+                                    NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(widget
+                                        .property.superAgentComission!.value),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   title: const Text('Super Agent Commission'),

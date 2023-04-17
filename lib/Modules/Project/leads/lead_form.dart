@@ -126,74 +126,64 @@ class _LeadFormState extends State<LeadForm> {
                 ))
               ],
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: const Text("STAFF"),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: DropdownButtonFormField<DocumentReference?>(
-                        value: controller.staffRef,
-                        items: AppSession()
-                            .staffs
-                            .map(
-                                (staff) => DropdownMenuItem<DocumentReference?>(
-                                      value: staff.reference,
-                                      child: Text(staff.firstName),
-                                    ))
-                            .toList(),
-                        isExpanded: true,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                        onChanged: controller.leadStatus == LeadStatus.lead &&
-                                AppSession().isAdmin
-                            ? (val) {
-                                if (val != null) {
-                                  controller.staffRef = val;
-                                }
-                              }
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListTile(
-                    title: const Text("AGENT"),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: DropdownButtonFormField<DocumentReference?>(
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Please select an agent';
+            ListTile(
+              title: const Text("STAFF"),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: DropdownButtonFormField<DocumentReference?>(
+                  value: controller.staffRef,
+                  items: AppSession()
+                      .staffs
+                      .map((staff) => DropdownMenuItem<DocumentReference?>(
+                            value: staff.reference,
+                            child: Text(staff.firstName),
+                          ))
+                      .toList(),
+                  isExpanded: true,
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
+                  onChanged: controller.leadStatus == LeadStatus.lead &&
+                          AppSession().isAdmin
+                      ? (val) {
+                          if (val != null) {
+                            controller.staffRef = val;
                           }
-                        },
-                        value: controller.agentRef,
-                        items: AppSession()
-                            .agents
-                            .map(
-                                (agent) => DropdownMenuItem<DocumentReference?>(
-                                      value: agent.reference,
-                                      child: Text(agent.firstName),
-                                    ))
-                            .toList(),
-                        isExpanded: true,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                        onChanged: controller.leadStatus == LeadStatus.lead &&
-                                AppSession().isAdmin
-                            ? (val) {
-                                if (val != null) {
-                                  controller.agentRef = val;
-                                }
-                              }
-                            : null,
-                      ),
-                    ),
-                  ),
+                        }
+                      : null,
                 ),
-              ],
+              ),
+            ),
+            ListTile(
+              title: const Text("AGENT"),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: DropdownButtonFormField<DocumentReference?>(
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select an agent';
+                    }
+                  },
+                  value: controller.agentRef,
+                  items: AppSession()
+                      .agents
+                      .map((agent) => DropdownMenuItem<DocumentReference?>(
+                            value: agent.reference,
+                            child: Text(agent.firstName),
+                          ))
+                      .toList(),
+                  isExpanded: true,
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
+                  onChanged: controller.leadStatus == LeadStatus.lead &&
+                          AppSession().isAdmin
+                      ? (val) {
+                          if (val != null) {
+                            controller.agentRef = val;
+                          }
+                        }
+                      : null,
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

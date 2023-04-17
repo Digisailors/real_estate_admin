@@ -50,7 +50,12 @@ class _SaleListState extends State<SaleList> {
   final ScrollController _scrollController = ScrollController();
 
   assignDate(final TextEditingController controller) {
-    showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2100)).then((value) {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100))
+        .then((value) {
       setState(() {
         controller.text = value.toString().substring(0, 10);
       });
@@ -85,7 +90,8 @@ class _SaleListState extends State<SaleList> {
                               value: staff,
                               items: AppSession()
                                   .staffs
-                                  .map((staffIterable) => DropdownMenuItem<Staff?>(
+                                  .map((staffIterable) =>
+                                      DropdownMenuItem<Staff?>(
                                         value: staffIterable,
                                         child: Text(staffIterable.firstName),
                                       ))
@@ -96,7 +102,8 @@ class _SaleListState extends State<SaleList> {
                                 )
                               ]).toList(),
                               isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
                               onChanged: (val) {
                                 setState(() {
                                   staff = val;
@@ -115,7 +122,8 @@ class _SaleListState extends State<SaleList> {
                               value: agent,
                               items: AppSession()
                                   .agents
-                                  .map((agentIterable) => DropdownMenuItem<Agent?>(
+                                  .map((agentIterable) =>
+                                      DropdownMenuItem<Agent?>(
                                         value: agentIterable,
                                         child: Text(agentIterable.firstName),
                                       ))
@@ -126,7 +134,8 @@ class _SaleListState extends State<SaleList> {
                                 )
                               ]).toList(),
                               isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
                               onChanged: (val) {
                                 setState(() {
                                   agent = val;
@@ -145,12 +154,18 @@ class _SaleListState extends State<SaleList> {
                           child: DropdownButtonFormField<LeadStatus?>(
                               value: leadStatus,
                               items: const [
-                                DropdownMenuItem(value: LeadStatus.pendingApproval, child: Text("PENDING APPROVAL")),
-                                DropdownMenuItem(value: LeadStatus.sold, child: Text("SOLD")),
-                                DropdownMenuItem(value: null, child: Text("ALL")),
+                                DropdownMenuItem(
+                                    value: LeadStatus.pendingApproval,
+                                    child: Text("PENDING APPROVAL")),
+                                DropdownMenuItem(
+                                    value: LeadStatus.sold,
+                                    child: Text("SOLD")),
+                                DropdownMenuItem(
+                                    value: null, child: Text("ALL")),
                               ],
                               isExpanded: true,
-                              decoration: const InputDecoration(border: OutlineInputBorder()),
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder()),
                               onChanged: (val) {
                                 setState(() {
                                   leadStatus = val;
@@ -179,14 +194,17 @@ class _SaleListState extends State<SaleList> {
           Expanded(
             // child: Container(),
             child: StreamBuilder<List<Lead>>(
-                stream: Lead.getSales(agent: agent, staff: staff, leadStatus: leadStatus),
+                stream: Lead.getSales(
+                    agent: agent, staff: staff, leadStatus: leadStatus),
                 builder: (context, AsyncSnapshot<List<Lead>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.active &&
+                      snapshot.hasData) {
                     return Listener(
                       onPointerSignal: (event) {
                         if (event is PointerScrollEvent) {
                           final offset = event.scrollDelta.dy;
-                          _scrollController.jumpTo(_scrollController.offset + offset);
+                          _scrollController
+                              .jumpTo(_scrollController.offset + offset);
                         }
                       },
                       child: Table(
@@ -195,7 +213,9 @@ class _SaleListState extends State<SaleList> {
                             children: [
                               PaginatedDataTable(
                                 controller: _scrollController,
-                                rowsPerPage: (Get.height ~/ kMinInteractiveDimension) - 7,
+                                rowsPerPage:
+                                    (Get.height ~/ kMinInteractiveDimension) -
+                                        7,
                                 columns: SaleListSourse.getColumns(),
                                 source: SaleListSourse(
                                   snapshot.data!,
@@ -230,7 +250,8 @@ class SaleListSourse extends DataTableSource {
   final BuildContext context;
   SaleListSourse(this.leads, {required this.context});
 
-  final _format = NumberFormat.currency(locale: 'en-IN');
+  final _format =
+      NumberFormat.currency(locale: 'en-IN', decimalDigits: 0, symbol: '₹ ');
 
   @override
   DataRow? getRow(int index) {
@@ -238,7 +259,9 @@ class SaleListSourse extends DataTableSource {
     final _lead = leads[(index)];
 
     return DataRow.byIndex(
-      color: MaterialStateProperty.all(_lead.leadStatus == LeadStatus.sold ? Colors.lightGreen.shade100 : Colors.white),
+      color: MaterialStateProperty.all(_lead.leadStatus == LeadStatus.sold
+          ? Colors.lightGreen.shade100
+          : Colors.white),
       index: index,
       cells: [
         // DataCell(Text((index + 1).toString())),
@@ -269,7 +292,9 @@ class SaleListSourse extends DataTableSource {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
                       content: SizedBox(
                         height: 800,
                         width: 600,
@@ -285,16 +310,24 @@ class SaleListSourse extends DataTableSource {
           // child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(IconButton(
-          icon: (_lead.leadStatus != LeadStatus.sold && AppSession().isAdmin) ? const Icon(Icons.edit) : const Icon(Icons.visibility),
+          icon: (_lead.leadStatus != LeadStatus.sold && AppSession().isAdmin)
+              ? const Icon(Icons.edit)
+              : const Icon(Icons.visibility),
           onPressed: () {
             showDialog(
                 context: context,
                 builder: (context) {
                   printInfo(info: (AppSession().isAdmin).toString());
-                  printInfo(info: (_lead.leadStatus == LeadStatus.sold && AppSession().isAdmin).toString());
-                  if (_lead.leadStatus == LeadStatus.sold && AppSession().isAdmin) {
+                  printInfo(
+                      info: (_lead.leadStatus == LeadStatus.sold &&
+                              AppSession().isAdmin)
+                          .toString());
+                  if (_lead.leadStatus == LeadStatus.sold &&
+                      AppSession().isAdmin) {
                     return AlertDialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
                       content: SizedBox(
                         height: 800,
                         width: 600,
@@ -305,10 +338,16 @@ class SaleListSourse extends DataTableSource {
                     );
                   }
                   return AlertDialog(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     title: const Text("Operation Not Allowed"),
-                    content: const Text("Edit operation on sold transaction is not permitted"),
-                    actions: [TextButton(onPressed: Navigator.of(context).pop, child: const Text("Okay"))],
+                    content: const Text(
+                        "Edit operation on sold transaction is not permitted"),
+                    actions: [
+                      TextButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: const Text("Okay"))
+                    ],
                   );
                 });
           },

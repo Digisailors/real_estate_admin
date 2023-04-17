@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:real_estate_admin/Model/Lead.dart';
 import 'package:real_estate_admin/Model/Property.dart';
@@ -33,7 +34,8 @@ class _SaleFormState extends State<SaleForm> {
   // CurrencyTextFieldController(
   //     rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
 
-  double get sellingPrice => double.parse(sellingAmount.text);
+  double get sellingPrice =>
+      double.parse(sellingAmount.text.replaceAll(",", ""));
 
   Property? property;
   @override
@@ -176,6 +178,10 @@ class _SaleFormState extends State<SaleForm> {
                       Expanded(
                         child: TileFormField(
                           prefixText: '₹ ',
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            IndianCurrencyFormatter(),
+                          ],
                           controller: comission.value,
                           validator: (val) {
                             double actualAmount =
@@ -217,13 +223,17 @@ class _SaleFormState extends State<SaleForm> {
                                       comission.comissionType ==
                                               ComissionType.percent
                                           ? NumberFormat.currency(
-                                                  locale: 'en-IN')
+                                                  locale: 'en-IN',
+                                                  symbol: '₹ ',
+                                                  decimalDigits: 0)
                                               .format(
                                                   (comission.comission.value *
                                                       sellingPrice /
                                                       100))
                                           : NumberFormat.currency(
-                                                  locale: 'en-IN')
+                                                  locale: 'en-IN',
+                                                  symbol: '₹ ',
+                                                  decimalDigits: 0)
                                               .format(
                                                   comission.comission.value),
                                       style:
@@ -310,17 +320,23 @@ class _SaleFormState extends State<SaleForm> {
                       });
                     });
                     return TileFormField(
-                      prefixText: '₹ ',
+                      // prefixText: '₹ ',
                       enabled: false,
                       controller: TextEditingController(
-                          text: NumberFormat.currency(locale: 'en-IN')
-                              .format(property?.propertyAmounts ?? 0)
-                              .toString()),
+                          text: NumberFormat.currency(
+                        locale: 'en-IN',
+                        decimalDigits: 0,
+                        symbol: '₹ ',
+                      ).format(property?.propertyAmounts ?? 0).toString()),
                       title: "Property Amount",
                     );
                   }),
                   TileFormField(
-                    preffix: const Text("Rs."),
+                    // prefixText: '₹ ',
+                    // inputFormatters: [
+                    //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    //   IndianCurrencyFormatter(),
+                    // ],
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Please enter selling amount';
@@ -346,13 +362,14 @@ class _SaleFormState extends State<SaleForm> {
                     },
                   ),
                   TileFormField(
-                      prefixText: '₹ ',
+                      // prefixText: '₹ ',
                       controller:
                           // costPerSqft
                           TextEditingController(
-                              text: NumberFormat.currency(locale: 'en-IN')
-                                  .format(property?.costPerSqft ?? 0)
-                                  .toString()),
+                              text: NumberFormat.currency(
+                        locale: 'en-IN',
+                        decimalDigits: 0,
+                      ).format(property?.costPerSqft ?? 0).toString()),
                       title: "Cost Per Sqft."),
                   getComission(
                       comission: staffComission,

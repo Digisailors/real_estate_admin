@@ -404,16 +404,24 @@ class _PropertyFormState extends State<PropertyForm> {
                       }
                       return null;
                     },
-                    controller: data.costPerSqft,
+                    controller:
+
+                        // TextEditingController(
+                        //     text: NumberFormat.currency(
+                        //   locale: 'en-IN',
+                        //   decimalDigits: 0,
+                        // ).format(data.costPerSqft ?? 0).toString()),
+
+                        data.costPerSqft,
                     title: "Cost Per Sqft.",
-                    onChanged: (val) {
-                      setState(() {
-                        double sellingAmount =
-                            double.parse(data.buildUpArea.text) *
-                                double.parse(data.costPerSqft.text);
-                        data.sellingAmounts.text = sellingAmount.toString();
-                      });
-                    },
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     double sellingAmount =
+                    //         double.parse(data.buildUpArea.text) *
+                    //             double.parse(data.costPerSqft.text);
+                    //     data.sellingAmounts.text = sellingAmount.toString();
+                    //   });
+                    // },
                   ),
                   Row(
                     children: [
