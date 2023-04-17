@@ -80,6 +80,6 @@ class IndianCurrencyFormatter extends TextInputFormatter {
         selection: TextSelection.collapsed(offset: formatted.length),
       );
     }
-    return oldValue;
+    return newValue;
   }
 }

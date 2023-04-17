@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
 import 'package:real_estate_admin/Modules/Project/propertyController.dart';
-import 'package:real_estate_admin/widgets/utils.dart';
+
+
 
 import '../../Model/Project.dart';
 import '../../Model/Property.dart';
@@ -14,7 +15,6 @@ import '../../Model/helper models/attachment.dart';
 import '../../widgets/formfield.dart';
 import '../../widgets/future_dialog.dart';
 import 'property_form_data.dart';
-import 'package:badges/badges.dart';
 
 class PropertyForm extends StatefulWidget {
   const PropertyForm(

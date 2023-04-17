@@ -332,11 +332,11 @@ class _SaleFormState extends State<SaleForm> {
                     );
                   }),
                   TileFormField(
-                    // prefixText: '₹ ',
-                    // inputFormatters: [
-                    //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                    //   IndianCurrencyFormatter(),
-                    // ],
+                    prefixText: '₹ ',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      IndianCurrencyFormatter(),
+                    ],
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Please enter selling amount';

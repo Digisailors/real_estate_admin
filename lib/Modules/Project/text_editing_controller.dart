@@ -107,7 +107,7 @@ class CurrencyTextFieldController extends TextEditingController {
   }
 
   String _applyMaskTo({required double value}) {
-    return NumberFormat.simpleCurrency(locale: 'en_IN', decimalDigits: 0)
+    return NumberFormat.simpleCurrency(locale: 'en_IN')
         .format(value)
         .split('₹ ')
         .last;

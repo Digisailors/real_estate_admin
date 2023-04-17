@@ -690,7 +690,11 @@ class _PropertyViewState extends State<PropertyView> {
                                         .map((staff) => DropdownMenuItem<
                                                 DocumentReference?>(
                                               value: staff.reference,
-                                              child: Text(staff.firstName),
+                                              child: Text(
+                                                staff.firstName,
+                                                style: const TextStyle(
+                                                    fontSize: 13),
+                                              ),
                                             ))
                                         .toList(),
                                     isExpanded: true,
