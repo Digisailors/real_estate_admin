@@ -250,7 +250,8 @@ class SaleListSourse extends DataTableSource {
   final BuildContext context;
   SaleListSourse(this.leads, {required this.context});
 
-  final _format = NumberFormat.currency(locale: 'en-IN');
+  final _format =
+      NumberFormat.currency(locale: 'en-IN', decimalDigits: 0, symbol: '₹ ');
 
   @override
   DataRow? getRow(int index) {
@@ -276,10 +277,12 @@ class SaleListSourse extends DataTableSource {
         DataCell(Text(_lead.agent?.superAgent?.firstName ?? '')),
         DataCell(Text(_format.format(_lead.superAgentComissionAmount))),
 
-        DataCell(Text(DateTime.now()
-            .add(Duration(days: index))
-            .toString()
-            .substring(0, 10))),
+        DataCell(Text(_lead.soldOn == null
+            ? ""
+            : _lead.soldOn
+                // .add(Duration(days: index))
+                .toString()
+                .substring(0, 10))),
 
         DataCell(TextButton(
           onPressed: () {
@@ -374,12 +377,12 @@ class SaleListSourse extends DataTableSource {
       // const DataColumn(label: Text("Initial Amount")),
       const DataColumn(label: Text("Sold Amount")),
       const DataColumn(label: Text("Staff")),
-      const DataColumn(label: Text("Staff Comission")),
+      const DataColumn(label: Text("Staff Commission")),
       const DataColumn(label: Text("Agent")),
-      const DataColumn(label: Text("Agent Comission")),
+      const DataColumn(label: Text("Agent Commission")),
 
-      const DataColumn(label: Text("Super Agnet")),
-      const DataColumn(label: Text("Super agent Comission")),
+      const DataColumn(label: Text("Super Agent")),
+      const DataColumn(label: Text("Super agent Commission")),
       const DataColumn(label: Text("Date")),
       const DataColumn(label: Text("Property")),
       const DataColumn(label: Text("Edit")),

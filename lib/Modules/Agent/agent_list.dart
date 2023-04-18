@@ -60,6 +60,7 @@ class _AgentListState extends State<AgentList> {
       //   ),
       //   centerTitle: true,
       // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: (AppSession().isAdmin)
           ? Padding(
               padding: const EdgeInsets.all(56.0),
@@ -117,7 +118,7 @@ class _AgentListState extends State<AgentList> {
                             children: [
                               const Text("STATUS"),
                               const SizedBox(
-                                height: 6,
+                                height: 7,
                               ),
                               DropdownButtonFormField<ActiveStatus>(
                                 value: activeStatus,

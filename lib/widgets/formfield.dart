@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class TileFormField extends StatelessWidget {
   const TileFormField({
@@ -15,6 +16,7 @@ class TileFormField extends StatelessWidget {
     this.enabled,
     this.validator,
     this.obscureText = false,
+    this.prefixText,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -28,6 +30,7 @@ class TileFormField extends StatelessWidget {
   final bool? enabled;
   final String? Function(String?)? validator;
   final bool obscureText;
+  final String? prefixText;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class TileFormField extends StatelessWidget {
           onChanged: onChanged,
           controller: controller,
           decoration: InputDecoration(
+            prefixText: prefixText,
             prefix: preffix,
             errorStyle: const TextStyle(fontSize: 12),
             filled: true,
@@ -58,5 +62,24 @@ class TileFormField extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class IndianCurrencyFormatter extends TextInputFormatter {
+  final formatter =
+      NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 0);
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final double? parsed = double.tryParse(newValue.text);
+    if (parsed != null) {
+      final formatted = formatter.format(parsed);
+      return TextEditingValue(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length),
+      );
+    }
+    return newValue;
   }
 }

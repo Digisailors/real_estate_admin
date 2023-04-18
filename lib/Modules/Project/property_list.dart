@@ -250,7 +250,6 @@ class _PropertyListState extends State<PropertyList> {
                                                   snapshot.data ?? [];
                                               return ListView.builder(
                                                   itemCount: list.length,
-                                                  reverse: true,
                                                   itemBuilder:
                                                       (context, index) {
                                                     var property = list[index];
@@ -266,9 +265,11 @@ class _PropertyListState extends State<PropertyList> {
                                                           Text(property.title),
                                                       subtitle: Text(
                                                         NumberFormat.currency(
-                                                                locale: 'en-IN')
-                                                            .format(property
-                                                                .propertyAmount),
+                                                          locale: 'en-IN',
+                                                          symbol: '₹',
+                                                          decimalDigits: 0,
+                                                        ).format(property
+                                                            .propertyAmounts),
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                       ),
@@ -471,18 +472,21 @@ class PropertyTile extends StatelessWidget {
                 ),
                 selected: selected,
                 subtitle: Text(
-                  NumberFormat.currency(locale: 'en-IN')
-                      .format(property.propertyAmount),
+                  NumberFormat.currency(
+                    locale: 'en-IN',
+                    symbol: '₹',
+                    decimalDigits: 0,
+                  ).format(property.propertyAmounts),
                   overflow: TextOverflow.ellipsis,
                 ),
-                // trailing: Column(
-                //   children: [
-                //     Text(
-                //       "Leads\n${property.leadCount}",
-                //       textAlign: TextAlign.center,
-                //     ),
-                //   ],
-                // ),
+                trailing: Column(
+                  children: [
+                    Text(
+                      "Leads\n${property.leadCount}",
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
               ButtonBar(
                 children: [

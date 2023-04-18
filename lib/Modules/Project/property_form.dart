@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
 import 'package:real_estate_admin/Modules/Project/propertyController.dart';
-import 'package:real_estate_admin/widgets/utils.dart';
+
+
 
 import '../../Model/Project.dart';
 import '../../Model/Property.dart';
@@ -13,7 +15,6 @@ import '../../Model/helper models/attachment.dart';
 import '../../widgets/formfield.dart';
 import '../../widgets/future_dialog.dart';
 import 'property_form_data.dart';
-import 'package:badges/badges.dart';
 
 class PropertyForm extends StatefulWidget {
   const PropertyForm(
@@ -241,13 +242,18 @@ class _PropertyFormState extends State<PropertyForm> {
                           controller: data.buildUpArea,
                           title: "Build-up Area",
                           onChanged: (val) {
-                            // setState(() {
-                            //   double propertyAmount =
-                            //       double.parse(data.propertyAmount.text) *
-                            //           double.parse(data.buildUpArea.text);
-                            //   data.propertyAmounts.text =
-                            //       propertyAmount.toString();
-                            // });
+                            setState(() {
+                              double propertyAmounts = double.parse(data
+                                      .propertyAmount.text
+                                      .replaceAll(",", "")) *
+                                  double.parse(data.buildUpArea.text);
+                              final formatter = NumberFormat.currency(
+                                      locale: 'en_IN',
+                                      symbol: '',
+                                      decimalDigits: 0)
+                                  .format(propertyAmounts);
+                              data.propertyAmounts.text = formatter.toString();
+                            });
                           },
                         ),
                       ),
@@ -345,6 +351,11 @@ class _PropertyFormState extends State<PropertyForm> {
                     maxLines: 8,
                   ),
                   TileFormField(
+                    prefixText: '₹ ',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      IndianCurrencyFormatter(),
+                    ],
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter property value text';
@@ -371,35 +382,56 @@ class _PropertyFormState extends State<PropertyForm> {
                     // },
                     onChanged: (val) {
                       setState(() {
-                        double propertyAmount =
-                            double.parse(data.propertyAmount.text) *
-                                double.parse(data.buildUpArea.text);
-                        data.propertyAmounts.text = propertyAmount.toString();
+                        double propertyAmounts = double.parse(
+                                data.propertyAmount.text.replaceAll(",", "")) *
+                            double.parse(data.buildUpArea.text);
+                        final formatter = NumberFormat.currency(
+                                locale: 'en_IN', symbol: '', decimalDigits: 0)
+                            .format(propertyAmounts);
+                        data.propertyAmounts.text = formatter.toString();
                       });
                     },
                   ),
                   TileFormField(
+                    prefixText: '₹ ',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      IndianCurrencyFormatter(),
+                    ],
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Cost per Sqft';
                       }
                       return null;
                     },
-                    controller: data.costPerSqft,
+                    controller:
+
+                        // TextEditingController(
+                        //     text: NumberFormat.currency(
+                        //   locale: 'en-IN',
+                        //   decimalDigits: 0,
+                        // ).format(data.costPerSqft ?? 0).toString()),
+
+                        data.costPerSqft,
                     title: "Cost Per Sqft.",
-                    onChanged: (val) {
-                      setState(() {
-                        double sellingAmount =
-                            double.parse(data.buildUpArea.text) *
-                                double.parse(data.costPerSqft.text);
-                        data.sellingAmounts.text = sellingAmount.toString();
-                      });
-                    },
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     double sellingAmount =
+                    //         double.parse(data.buildUpArea.text) *
+                    //             double.parse(data.costPerSqft.text);
+                    //     data.sellingAmounts.text = sellingAmount.toString();
+                    //   });
+                    // },
                   ),
                   Row(
                     children: [
                       Expanded(
                           child: TileFormField(
+                        prefixText: '₹ ',
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          IndianCurrencyFormatter(),
+                        ],
                         enabled: false,
                         controller: data.propertyAmounts,
                         title: "Property Amount",

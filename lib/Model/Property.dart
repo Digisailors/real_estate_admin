@@ -83,8 +83,6 @@ class Property {
     });
   }
 
-  
-
   Property({
     required this.propertyID,
     required this.title,
@@ -166,6 +164,9 @@ class Property {
     var batch = FirebaseFirestore.instance.batch();
     lead.reference = reference.collection('leads').doc();
     batch.set(lead.reference, lead.toJson());
+    batch.update(reference, {
+      'leadCount': FieldValue.increment(1),
+    });
     return batch.commit().then((value) {
       return Result(tilte: Result.success, message: 'Lead added successfully');
     });
@@ -289,7 +290,7 @@ class Commission {
 
 class ComissionController {
   ComissionType comissionType = ComissionType.amount;
-  TextEditingController value = TextEditingController(text: '0.00');
+  TextEditingController value = TextEditingController(text: '0');
 
   ComissionController();
 
@@ -303,5 +304,6 @@ class ComissionController {
   }
 
   Commission get comission => Commission(
-      comissionType: comissionType, value: double.tryParse(value.text) ?? 0);
+      comissionType: comissionType,
+      value: double.tryParse(value.text.replaceAll(",", "")) ?? 0);
 }

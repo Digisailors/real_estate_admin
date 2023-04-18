@@ -152,7 +152,8 @@ class PropertyViewModel extends ChangeNotifier {
         description: description.text,
         coverPhoto: coverPhoto,
         photos: photos,
-        propertyAmount: double.tryParse(propertyAmount.text) ?? 0,
+        propertyAmount:
+            double.tryParse(propertyAmount.text.replaceAll(",", "")) ?? 0,
         comissionType: comissionType,
         agentComission: agentComission.comission,
         superAgentComission: superAgentComission.comission,
@@ -167,13 +168,15 @@ class PropertyViewModel extends ChangeNotifier {
         facing: facing,
         leadCount: leadCount,
         // parentProject:  ,
-        sellingAmount: double.tryParse(sellingAmount.text),
+        sellingAmount: double.tryParse(sellingAmount.text.replaceAll(",", "")),
         uds: uds.text,
         isCarParkingAvailable: isCarParkingAvailable,
         isPrivateTerraceAvailable: isPrivateTerraceAvailable,
-        costPerSqft: double.parse(costPerSqft.text),
-        sellingAmounts: double.tryParse(sellingAmounts.text),
-        propertyAmounts: double.tryParse(propertyAmounts.text),
+        costPerSqft: double.parse(costPerSqft.text.replaceAll(",", "")),
+        sellingAmounts:
+            double.tryParse(sellingAmounts.text.replaceAll(",", "")),
+        propertyAmounts:
+            double.tryParse(propertyAmounts.text.replaceAll(",", "")),
       );
 
   factory PropertyViewModel.fromProperty(Property property) {

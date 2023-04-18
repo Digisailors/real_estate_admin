@@ -71,9 +71,13 @@ class ProgressCard extends StatelessWidget {
                                         angle: (numerator / denominator) * 100,
                                         child: CircularProgressIndicator(
                                           color: valueColor,
-                                          value: isLedger ? denominator / numerator : numerator / denominator,
+                                          value: isLedger
+                                              ? denominator / numerator
+                                              : numerator / denominator,
                                           strokeWidth: 8,
-                                          backgroundColor: isLedger ? Colors.blue : Colors.grey.shade400,
+                                          backgroundColor: isLedger
+                                              ? Colors.blue
+                                              : Colors.grey.shade400,
                                         ),
                                       ),
                               ),
@@ -83,31 +87,67 @@ class ProgressCard extends StatelessWidget {
                         Expanded(
                           flex: 6,
                           child: Table(
-                            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
                             children: !isLedger
                                 ? [
                                     TableRow(children: [
-                                      Text(numerator.toString(), style: Theme.of(context).textTheme.headline4),
-                                      Text(denominator.toString(), style: Theme.of(context).textTheme.headline4),
+                                      Text(numerator.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4),
+                                      Text(denominator.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4),
                                     ]),
                                     TableRow(children: [
-                                      Text(neumeratorTitle, style: Theme.of(context).textTheme.bodyLarge),
-                                      Text(denominatorTitle, style: Theme.of(context).textTheme.bodyLarge),
+                                      Text(neumeratorTitle,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
+                                      Text(denominatorTitle,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
                                     ])
                                   ]
                                 : [
                                     TableRow(children: [
-                                      Text(NumberFormat.currency(locale: 'en-IN').format(numerator), style: Theme.of(context).textTheme.headline6),
+                                      Text(
+                                          NumberFormat.currency(
+                                            locale: 'en-IN',
+                                            symbol: '₹',
+                                            decimalDigits: 0,
+                                          ).format(numerator),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
                                     ]),
                                     TableRow(children: [
-                                      Text(neumeratorTitle, style: Theme.of(context).textTheme.bodyLarge),
+                                      Text(neumeratorTitle,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
                                     ]),
-                                    const TableRow(children: [SizedBox(height: 8)]),
+                                    const TableRow(
+                                        children: [SizedBox(height: 8)]),
                                     TableRow(children: [
-                                      Text(NumberFormat.currency(locale: 'en-IN').format(denominator), style: Theme.of(context).textTheme.headline6),
+                                      Text(
+                                          NumberFormat.currency(
+                                            locale: 'en-IN',
+                                            symbol: '₹',
+                                            decimalDigits: 0,
+                                          ).format(denominator),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
                                     ]),
                                     TableRow(children: [
-                                      Text(denominatorTitle, style: Theme.of(context).textTheme.bodyLarge),
+                                      Text(denominatorTitle,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
                                     ]),
                                   ],
                           ),
