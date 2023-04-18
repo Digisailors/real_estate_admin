@@ -207,24 +207,29 @@ class _SaleListState extends State<SaleList> {
                               .jumpTo(_scrollController.offset + offset);
                         }
                       },
-                      child: Table(
-                        children: [
-                          TableRow(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
-                              PaginatedDataTable(
-                                controller: _scrollController,
-                                rowsPerPage:
-                                    (Get.height ~/ kMinInteractiveDimension) -
-                                        7,
-                                columns: SaleListSourse.getColumns(),
-                                source: SaleListSourse(
-                                  snapshot.data!,
-                                  context: context,
+                              SizedBox(
+                                width: double.maxFinite,
+                                child: PaginatedDataTable(
+                                  controller: _scrollController,
+                                  rowsPerPage:
+                                      20,
+                                      // (Get.height ~/ kMinInteractiveDimension) -
+                                      //     7,
+                                  columns: SaleListSourse.getColumns(),
+                                  source: SaleListSourse(
+                                    snapshot.data!,
+                                    context: context,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     );
                   }
@@ -382,7 +387,7 @@ class SaleListSourse extends DataTableSource {
       const DataColumn(label: Text("Agent Commission")),
 
       const DataColumn(label: Text("Super Agent")),
-      const DataColumn(label: Text("Super agent Commission")),
+      const DataColumn(label: Text("Super Agent Commission")),
       const DataColumn(label: Text("Date")),
       const DataColumn(label: Text("Property")),
       const DataColumn(label: Text("Edit")),

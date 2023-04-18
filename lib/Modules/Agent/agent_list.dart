@@ -189,8 +189,9 @@ class _AgentListState extends State<AgentList> {
                       return SizedBox(
                         width: double.maxFinite,
                         child: PaginatedDataTable(
-                          rowsPerPage:
-                              (Get.height ~/ kMinInteractiveDimension) - 7,
+
+                          rowsPerPage: 20,
+                              // (Get.height ~/ kMinInteractiveDimension) - 7,
                           source: AgentListSource(agents, context: context),
                           columns: AgentListSource.getColumns(),
                         ),

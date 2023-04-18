@@ -57,6 +57,7 @@ class _StaffListState extends State<StaffList> {
       //   ),
       //   centerTitle: true,
       // ),
+       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: (AppSession().isAdmin)
           ? Padding(
               padding: const EdgeInsets.all(56.0),
@@ -149,9 +150,9 @@ class _StaffListState extends State<StaffList> {
                                 // height: double.maxFinite,
                                 width: double.maxFinite,
                                 child: PaginatedDataTable(
-                                  rowsPerPage:
-                                      (Get.height ~/ kMinInteractiveDimension) -
-                                          4,
+                                  rowsPerPage: 20,
+                                      // (Get.height ~/ kMinInteractiveDimension) -
+                                      //     4,
                                   columns: StaffListSource.getColumns(),
                                   source:
                                       StaffListSource(staffs, context: context),

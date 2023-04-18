@@ -168,16 +168,24 @@ class _LeadListState extends State<LeadList> {
                 builder: (context, AsyncSnapshot<List<Lead>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.active &&
                       snapshot.hasData) {
-                    return SizedBox(
-                      width: double.maxFinite,
-                      child: PaginatedDataTable(
-                        dragStartBehavior: DragStartBehavior.start,
-                        rowsPerPage:
-                            (Get.height ~/ kMinInteractiveDimension) - 7,
-                        columns: LeadListSource.getColumns(),
-                        source: LeadListSource(
-                          snapshot.data ?? [],
-                          context: context,
+                    return Card(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.maxFinite,
+                              child: PaginatedDataTable(
+                                dragStartBehavior: DragStartBehavior.start,
+                                rowsPerPage: 20,
+                                // (Get.height ~/ kMinInteractiveDimension) - 7,
+                                columns: LeadListSource.getColumns(),
+                                source: LeadListSource(
+                                  snapshot.data ?? [],
+                                  context: context,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );

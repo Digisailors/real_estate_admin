@@ -7,8 +7,6 @@ import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/comission_tile.dart';
 import 'package:real_estate_admin/Modules/Project/propertyController.dart';
 
-
-
 import '../../Model/Project.dart';
 import '../../Model/Property.dart';
 import '../../Model/helper models/attachment.dart';
@@ -191,7 +189,7 @@ class _PropertyFormState extends State<PropertyForm> {
                     title: "Title",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter Title text';
+                        return 'Please enter Title';
                       }
                       return null;
                     },
@@ -226,38 +224,27 @@ class _PropertyFormState extends State<PropertyForm> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: TileFormField(
-                              controller: data.uds, title: "UDS")),
-                      Expanded(
-                        child: TileFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter build-up area text';
-                            }
-                            return null;
-                          },
-                          controller: data.buildUpArea,
-                          title: "Build-up Area",
-                          onChanged: (val) {
-                            setState(() {
-                              double propertyAmounts = double.parse(data
-                                      .propertyAmount.text
-                                      .replaceAll(",", "")) *
-                                  double.parse(data.buildUpArea.text);
-                              final formatter = NumberFormat.currency(
-                                      locale: 'en_IN',
-                                      symbol: '',
-                                      decimalDigits: 0)
-                                  .format(propertyAmounts);
-                              data.propertyAmounts.text = formatter.toString();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                  TileFormField(controller: data.uds, title: "UDS"),
+                  TileFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter build-up area';
+                      }
+                      return null;
+                    },
+                    controller: data.buildUpArea,
+                    title: "Build-up Area",
+                    onChanged: (val) {
+                      setState(() {
+                        double propertyAmounts = double.parse(
+                                data.costPerSqft.text.replaceAll(",", "")) *
+                            double.parse(data.buildUpArea.text);
+                        final formatter = NumberFormat.currency(
+                                locale: 'en_IN', symbol: '', decimalDigits: 0)
+                            .format(propertyAmounts);
+                        data.propertyAmounts.text = formatter.toString();
+                      });
+                    },
                   ),
                   Row(
                     children: [
@@ -350,48 +337,48 @@ class _PropertyFormState extends State<PropertyForm> {
                     title: 'Description',
                     maxLines: 8,
                   ),
-                  TileFormField(
-                    prefixText: '₹ ',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      IndianCurrencyFormatter(),
-                    ],
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter property value text';
-                      }
-                      return null;
-                    },
-                    controller: data.propertyAmount,
-                    title: 'Property Value',
-                    keyboardType: TextInputType.number,
-                    // validator: (val) {
-                    //   var required = requiredValidator(val);
-                    //   if (required != null) {
-                    //     return required;
-                    //   } else {
-                    //     var plainText =
-                    //         val!.split('Rs. ').last.replaceAll(",", "");
-                    //     if (plainText != null) {
-                    //       var num = double.tryParse(plainText);
-                    //       if (num == null) {
-                    //         return 'Please enter a valid number';
-                    //       }
-                    //     }
-                    //   }
-                    // },
-                    onChanged: (val) {
-                      setState(() {
-                        double propertyAmounts = double.parse(
-                                data.propertyAmount.text.replaceAll(",", "")) *
-                            double.parse(data.buildUpArea.text);
-                        final formatter = NumberFormat.currency(
-                                locale: 'en_IN', symbol: '', decimalDigits: 0)
-                            .format(propertyAmounts);
-                        data.propertyAmounts.text = formatter.toString();
-                      });
-                    },
-                  ),
+                  // TileFormField(
+                  //   prefixText: '₹ ',
+                  //   inputFormatters: [
+                  //     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  //     IndianCurrencyFormatter(),
+                  //   ],
+                  //   validator: (value) {
+                  //     if (value!.isEmpty) {
+                  //       return 'Please enter property value';
+                  //     }
+                  //     return null;
+                  //   },
+                  //   controller: data.propertyAmount,
+                  //   title: 'Property Value',
+                  //   keyboardType: TextInputType.number,
+                  //   // validator: (val) {
+                  //   //   var required = requiredValidator(val);
+                  //   //   if (required != null) {
+                  //   //     return required;
+                  //   //   } else {
+                  //   //     var plainText =
+                  //   //         val!.split('Rs. ').last.replaceAll(",", "");
+                  //   //     if (plainText != null) {
+                  //   //       var num = double.tryParse(plainText);
+                  //   //       if (num == null) {
+                  //   //         return 'Please enter a valid number';
+                  //   //       }
+                  //   //     }
+                  //   //   }
+                  //   // },
+                  //   // onChanged: (val) {
+                  //   //   setState(() {
+                  //   //     double propertyAmounts = double.parse(
+                  //   //             data.propertyAmount.text.replaceAll(",", "")) *
+                  //   //         double.parse(data.buildUpArea.text);
+                  //   //     final formatter = NumberFormat.currency(
+                  //   //             locale: 'en_IN', symbol: '', decimalDigits: 0)
+                  //   //         .format(propertyAmounts);
+                  //   //     data.propertyAmounts.text = formatter.toString();
+                  //   //   });
+                  //   // },
+                  // ),
                   TileFormField(
                     prefixText: '₹ ',
                     inputFormatters: [
@@ -414,6 +401,17 @@ class _PropertyFormState extends State<PropertyForm> {
 
                         data.costPerSqft,
                     title: "Cost Per Sqft.",
+                    onChanged: (val) {
+                      setState(() {
+                        double propertyAmounts = double.parse(
+                                data.costPerSqft.text.replaceAll(",", "")) *
+                            double.parse(data.buildUpArea.text);
+                        final formatter = NumberFormat.currency(
+                                locale: 'en_IN', symbol: '', decimalDigits: 0)
+                            .format(propertyAmounts);
+                        data.propertyAmounts.text = formatter.toString();
+                      });
+                    },
                     // onChanged: (val) {
                     //   setState(() {
                     //     double sellingAmount =
@@ -434,7 +432,7 @@ class _PropertyFormState extends State<PropertyForm> {
                         ],
                         enabled: false,
                         controller: data.propertyAmounts,
-                        title: "Property Amount",
+                        title: "Basic Price *",
                       )),
                       // Expanded(
                       //   child: TileFormField(
@@ -463,17 +461,25 @@ class _PropertyFormState extends State<PropertyForm> {
                     ],
                   ),
 
+                  const Text(
+                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamduty, Registration, GST etc.",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   const Divider(),
                   ComissionTile(
                       radioButton: false,
                       comissionController: data.agentComission,
-                      title: "Agent Comission",
+                      title: "Agent Commission",
                       name: "Agent"),
                   const Divider(),
                   ComissionTile(
                       radioButton: false,
                       comissionController: data.staffComission,
-                      title: "Staff Comission",
+                      title: "Staff Commission",
                       name: "Staff"),
                   const Divider(),
                   ComissionTile(

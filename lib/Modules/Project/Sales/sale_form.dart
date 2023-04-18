@@ -197,7 +197,7 @@ class _SaleFormState extends State<SaleForm> {
                           onChanged: (val) {
                             reload(() {});
                           },
-                          title: "COMISSION",
+                          title: "COMMISSION",
                         ),
                       ),
                     ],
@@ -313,24 +313,46 @@ class _SaleFormState extends State<SaleForm> {
                           TextEditingController(text: widget.lead.governmentId),
                       title: "Buyer ID",
                       enabled: false),
-                  StatefulBuilder(builder: (context, reload) {
-                    widget.lead.propertyRef.get().then((value) {
-                      reload(() {
-                        property = Property.fromSnapshot(value);
+                  // StatefulBuilder(builder: (context, reload) {
+                  //   widget.lead.propertyRef.get().then((value) {
+                  //     reload(() {
+                  //       property = Property.fromSnapshot(value);
+                  //     });
+                  //   });
+                  //   return TileFormField(
+                  //     // prefixText: '₹ ',
+                  //     enabled: false,
+                  //     controller: TextEditingController(
+                  //         text: NumberFormat.currency(
+                  //       locale: 'en-IN',
+                  //       decimalDigits: 0,
+                  //       symbol: '₹ ',
+                  //     ).format(property?.propertyAmounts ?? 0).toString()),
+                  //     title: "Basic Price",
+                  //   );
+                  // }),
+                  TileFormField(
+                    // prefixText: '₹ ',
+                    controller:
+                        // costPerSqft
+                        TextEditingController(
+                            text: NumberFormat.currency(
+                      locale: 'en-IN',
+                      decimalDigits: 0,
+                    ).format(property?.costPerSqft ?? 0).toString()),
+                    title: "Cost Per Sqft.",
+                    onChanged: (val) {
+                      setState(() {
+                        // double propertyAmounts = double.parse(
+                        //         data.costPerSqft.text.replaceAll(",", "")) *
+                        //     double.parse(data.buildUpArea.text);
+                        // final formatter = NumberFormat.currency(
+                        //         locale: 'en_IN', symbol: '', decimalDigits: 0)
+                        //     .format(propertyAmounts);
+                        // data.propertyAmounts.text = formatter.toString();
                       });
-                    });
-                    return TileFormField(
-                      // prefixText: '₹ ',
-                      enabled: false,
-                      controller: TextEditingController(
-                          text: NumberFormat.currency(
-                        locale: 'en-IN',
-                        decimalDigits: 0,
-                        symbol: '₹ ',
-                      ).format(property?.propertyAmounts ?? 0).toString()),
-                      title: "Property Amount",
-                    );
-                  }),
+                    },
+                  ),
                   TileFormField(
                     prefixText: '₹ ',
                     inputFormatters: [
@@ -341,52 +363,49 @@ class _SaleFormState extends State<SaleForm> {
                       if (val!.isEmpty) {
                         return 'Please enter selling amount';
                       }
-                      if (val.isNotEmpty) {
-                        if (double.parse(
-                                sellingAmount.text.replaceAll(",", "")) ==
-                            0) {
-                          return 'Please enter a amount greater than 0';
-                        } else {
-                          var number = double.tryParse(
-                                  sellingAmount.text.replaceAll(",", "")) ??
-                              0;
-                          if (property != null) {
-                            if (property!.propertyAmount > number) {
-                              return 'Selling amount is less than property amount';
-                            }
-                          }
-                        }
-                      }
+                      // if (val.isNotEmpty) {
+                      //   if (double.parse(
+                      //           sellingAmount.text.replaceAll(",", "")) ==
+                      //       0) {
+                      //     return 'Please enter a amount greater than 0';
+                      //   } else {
+                      //     var number = double.tryParse(
+                      //             sellingAmount.text.replaceAll(",", "")) ??
+                      //         0;
+                      //     if (property != null) {
+                      //       if (property!.propertyAmount > number) {
+                      //         return 'Selling amount is less than property amount';
+                      //       }
+                      //     }
+                      //   }
+                      // }
                       return null;
                     },
                     controller: sellingAmount,
                     title: "Selling Amount",
-                    onChanged: (val) {
-                      // print(double.parse(sellingAmount.text));
-                    },
+                    onChanged: (val) {},
                   ),
-                  TileFormField(
-                      // prefixText: '₹ ',
-                      controller:
-                          // costPerSqft
-                          TextEditingController(
-                              text: NumberFormat.currency(
-                        locale: 'en-IN',
-                        decimalDigits: 0,
-                      ).format(property?.costPerSqft ?? 0).toString()),
-                      title: "Cost Per Sqft."),
+                  const Text(
+                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamduty, Registration, GST etc.",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Divider(),
                   getComission(
                       comission: staffComission,
-                      title: 'STAFF COMISSION',
+                      title: 'STAFF COMMISSION',
                       name: widget.lead.staff?.firstName ?? '',
                       isStaff: true),
                   getComission(
                       comission: agentComission,
-                      title: 'AGENT COMISSION',
+                      title: 'AGENT COMMISSION',
                       name: widget.lead.agent?.firstName ?? ''),
                   getComission(
                       comission: superAgentComission,
-                      title: 'SUPER AGENT COMISSION',
+                      title: 'SUPER AGENT COMMISSION',
                       name: widget.lead.agent?.superAgent?.firstName ?? ''),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -410,19 +429,19 @@ class _SaleFormState extends State<SaleForm> {
                                               width: 400,
                                               child: Column(
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      const Text(
-                                                          'Property Amount'),
-                                                      Text(property!
-                                                          .propertyAmounts
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10),
+                                                  // Row(
+                                                  //   mainAxisAlignment:
+                                                  //       MainAxisAlignment
+                                                  //           .spaceBetween,
+                                                  //   children: [
+                                                  //     const Text(
+                                                  //         'Property Amount'),
+                                                  //     Text(property!
+                                                  //         .propertyAmounts
+                                                  //         .toString()),
+                                                  //   ],
+                                                  // ),
+                                                  const SizedBox(height: 10),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -432,7 +451,7 @@ class _SaleFormState extends State<SaleForm> {
                                                       Text(sellingAmount.text)
                                                     ],
                                                   ),
-                                                  SizedBox(height: 10),
+                                                  const SizedBox(height: 10),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -444,7 +463,7 @@ class _SaleFormState extends State<SaleForm> {
                                                           .value.text)
                                                     ],
                                                   ),
-                                                  SizedBox(height: 10),
+                                                  const SizedBox(height: 10),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -456,7 +475,7 @@ class _SaleFormState extends State<SaleForm> {
                                                           .value.text)
                                                     ],
                                                   ),
-                                                  SizedBox(height: 10),
+                                                  const SizedBox(height: 10),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
