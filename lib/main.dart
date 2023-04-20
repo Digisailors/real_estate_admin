@@ -25,9 +25,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
+        useMaterial3: true,
         backgroundColor: Colors.black,
         primaryColor: Colors.black,
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(bodyColor: Colors.white),
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.white),
       ),
       scrollBehavior: MyCustomScrollBehavior(),
       home: AuthGate(),

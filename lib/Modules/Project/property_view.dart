@@ -22,10 +22,11 @@ import 'Sales/sale_form.dart';
 class PropertyView extends StatefulWidget {
   const PropertyView({
     Key? key,
-    required this.property,
+    required this.property, required this.projectName,
   }) : super(key: key);
 
   final Property property;
+  final String projectName;
 
   @override
   State<PropertyView> createState() => _PropertyViewState();
@@ -38,6 +39,13 @@ class _PropertyViewState extends State<PropertyView> {
       ..setAttribute('download', attachment.name)
       ..click();
     anchor.remove();
+  }
+
+  @override
+  void initState() {
+    print(widget.property.parentProject?.name);
+
+    super.initState();
   }
 
   @override
@@ -62,15 +70,16 @@ class _PropertyViewState extends State<PropertyView> {
             ),
           ),
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Project Name : ${widget.property.parentProject?.name ?? ''}',
-              // style: getText(context).headline5!.apply(
-              //       color: Colors.lightBlue,
-              //     ),
-            ),
-          ),
+          StatefulBuilder(builder: (context, reload) {
+            reload(() {});
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Project Name : ${widget.projectName}',
+              ),
+            );
+          }),
+
           // Padding(
           //   padding: const EdgeInsets.all(8.0),
           //   child: TextButton.icon(

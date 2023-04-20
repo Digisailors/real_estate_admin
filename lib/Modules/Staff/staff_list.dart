@@ -57,7 +57,7 @@ class _StaffListState extends State<StaffList> {
       //   ),
       //   centerTitle: true,
       // ),
-       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: (AppSession().isAdmin)
           ? Padding(
               padding: const EdgeInsets.all(56.0),
@@ -150,9 +150,10 @@ class _StaffListState extends State<StaffList> {
                                 // height: double.maxFinite,
                                 width: double.maxFinite,
                                 child: PaginatedDataTable(
+                                  showFirstLastButtons: true,
                                   rowsPerPage: 20,
-                                      // (Get.height ~/ kMinInteractiveDimension) -
-                                      //     4,
+                                  // (Get.height ~/ kMinInteractiveDimension) -
+                                  //     4,
                                   columns: StaffListSource.getColumns(),
                                   source:
                                       StaffListSource(staffs, context: context),
@@ -256,8 +257,8 @@ class StaffListSource extends DataTableSource {
       const DataColumn(label: Text('PAN')),
       const DataColumn(label: Text('Email')),
       const DataColumn(label: Text('Commission Earned')),
-      const DataColumn(label: Text('Lead count')),
-      const DataColumn(label: Text('Converted LeadCount')),
+      const DataColumn(label: Text('Lead Count')),
+      const DataColumn(label: Text('Converted Lead Count')),
       const DataColumn(label: Text('Edit')),
       const DataColumn(label: Text('Delete')),
     ]);

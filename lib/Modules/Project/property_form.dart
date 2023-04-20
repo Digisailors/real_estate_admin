@@ -410,6 +410,15 @@ class _PropertyFormState extends State<PropertyForm> {
                                 locale: 'en_IN', symbol: '', decimalDigits: 0)
                             .format(propertyAmounts);
                         data.propertyAmounts.text = formatter.toString();
+
+                        //selling amount
+                        double sellingAmounts = double.parse(
+                                data.costPerSqft.text.replaceAll(",", "")) *
+                            double.parse(data.buildUpArea.text);
+                        final formatters = NumberFormat.currency(
+                                locale: 'en_IN', symbol: '', decimalDigits: 0)
+                            .format(sellingAmounts);
+                        data.sellingAmounts.text = formatters.toString();
                       });
                     },
                     // onChanged: (val) {
@@ -462,7 +471,7 @@ class _PropertyFormState extends State<PropertyForm> {
                   ),
 
                   const Text(
-                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamduty, Registration, GST etc.",
+                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamp Duty, Registration, GST etc.",
                     textAlign: TextAlign.start,
                     style: TextStyle(color: Colors.red),
                   ),

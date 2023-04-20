@@ -292,6 +292,7 @@ class _PropertyListState extends State<PropertyList> {
                                                               MaterialPageRoute(
                                                                   builder: (context) =>
                                                                       PropertyView(
+                                                                        projectName: widget.project.name,
                                                                           property:
                                                                               property)));
                                                         }
@@ -410,6 +411,7 @@ class _PropertyListState extends State<PropertyList> {
                                   );
                                 } else {
                                   return PropertyView(
+                                    projectName: widget.project.name,
                                     property: snapshot1.data![selectedIndex!],
                                   );
                                 }

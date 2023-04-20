@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate_admin/Model/Agent.dart';
+import 'package:real_estate_admin/Model/Project.dart';
 import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/sale_form.dart';
@@ -175,6 +176,7 @@ class _LeadListState extends State<LeadList> {
                             SizedBox(
                               width: double.maxFinite,
                               child: PaginatedDataTable(
+                                showFirstLastButtons: true,
                                 dragStartBehavior: DragStartBehavior.start,
                                 rowsPerPage: 20,
                                 // (Get.height ~/ kMinInteractiveDimension) - 7,
@@ -285,24 +287,31 @@ class LeadListSource extends DataTableSource {
         DataCell(Text(_lead.enquiryDate.toString().substring(0, 10))),
         DataCell(TextButton(
           onPressed: () {
-            _lead.propertyRef.get().then((value) {
+            _lead.propertyRef.get().then((value) async {
               var property = Property.fromSnapshot(value);
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
-                      content: SizedBox(
-                        height: 800,
-                        width: 600,
-                        child: PropertyView(
-                          property: property,
+              property.projectRef
+                  .get()
+                  .then((value) =>
+                      Project.fromJson(value.data() as Map<String, dynamic>))
+                  .then((project) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        content: SizedBox(
+                          height: 800,
+                          width: 600,
+                          child: PropertyView(
+                            projectName: project.name,
+                            property: property,
+                          ),
                         ),
-                      ),
-                    );
-                  });
+                      );
+                    });
+              });
             });
           },
           // child: Text(_lead.parentProperty?.title ?? ""),

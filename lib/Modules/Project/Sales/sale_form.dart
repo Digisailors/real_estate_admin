@@ -30,6 +30,7 @@ class _SaleFormState extends State<SaleForm> {
   late ComissionController agentComission;
   late ComissionController superAgentComission;
   final costPerSqft = TextEditingController();
+  // final costPerSqfttemp = TextEditingController();
   final sellingAmount = TextEditingController();
   // CurrencyTextFieldController(
   //     rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
@@ -43,8 +44,25 @@ class _SaleFormState extends State<SaleForm> {
     super.initState();
     widget.lead.loadReferences();
     loadProperty();
-    costPerSqft.text = property?.costPerSqft.toString() ?? "";
-    sellingAmount.text = widget.lead.sellingAmount.toString();
+    // print(property?.costPerSqft.toString());
+    // print(costPerSqfttemp.text);
+    // costPerSqft.text = NumberFormat.currency(
+    //   locale: 'en-IN',
+    //   symbol: '',
+    //   decimalDigits: 0,
+    // ).format(property?.costPerSqft ?? 0).toString();
+    // costPerSqfttemp = TextEditingController(
+    //     text: NumberFormat.currency(
+    //   locale: 'en-IN',
+    //   symbol: '',
+    //   decimalDigits: 0,
+    // ).format(property?.costPerSqft ?? 0).toString());
+
+    // costPerSqft.text = costPerSqfttemp.text;
+
+    // costPerSqfttemp.text = (property?.costPerSqft ?? 0).toString();
+
+    // sellingAmount.text = widget.lead.sellingAmount.toString();
     agentComission = widget.lead.agentComission != null
         ? ComissionController.fromComission(widget.lead.agentComission!)
         : ComissionController();
@@ -313,52 +331,65 @@ class _SaleFormState extends State<SaleForm> {
                           TextEditingController(text: widget.lead.governmentId),
                       title: "Buyer ID",
                       enabled: false),
-                  // StatefulBuilder(builder: (context, reload) {
-                  //   widget.lead.propertyRef.get().then((value) {
-                  //     reload(() {
-                  //       property = Property.fromSnapshot(value);
-                  //     });
-                  //   });
-                  //   return TileFormField(
-                  //     // prefixText: '₹ ',
-                  //     enabled: false,
-                  //     controller: TextEditingController(
-                  //         text: NumberFormat.currency(
-                  //       locale: 'en-IN',
-                  //       decimalDigits: 0,
-                  //       symbol: '₹ ',
-                  //     ).format(property?.propertyAmounts ?? 0).toString()),
-                  //     title: "Basic Price",
-                  //   );
-                  // }),
                   TileFormField(
-                    // prefixText: '₹ ',
-                    controller:
-                        // costPerSqft
-                        TextEditingController(
-                            text: NumberFormat.currency(
+                    enabled: false,
+                    controller: TextEditingController(
+                        text: NumberFormat.currency(
                       locale: 'en-IN',
+                      symbol: '₹ ',
                       decimalDigits: 0,
                     ).format(property?.costPerSqft ?? 0).toString()),
-                    title: "Cost Per Sqft.",
-                    onChanged: (val) {
-                      setState(() {
-                        // double propertyAmounts = double.parse(
-                        //         data.costPerSqft.text.replaceAll(",", "")) *
-                        //     double.parse(data.buildUpArea.text);
-                        // final formatter = NumberFormat.currency(
-                        //         locale: 'en_IN', symbol: '', decimalDigits: 0)
-                        //     .format(propertyAmounts);
-                        // data.propertyAmounts.text = formatter.toString();
-                      });
-                    },
+                    title: "Basic Cost Per Sqft.",
                   ),
+                  StatefulBuilder(builder: (context, reload) {
+                    widget.lead.propertyRef.get().then((value) {
+                      reload(() {
+                        property = Property.fromSnapshot(value);
+                      });
+                    });
+                    return TileFormField(
+                      // prefixText: '₹ ',
+                      enabled: false,
+                      controller: TextEditingController(
+                          text: NumberFormat.currency(
+                        locale: 'en-IN',
+                        decimalDigits: 0,
+                        symbol: '₹ ',
+                      ).format(property?.propertyAmounts ?? 0).toString()),
+                      title: "Basic Price",
+                    );
+                  }),
                   TileFormField(
                     prefixText: '₹ ',
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       IndianCurrencyFormatter(),
                     ],
+                    controller: costPerSqft,
+                    title: "Cost Per Sqft.",
+                    onChanged: (val) {
+                      setState(() {
+                        print(property!.buildUpArea!);
+                        if (costPerSqft.text.isEmpty) {
+                          sellingAmount.text = "0";
+                        }
+                        double sellingAmounts = double.parse(
+                                property!.buildUpArea!.replaceAll(",", "")) *
+                            double.parse(costPerSqft.text.replaceAll(",", ""));
+                        final formatter = NumberFormat.currency(
+                                locale: 'en_IN', symbol: '', decimalDigits: 0)
+                            .format(sellingAmounts);
+                        sellingAmount.text = formatter.toString();
+                      });
+                    },
+                  ),
+                  TileFormField(
+                    enabled: false,
+                    prefixText: '₹ ',
+                    // inputFormatters: [
+                    //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    //   IndianCurrencyFormatter(),
+                    // ],
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Please enter selling amount';
@@ -383,10 +414,9 @@ class _SaleFormState extends State<SaleForm> {
                     },
                     controller: sellingAmount,
                     title: "Selling Amount",
-                    onChanged: (val) {},
                   ),
                   const Text(
-                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamduty, Registration, GST etc.",
+                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamp Duty, Registration, GST etc.",
                     textAlign: TextAlign.start,
                     style: TextStyle(color: Colors.red),
                   ),

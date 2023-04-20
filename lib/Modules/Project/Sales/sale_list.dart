@@ -215,11 +215,11 @@ class _SaleListState extends State<SaleList> {
                               SizedBox(
                                 width: double.maxFinite,
                                 child: PaginatedDataTable(
+                                  showFirstLastButtons: true,
                                   controller: _scrollController,
-                                  rowsPerPage:
-                                      20,
-                                      // (Get.height ~/ kMinInteractiveDimension) -
-                                      //     7,
+                                  rowsPerPage: 20,
+                                  // (Get.height ~/ kMinInteractiveDimension) -
+                                  //     7,
                                   columns: SaleListSourse.getColumns(),
                                   source: SaleListSourse(
                                     snapshot.data!,
@@ -291,24 +291,31 @@ class SaleListSourse extends DataTableSource {
 
         DataCell(TextButton(
           onPressed: () {
-            _lead.propertyRef.get().then((value) {
+            _lead.propertyRef.get().then((value) async {
               var property = Property.fromSnapshot(value);
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
-                      content: SizedBox(
-                        height: 800,
-                        width: 600,
-                        child: PropertyView(
-                          property: property,
+              property.projectRef
+                  .get()
+                  .then((value) =>
+                      Project.fromJson(value.data() as Map<String, dynamic>))
+                  .then((project) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        content: SizedBox(
+                          height: 800,
+                          width: 600,
+                          child: PropertyView(
+                            projectName: project.name,
+                            property: property,
+                          ),
                         ),
-                      ),
-                    );
-                  });
+                      );
+                    });
+              });
             });
           },
           child: Text(_lead.propertyName ?? ""),
