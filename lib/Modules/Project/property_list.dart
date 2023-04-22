@@ -288,13 +288,14 @@ class _PropertyListState extends State<PropertyList> {
                                                                 () {});
                                                           }
                                                         } else {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      PropertyView(
-                                                                        projectName: widget.project.name,
-                                                                          property:
-                                                                              property)));
+                                                          Navigator.of(context).push(MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  PropertyView(
+                                                                      projectName: widget
+                                                                          .project
+                                                                          .name,
+                                                                      property:
+                                                                          property)));
                                                         }
                                                       },
                                                       trailing: Row(
