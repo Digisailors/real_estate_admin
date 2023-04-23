@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Providers/session.dart';
 
-enum ActiveStatus {pendingApproval, active, blocked, all }
+enum ActiveStatus { pendingApproval, active, blocked }
 
 class Agent {
   int leadCount;
