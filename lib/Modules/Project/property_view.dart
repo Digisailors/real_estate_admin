@@ -18,6 +18,8 @@ import '../../Model/Lead.dart';
 import '../../Model/Project.dart';
 import '../../Model/helper models/attachment.dart';
 import 'Sales/sale_form.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:lightbox/lightbox.dart';
 
 class PropertyView extends StatefulWidget {
   const PropertyView({
@@ -207,33 +209,33 @@ class _PropertyViewState extends State<PropertyView> {
     return widgets;
   }
 
-  showImage(int index) {
-    // pageController.initialPage = index;
-    showDialog(
-        context: context,
-        builder: (context) {
-          return PhotoViewGallery.builder(
-            itemCount: widget.property.photos.length,
-            builder: (BuildContext context, int index) {
-              return PhotoViewGalleryPageOptions(
-                imageProvider: NetworkImage(widget.property.photos[index]),
-                initialScale: PhotoViewComputedScale.contained * 0.8,
-                heroAttributes:
-                    PhotoViewHeroAttributes(tag: widget.property.photos[index]),
-              );
-            },
+  // showImage(int index) {
+  //   // pageController.initialPage = index;
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return PhotoViewGallery.builder(
+  //           itemCount: widget.property.photos.length,
+  //           builder: (BuildContext context, int index) {
+  //             return PhotoViewGalleryPageOptions(
+  //               imageProvider: NetworkImage(widget.property.photos[index]),
+  //               initialScale: PhotoViewComputedScale.contained * 0.8,
+  //               heroAttributes:
+  //                   PhotoViewHeroAttributes(tag: widget.property.photos[index]),
+  //             );
+  //           },
 
-            loadingBuilder: (context, event) => const Center(
-              child: SizedBox(
-                width: 20.0,
-                height: 20.0,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            // pageController: pageController,
-          );
-        });
-  }
+  //           loadingBuilder: (context, event) => const Center(
+  //             child: SizedBox(
+  //               width: 20.0,
+  //               height: 20.0,
+  //               child: CircularProgressIndicator(),
+  //             ),
+  //           ),
+  //           // pageController: pageController,
+  //         );
+  //       });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -307,13 +309,26 @@ class _PropertyViewState extends State<PropertyView> {
                             borderRadius: BorderRadius.circular(10),
                             child: GestureDetector(
                               onTap: () {
-                                showImage(index);
+                                Navigator.push(
+                                    context,
+                                    LightBoxRoute(
+                                        builder: (BuildContext context) {
+                                          return LightBox(
+                                            initialIndex: index,
+                                            imageType: ImageType.URL,
+                                            images: [img],
+                                          );
+                                        },
+                                        dismissible: false));
                               },
-                              child: Image.network(
-                                img,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                              child: SizedBox(
+                                height: 100,width:100,
+                                child: Image.network(
+                                  img,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
