@@ -92,25 +92,19 @@ class _ProjectListState extends State<ProjectList> {
                                 DropdownMenuItem<String>(
                                   child: Text("All"),
                                 ),
-                                DropdownMenuItem<String>(
-                                  value: 'House',
-                                  child: Text("Individual House"),
-                                ),
                                 DropdownMenuItem(
                                     value: 'Villa', child: Text("Villa")),
                                 DropdownMenuItem(
                                     value: 'Shop',
-                                    child: Text("Commercial Building ")),
+                                    child: Text("Shop")),
                                 DropdownMenuItem(
                                     value: 'Building',
-                                    child: Text("Apartments")),
+                                    child: Text("Apartment")),
                                 DropdownMenuItem(
                                     value: 'Land', child: Text("Land")),
                                 DropdownMenuItem(
-                                    value: 'Plots', child: Text("Plots")),
-                                DropdownMenuItem(
                                     value: 'FormLand',
-                                    child: Text("Form Land")),
+                                    child: Text("Farm Land")),
                               ],
                               onChanged: (value) {
                                 setState(() {
@@ -160,14 +154,6 @@ class _ProjectListState extends State<ProjectList> {
                               },
                               child: const Text("Add")),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {});
-                          },
-                          child: const Text("Refresh")),
-                    )
                   ],
                 ),
               ),

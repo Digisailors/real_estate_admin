@@ -43,7 +43,7 @@ class ProgressCard extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     cardTitle,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 const Divider(),
@@ -105,11 +105,11 @@ class ProgressCard extends StatelessWidget {
                                       Text(neumeratorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                       Text(denominatorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ])
                                   ]
                                 : [
@@ -122,13 +122,13 @@ class ProgressCard extends StatelessWidget {
                                           ).format(numerator),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .headlineSmall),
                                     ]),
                                     TableRow(children: [
                                       Text(neumeratorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ]),
                                     const TableRow(
                                         children: [SizedBox(height: 8)]),
@@ -141,13 +141,13 @@ class ProgressCard extends StatelessWidget {
                                           ).format(denominator),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .headlineSmall),
                                     ]),
                                     TableRow(children: [
                                       Text(denominatorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ]),
                                   ],
                           ),

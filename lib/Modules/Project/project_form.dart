@@ -134,22 +134,18 @@ class ProjectForm extends StatelessWidget {
                           value: controller.type,
                           items: const [
                             DropdownMenuItem<String>(
-                              value: 'House',
-                              child: Text("Individual House"),
+                              value: 'Villa',
+                              child: Text("Villa"),
                             ),
                             DropdownMenuItem(
-                                value: 'Villa', child: Text("Villa")),
-                            DropdownMenuItem(
-                                value: 'Shop', child: Text("Commercial Building")),
+                                value: 'Shop', child: Text("Shop")),
                             DropdownMenuItem(
                                 value: 'Building',
-                                child: Text("Apartments")),
+                                child: Text("Apartment")),
                             DropdownMenuItem(
                                 value: 'Land', child: Text("Land")),
                             DropdownMenuItem(
-                                value: 'Plots', child: Text("Plots")),
-                            DropdownMenuItem(
-                                value: 'FormLand', child: Text("Form Land")),
+                                value: 'FormLand', child: Text("Farm Land")),
                           ],
                           onChanged: controller.onChanged,
                         ),

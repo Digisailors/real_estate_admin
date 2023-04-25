@@ -10,7 +10,7 @@ class ProjectFormData extends ChangeNotifier {
   ProjectFormData();
 
   final TextEditingController name = TextEditingController();
-  String type = 'House';
+  String type = 'Villa';
   final TextEditingController location = TextEditingController();
 
   DocumentReference? _reference;

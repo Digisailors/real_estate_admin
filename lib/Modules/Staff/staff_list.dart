@@ -57,29 +57,29 @@ class _StaffListState extends State<StaffList> {
       //   ),
       //   centerTitle: true,
       // ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      floatingActionButton: (AppSession().isAdmin)
-          ? Padding(
-              padding: const EdgeInsets.all(56.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  // Get.to(() => const AgentForm());
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
-                          content: SizedBox(
-                              height: 800, width: 600, child: StaffForm()),
-                        );
-                      });
-                },
-                child: const Icon(Icons.add),
-              ),
-            )
-          : null,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      // floatingActionButton: (AppSession().isAdmin)
+      //     ? Padding(
+      //         padding: const EdgeInsets.all(56.0),
+      //         child: FloatingActionButton(
+      //           onPressed: () {
+      //             // Get.to(() => const AgentForm());
+      //             showDialog(
+      //                 context: context,
+      //                 builder: (context) {
+      //                   return const AlertDialog(
+      //                     shape: RoundedRectangleBorder(
+      //                         borderRadius:
+      //                             BorderRadius.all(Radius.circular(10.0))),
+      //                     content: SizedBox(
+      //                         height: 800, width: 600, child: StaffForm()),
+      //                   );
+      //                 });
+      //           },
+      //           child: const Icon(Icons.add),
+      //         ),
+      //       )
+      //     : null,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -93,8 +93,7 @@ class _StaffListState extends State<StaffList> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
                           width: 300,
@@ -106,7 +105,25 @@ class _StaffListState extends State<StaffList> {
                               },
                               controller: searchController,
                               title: "SEARCH")),
-                      // Padding(
+                              SizedBox(width: 50,),
+                      SizedBox(height: 35,width: 130,
+                        child: ElevatedButton(
+                                onPressed: () {
+                  // Get.to(() => const AgentForm());
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          content: SizedBox(
+                              height: 800, width: 600, child: StaffForm()),
+                        );
+                      });
+                                },
+                                child: const Text("Add Staff",style: TextStyle(fontSize: 18))),
+                      ),                      // Padding(
                       //   padding: const EdgeInsets.all(16.0),
                       //   child: ElevatedButton(
                       //       onPressed: reload,

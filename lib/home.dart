@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
               AppSession().isAdmin
                   ? ListTile(
                       selected: selectedTile == 3,
-                      title: const Text("Staffs"),
+                      title: const Text("Staff"),
                       trailing: const Icon(Icons.people_sharp),
                       onTap: () {
                         // session.pageController.jumpToPage(2);
