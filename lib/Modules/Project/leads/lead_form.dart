@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:real_estate_admin/Model/Lead.dart';
 import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Model/Result.dart';
@@ -58,13 +59,14 @@ class _LeadFormState extends State<LeadForm> {
                 Expanded(
                     child: TileFormField(
                   controller: controller.name,
-                  title: 'NAME',
+                  title: 'NAME *',
                   validator: requiredValidator,
                 )),
                 Expanded(
                     child: TileFormField(
+                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
                   controller: controller.phoneNumber,
-                  title: 'PHONE',
+                  title: 'PHONE *',
                   validator: (val) {
                     var ret = requiredPhone(val);
                     if (ret != null) {
@@ -154,7 +156,7 @@ class _LeadFormState extends State<LeadForm> {
               ),
             ),
             ListTile(
-              title: const Text("AGENT"),
+              title: const Text("AGENT *"),
               subtitle: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: DropdownButtonFormField<DocumentReference?>(

@@ -46,13 +46,13 @@ class _AgentFormState extends State<AgentForm> {
                   Expanded(
                     child: TileFormField(
                       controller: controller.firstName,
-                      title: "First Name",
+                      title: "FIRST NAME *",
                       validator: requiredValidator,
                     ),
                   ),
                   Expanded(
                     child: TileFormField(
-                        controller: controller.lastName, title: "Last Name"),
+                        controller: controller.lastName, title: "LAST NAME"),
                   ),
                 ],
               ),
@@ -61,14 +61,15 @@ class _AgentFormState extends State<AgentForm> {
                   Expanded(
                     child: TileFormField(
                       controller: controller.email,
-                      title: "EMAIL",
+                      title: "EMAIL *",
                       validator: requiredEmail,
                     ),
                   ),
                   Expanded(
                     child: TileFormField(
+                      inputFormatters: [LengthLimitingTextInputFormatter(10)],
                       controller: controller.phoneNumber,
-                      title: "PHONE NUMBER",
+                      title: "PHONE NUMBER *",
                       validator: requiredPhone,
                     ),
                   ),
@@ -92,10 +93,10 @@ class _AgentFormState extends State<AgentForm> {
                     }
                   },
                   controller: controller.panCardNumber,
-                  title: "PAN NUMBER"),
+                  title: "PAN NUMBER *"),
               TileFormField(
                 controller: controller.addressLine1,
-                title: "ADDRESS LINE 1",
+                title: "ADDRESS LINE 1 *",
                 validator: requiredValidator,
               ),
               TileFormField(
@@ -105,14 +106,14 @@ class _AgentFormState extends State<AgentForm> {
                   Expanded(
                     child: TileFormField(
                       controller: controller.city,
-                      title: "CITY",
+                      title: "CITY *",
                       validator: requiredValidator,
                     ),
                   ),
                   Expanded(
                     child: TileFormField(
                       controller: controller.pincode,
-                      title: "PIN CODE",
+                      title: "PIN CODE *",
                       validator: requiredPinCode,
                     ),
                   ),

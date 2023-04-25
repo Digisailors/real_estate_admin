@@ -45,10 +45,10 @@ class _StaffFormState extends State<StaffForm> {
               Row(
                 children: [
                   Expanded(
-                    child: TileFormField(validator: requiredValidator, controller: controller.firstName, title: "First Name"),
+                    child: TileFormField(validator: requiredValidator, controller: controller.firstName, title: "FIRST NAME *"),
                   ),
                   Expanded(
-                    child: TileFormField(controller: controller.lastName, title: "Last Name"),
+                    child: TileFormField(controller: controller.lastName, title: "LAST NAME"),
                   ),
                 ],
               ),
@@ -62,10 +62,11 @@ class _StaffFormState extends State<StaffForm> {
                           }
                         },
                         controller: controller.email,
-                        title: "EMAIL"),
+                        title: "EMAIL *"),
                   ),
                   Expanded(
                     child: TileFormField(
+                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         validator: (string) {
                           if ((string ?? '').trim().isEmpty) {
                             return 'Please enter a phonenumber';
@@ -81,8 +82,9 @@ class _StaffFormState extends State<StaffForm> {
                           //8610729733
                           return null;
                         },
+                        keyboardType: TextInputType.number,
                         controller: controller.phoneNumber,
-                        title: "PHONE NUMBER"),
+                        title: "PHONE NUMBER *"),
                   ),
                 ],
               ),
@@ -104,7 +106,7 @@ class _StaffFormState extends State<StaffForm> {
                     }
                   },
                   controller: controller.panCardNumber,
-                  title: "PAN NUMBER"),
+                  title: "PAN NUMBER *"),
               TileFormField(controller: controller.addressLine1, title: "ADDRESS LINE 1"),
               TileFormField(controller: controller.addressLine2, title: "ADDRESS LINE 2"),
               Row(
@@ -113,36 +115,20 @@ class _StaffFormState extends State<StaffForm> {
                     child: TileFormField(controller: controller.city, title: "CITY"),
                   ),
                   Expanded(
-                    child: TileFormField(controller: controller.pincode, title: "PIN CODE"),
+                    child: TileFormField(
+                      inputFormatters: [LengthLimitingTextInputFormatter(6)],
+                      controller: controller.pincode, title: "PIN CODE"),
                   ),
                 ],
               ),
-              AppSession().isAdmin
-                  ? Row(
-                      children: [
-                        Expanded(
-                          child: CheckboxListTile(
-                              title: const Text('Mark as Admin'),
-                              value: controller.isAdmin,
-                              onChanged: (val) {
-                                setState(() {
-                                  controller.isAdmin = val ?? controller.isAdmin;
-                                });
-                              }),
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                      ],
-                    )
-                  : Container(),
+              Container(),
               if (widget.staff == null)
                 Row(
                   children: [
                     Expanded(
                         child: TileFormField(
                       controller: controller.password,
-                      title: "Password",
+                      title: "PASSWORD *",
                       validator: (text) {
                         if ((text ?? "").isEmpty) {
                           return "Password should not be empty";
@@ -159,7 +145,7 @@ class _StaffFormState extends State<StaffForm> {
                     Expanded(
                         child: TileFormField(
                       controller: controller.confirmPassword,
-                      title: "Confirm password",
+                      title: "CONFIRM PASSWORD",
                       obscureText: !visibility,
                     )),
                     IconButton(
