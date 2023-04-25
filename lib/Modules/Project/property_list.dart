@@ -97,14 +97,18 @@ class _PropertyListState extends State<PropertyList> {
                                         onPressed: Navigator.of(context).pop,
                                         child: const Text("<< GO BACK")),
                                     const Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 30),
-                                      child: Text(
-                                        "Project : ${widget.project.name}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
+                                    Text(
+                                      "Project Name : ",
+                                      style: getText(context).headline6!.apply(
+                                            color: Colors.lightBlue,
+                                          ),
+                                    ),
+                                    Text(
+                                      "${widget.project.name}",
+                                      style: getText(context).headline6!.apply(
+                                            color: Colors.lightBlue,
+                                          ),
+                                    ),
                                   ],
                                 ),
                               ),

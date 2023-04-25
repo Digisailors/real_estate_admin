@@ -163,10 +163,12 @@ class _PropertyFormState extends State<PropertyForm> {
               child: Row(
                 children: [
                   const Text('Add Property'),
-                  const SizedBox(width: 80),
+                  const SizedBox(width: 100),
+                  Text("Project Name : ",
+                    style: const TextStyle(fontSize: 18)),
                   Text(
-                    "Project Name : ${widget.project.name}",
-                    style: const TextStyle(fontSize: 20),
+                    "${widget.project.name}",maxLines: 2,
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               ),
@@ -186,7 +188,7 @@ class _PropertyFormState extends State<PropertyForm> {
                   ),
                   TileFormField(
                     controller: data.title,
-                    title: "Title",
+                    title: "Title *",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter Title';
@@ -224,7 +226,7 @@ class _PropertyFormState extends State<PropertyForm> {
                       )
                     ],
                   ),
-                  TileFormField(controller: data.uds, title: "UDS"),
+//                  TileFormField(controller: data.uds, title: "UDS"),
                   TileFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -233,7 +235,7 @@ class _PropertyFormState extends State<PropertyForm> {
                       return null;
                     },
                     controller: data.buildUpArea,
-                    title: "Build-up Area",
+                    title: "Build-up Area *",
                     onChanged: (val) {
                       setState(() {
                         double propertyAmounts = double.parse(
@@ -258,7 +260,7 @@ class _PropertyFormState extends State<PropertyForm> {
                               value: data.bedroomCount,
                               items: <int>[1, 2, 3]
                                   .map((e) => DropdownMenuItem<int>(
-                                      value: e, child: Text("$e BHK")))
+                                      value: e, child: Text("$e BedRoom")))
                                   .followedBy([
                                 const DropdownMenuItem(child: Text("None"))
                               ]).toList(),
@@ -400,7 +402,7 @@ class _PropertyFormState extends State<PropertyForm> {
                         // ).format(data.costPerSqft ?? 0).toString()),
 
                         data.costPerSqft,
-                    title: "Cost Per Sqft.",
+                    title: "Cost Per Sqft. *",
                     onChanged: (val) {
                       setState(() {
                         double propertyAmounts = double.parse(
@@ -441,7 +443,7 @@ class _PropertyFormState extends State<PropertyForm> {
                         ],
                         enabled: false,
                         controller: data.propertyAmounts,
-                        title: "Basic Price *",
+                        title: "Basic Price",
                       )),
                       // Expanded(
                       //   child: TileFormField(
@@ -470,11 +472,11 @@ class _PropertyFormState extends State<PropertyForm> {
                     ],
                   ),
 
-                  const Text(
-                    "* Price excludes TNEB, Private Terrace, Car Parking, Stamp Duty, Registration, GST etc.",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(color: Colors.red),
-                  ),
+                  // const Text(
+                  //   "* Price excludes TNEB, Private Terrace, Car Parking, Stamp Duty, Registration, GST etc.",
+                  //   textAlign: TextAlign.start,
+                  //   style: TextStyle(color: Colors.red),
+                  // ),
                   const SizedBox(
                     height: 5,
                   ),

@@ -152,7 +152,7 @@ class _ProjectListState extends State<ProjectList> {
                                       );
                                     });
                               },
-                              child: const Text("Add")),
+                              child: const Text("Add",style: TextStyle(fontSize: 18))),
                     ),
                   ],
                 ),

@@ -24,7 +24,8 @@ import 'package:lightbox/lightbox.dart';
 class PropertyView extends StatefulWidget {
   const PropertyView({
     Key? key,
-    required this.property, required this.projectName,
+    required this.property,
+    required this.projectName,
   }) : super(key: key);
 
   final Property property;
@@ -66,21 +67,21 @@ class _PropertyViewState extends State<PropertyView> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Feature',
-              style: getText(context).headline5!.apply(
+              style: getText(context).headline6!.apply(
                     color: Colors.lightBlue,
                   ),
             ),
           ),
-          const Spacer(),
-          StatefulBuilder(builder: (context, reload) {
-            reload(() {});
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Project Name : ${widget.projectName}',
-              ),
-            );
-          }),
+//          const Spacer(),
+          // StatefulBuilder(builder: (context, reload) {
+          //   reload(() {});
+          //   return Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: Text(
+          //       'Project Name : ${widget.projectName}',
+          //     ),
+          //   );
+          // }),
 
           // Padding(
           //   padding: const EdgeInsets.all(8.0),
@@ -110,9 +111,16 @@ class _PropertyViewState extends State<PropertyView> {
           // )
         ],
       ),
-      SizedBox(
-        height: Get.height * 0.15,
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('Documents', style: TextStyle(fontSize: 16)),
+      ),
+      Container(
+        height: Get.height * 0.3,
         width: double.maxFinite,
+        decoration: BoxDecoration(
+            border: Border.all(color: Color.fromARGB(255, 129, 127, 127)),
+            borderRadius: BorderRadius.circular(10)),
         child: ListView.builder(
           itemCount: widget.property.documents.length,
           itemBuilder: (BuildContext context, int index) {
@@ -157,9 +165,14 @@ class _PropertyViewState extends State<PropertyView> {
           )),
           Expanded(
               child: ListTile(
-            title: const Text("UDS"),
-            subtitle: Text(widget.property.uds?.toString() ?? "Nil"),
+            title: const Text("Bed Rooms"),
+            subtitle: Text(widget.property.bedroomCount?.toString() ?? "Nil"),
           ))
+          // Expanded(
+          //     child: ListTile(
+          //   title: const Text("UDS"),
+          //   subtitle: Text(widget.property.uds?.toString() ?? "Nil"),
+          // ))
         ],
       ),
       Row(
@@ -172,9 +185,11 @@ class _PropertyViewState extends State<PropertyView> {
           )),
           Expanded(
               child: ListTile(
-            title: const Text("Bed Rooms"),
-            subtitle: Text(widget.property.bedroomCount?.toString() ?? "Nil"),
-          ))
+            title: const Text("Car Parking"),
+            subtitle: Text((widget.property.isCarParkingAvailable ?? false)
+                ? "Available"
+                : "Not Available"),
+          )),
         ],
       ),
       Row(
@@ -186,16 +201,13 @@ class _PropertyViewState extends State<PropertyView> {
                 ? "Available"
                 : "Not Available"),
           )),
-          Expanded(
-              child: ListTile(
-            title: const Text("Car Parking"),
-            subtitle: Text((widget.property.isCarParkingAvailable ?? false)
-                ? "Available"
-                : "Not Available"),
-          )),
         ],
       ),
     ]);
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('Features', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+    );
     widgets.addAll((widget.property.features).split('\n').map(
           (e) => Align(
             alignment: Alignment.centerLeft,
@@ -248,6 +260,21 @@ class _PropertyViewState extends State<PropertyView> {
             Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                StatefulBuilder(builder: (context, reload) {
+                  reload(() {});
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${widget.projectName}',
+                        style: getText(context).headline5!.apply(
+                              color: Colors.lightBlue,
+                            ),
+                      ),
+                    ),
+                  );
+                }),
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: GestureDetector(
@@ -322,7 +349,8 @@ class _PropertyViewState extends State<PropertyView> {
                                         dismissible: false));
                               },
                               child: SizedBox(
-                                height: 100,width:100,
+                                height: 100,
+                                width: 100,
                                 child: Image.network(
                                   img,
                                   width: 100,
@@ -371,7 +399,7 @@ class _PropertyViewState extends State<PropertyView> {
                           child: Text(
                             'Description',
                             style: getText(context)
-                                .headline5!
+                                .headline4!
                                 .apply(color: Colors.lightBlue),
                           ),
                         ),
