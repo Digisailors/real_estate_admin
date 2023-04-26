@@ -214,7 +214,7 @@ class LeadListSource extends DataTableSource {
   final BuildContext context;
   LeadListSource(this.leads, {required this.context});
 
-  getColor(Lead lead) {
+  Color getColor(Lead lead) {
     switch (lead.leadStatus) {
       case LeadStatus.lead:
         return Colors.transparent;

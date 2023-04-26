@@ -556,6 +556,12 @@ class _SaleFormState extends State<SaleForm> {
                                                           .text
                                                           .replaceAll(",", ""));
                                                   print(lead.toJson());
+                                                  
+                                                  lead.propertyRef.get().then((value) => Property.fromSnapshot(value)).then((value) {
+
+                                                    
+                                                  });
+
                                                   future = lead.reference
                                                       .update(lead.toJson())
                                                       .then((value) => Result(

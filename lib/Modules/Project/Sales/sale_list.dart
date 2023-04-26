@@ -334,7 +334,8 @@ class SaleListSourse extends DataTableSource {
                       info: (_lead.leadStatus == LeadStatus.sold &&
                               AppSession().isAdmin)
                           .toString());
-                  if (_lead.leadStatus == LeadStatus.sold &&
+                  if ((_lead.leadStatus == LeadStatus.sold ||
+                          _lead.leadStatus == LeadStatus.pendingApproval) &&
                       AppSession().isAdmin) {
                     return AlertDialog(
                       shape: const RoundedRectangleBorder(

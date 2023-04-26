@@ -229,7 +229,8 @@ class Lead {
     }
   }
 
-  static Stream<List<Lead>> getLeads({Agent? agent, Staff? staff, String search = ""}) {
+  static Stream<List<Lead>> getLeads(
+      {Agent? agent, Staff? staff, String search = ""}) {
     var query = FirebaseFirestore.instance
         .collectionGroup('leads')
         .where('leadStatus', isEqualTo: LeadStatus.lead.index);
@@ -241,9 +242,8 @@ class Lead {
       print(staff.reference);
       query = query.where('staffRef', isEqualTo: staff.reference);
     }
-     if (search.isNotEmpty) {
-      query = query.where('search',
-          arrayContains: search.toLowerCase().trim());
+    if (search.isNotEmpty) {
+      query = query.where('search', arrayContains: search.toLowerCase().trim());
     }
     return query.snapshots().map((event) {
       return event.docs.map((e) => Lead.fromSnapshot(e)).toList();
