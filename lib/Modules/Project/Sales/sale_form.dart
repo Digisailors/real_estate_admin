@@ -464,7 +464,7 @@ class _SaleFormState extends State<SaleForm> {
                                                           property.superAgentComission = lead.superAgentComission;
                                                         }
                                                         var batch = FirebaseFirestore.instance.batch();
-                                                        await property.projectRef.collection('leads').get().then((value) {
+                                                        await property.reference.collection('leads').get().then((value) {
                                                           for (var element in value.docs) {
                                                             if (element.reference != lead.reference) {
                                                               batch.update(element.reference, {"isParentPropertySold": true});
