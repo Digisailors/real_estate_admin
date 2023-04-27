@@ -98,12 +98,6 @@ class _PropertyListState extends State<PropertyList> {
                                         child: const Text("<< GO BACK")),
                                     const Spacer(),
                                     Text(
-                                      "Project Name : ",
-                                      style: getText(context).headline6!.apply(
-                                            color: Colors.lightBlue,
-                                          ),
-                                    ),
-                                    Text(
                                       "${widget.project.name}",
                                       style: getText(context).headline6!.apply(
                                             color: Colors.lightBlue,

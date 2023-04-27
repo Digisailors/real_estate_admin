@@ -118,40 +118,78 @@ class ProjectForm extends StatelessWidget {
                       validator: requiredValidator,
                       controller: controller.name,
                       title: 'Project Name'),
-                  TileFormField(
-                      validator: requiredValidator,
-                      controller: controller.location,
-                      title: 'Project Location'),
-                  ListTile(
-                    title: const Text('Project Type'),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField<String>(
-                          isDense: true,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder()),
-                          value: controller.type,
-                          items: const [
-                            DropdownMenuItem<String>(
-                              value: 'Villa',
-                              child: Text("Villa"),
-                            ),
-                            DropdownMenuItem(
-                                value: 'Shop', child: Text("Shop")),
-                            DropdownMenuItem(
-                                value: 'Building',
-                                child: Text("Apartment")),
-                            DropdownMenuItem(
-                                value: 'Land', child: Text("Land")),
-                            DropdownMenuItem(
-                                value: 'FormLand', child: Text("Farm Land")),
-                          ],
-                          onChanged: controller.onChanged,
-                        ),
+                  Row(
+                    children: [
+                      SizedBox(width: 330,height: 100,
+                        child: TileFormField(
+                            validator: requiredValidator,
+                            controller: controller.location,
+                            title: 'Project Location'),
                       ),
+                          SizedBox(width: 10,),
+SizedBox(width: 260,height: 100,
+  child:   ListTile(
+  
+                      title: const Text('Project Type'),
+  
+                      subtitle: Padding(
+  
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+  
+                        child: DropdownButtonHideUnderline(
+  
+                          child: DropdownButtonFormField<String>(
+  
+                            isDense: true,
+  
+                            decoration: const InputDecoration(
+  
+                                border: OutlineInputBorder()),
+  
+                            value: controller.type,
+  
+                            items: const [
+  
+                              DropdownMenuItem<String>(
+  
+                                value: 'Villa',
+  
+                                child: Text("Villa"),
+  
+                              ),
+  
+                              DropdownMenuItem(
+  
+                                  value: 'Shop', child: Text("Shop")),
+  
+                              DropdownMenuItem(
+  
+                                  value: 'Building',
+  
+                                  child: Text("Apartment")),
+  
+                              DropdownMenuItem(
+  
+                                  value: 'Land', child: Text("Land")),
+  
+                              DropdownMenuItem(
+  
+                                  value: 'FormLand', child: Text("Farm Land")),
+  
+                            ],
+  
+                            onChanged: controller.onChanged,
+  
+                          ),
+  
+                        ),
+  
+                      ),
+  
                     ),
+),        SizedBox(height: 35,)            ],
                   ),
+                  
                   Container(
                     height: 60,
                     width: double.maxFinite,
