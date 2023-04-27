@@ -7,6 +7,8 @@ import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Model/Result.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Modules/Dashboard/bar_chart.dart';
+import 'package:real_estate_admin/Modules/Project/propertyController.dart';
+import 'package:real_estate_admin/Modules/Project/property_form_data.dart';
 import 'package:real_estate_admin/Providers/session.dart';
 import 'package:real_estate_admin/widgets/formfield.dart';
 import 'package:real_estate_admin/widgets/future_dialog.dart';
@@ -35,8 +37,7 @@ class _SaleFormState extends State<SaleForm> {
   // CurrencyTextFieldController(
   //     rightSymbol: 'Rs. ', decimalSymbol: '.', thousandSymbol: ',');
 
-  double get sellingPrice =>
-      double.parse(sellingAmount.text.replaceAll(",", ""));
+  double get sellingPrice => double.parse(sellingAmount.text.replaceAll(",", ""));
 
   Property? property;
   @override
@@ -63,41 +64,27 @@ class _SaleFormState extends State<SaleForm> {
     // costPerSqfttemp.text = (property?.costPerSqft ?? 0).toString();
 
     // sellingAmount.text = widget.lead.sellingAmount.toString();
-    agentComission = widget.lead.agentComission != null
-        ? ComissionController.fromComission(widget.lead.agentComission!)
-        : ComissionController();
-    staffComission = widget.lead.staffComission != null
-        ? ComissionController.fromComission(widget.lead.staffComission!)
-        : ComissionController();
-    superAgentComission = widget.lead.superAgentComission != null
-        ? ComissionController.fromComission(widget.lead.superAgentComission!)
-        : ComissionController();
+    agentComission = widget.lead.agentComission != null ? ComissionController.fromComission(widget.lead.agentComission!) : ComissionController();
+    staffComission = widget.lead.staffComission != null ? ComissionController.fromComission(widget.lead.staffComission!) : ComissionController();
+    superAgentComission =
+        widget.lead.superAgentComission != null ? ComissionController.fromComission(widget.lead.superAgentComission!) : ComissionController();
   }
 
   bool loadingProperty = false;
 
   loadProperty() {
     loadingProperty = true;
-    widget.lead.propertyRef
-        .get()
-        .then((value) => Property.fromSnapshot(value))
-        .then((value) {
+    widget.lead.propertyRef.get().then((value) => Property.fromSnapshot(value)).then((value) {
       loadingProperty = false;
       property = value;
-      if (widget.lead.agentComission == null &&
-          property!.agentComission != null) {
-        agentComission =
-            ComissionController.fromComission(property!.agentComission!);
+      if (widget.lead.agentComission == null && property!.agentComission != null) {
+        agentComission = ComissionController.fromComission(property!.agentComission!);
       }
-      if (widget.lead.staffComission == null &&
-          property!.staffComission != null) {
-        staffComission =
-            ComissionController.fromComission(property!.staffComission!);
+      if (widget.lead.staffComission == null && property!.staffComission != null) {
+        staffComission = ComissionController.fromComission(property!.staffComission!);
       }
-      if (widget.lead.superAgentComission == null &&
-          property!.superAgentComission != null) {
-        superAgentComission =
-            ComissionController.fromComission(property!.superAgentComission!);
+      if (widget.lead.superAgentComission == null && property!.superAgentComission != null) {
+        superAgentComission = ComissionController.fromComission(property!.superAgentComission!);
       }
       if (mounted) {
         setState(() {});
@@ -108,19 +95,14 @@ class _SaleFormState extends State<SaleForm> {
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(width: 1.0, color: Colors.grey),
-      borderRadius: const BorderRadius.all(
-          Radius.circular(5.0) //                 <--- border radius here
+      borderRadius: const BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
           ),
     );
   }
 
   final _formKey = GlobalKey<FormState>();
 
-  getComission(
-      {required ComissionController comission,
-      required String title,
-      required String name,
-      bool isStaff = false}) {
+  getComission({required ComissionController comission, required String title, required String name, bool isStaff = false}) {
     return ListTile(
       title: Text(title),
       subtitle: Padding(
@@ -139,29 +121,24 @@ class _SaleFormState extends State<SaleForm> {
                         title: const Text("NAME"),
                         subtitle: isStaff
                             ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child:
-                                    DropdownButtonFormField<DocumentReference?>(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: DropdownButtonFormField<DocumentReference?>(
                                   value: widget.lead.staffRef,
                                   items: AppSession()
                                       .staffs
-                                      .map((staff) =>
-                                          DropdownMenuItem<DocumentReference?>(
+                                      .map((staff) => DropdownMenuItem<DocumentReference?>(
                                             value: staff.reference,
                                             child: Text(staff.firstName),
                                           ))
                                       .toList(),
                                   isExpanded: true,
-                                  decoration: const InputDecoration(
-                                      border: OutlineInputBorder()),
+                                  decoration: const InputDecoration(border: OutlineInputBorder()),
                                   onChanged: AppSession().isAdmin
                                       ? (val) {
                                           if (val != null) {
                                             widget.lead.staffRef = val;
                                             val.get().then((value) {
-                                              widget.lead.staff =
-                                                  Staff.fromSnapshot(value);
+                                              widget.lead.staff = Staff.fromSnapshot(value);
                                             });
                                           }
                                         }
@@ -180,9 +157,7 @@ class _SaleFormState extends State<SaleForm> {
                                       padding: const EdgeInsets.only(left: 8),
                                       child: Text(
                                         name.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2,
+                                        style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                     ),
                                   ),
@@ -202,12 +177,9 @@ class _SaleFormState extends State<SaleForm> {
                           ],
                           controller: comission.value,
                           validator: (val) {
-                            double actualAmount =
-                                comission.comissionType == ComissionType.percent
-                                    ? (comission.comission.value *
-                                        sellingPrice /
-                                        100)
-                                    : comission.comission.value;
+                            double actualAmount = comission.comissionType == ComissionType.percent
+                                ? (comission.comission.value * sellingPrice / 100)
+                                : comission.comission.value;
                             if (actualAmount > sellingPrice) {
                               return "Commission amount Should be less than Selling price";
                             }
@@ -229,8 +201,7 @@ class _SaleFormState extends State<SaleForm> {
                             subtitle: Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Container(
-                                decoration: myBoxDecoration()
-                                    .copyWith(color: Colors.grey.shade300),
+                                decoration: myBoxDecoration().copyWith(color: Colors.grey.shade300),
                                 // margin: const EdgeInsets.all(8),
                                 height: 56,
                                 child: Align(
@@ -238,24 +209,11 @@ class _SaleFormState extends State<SaleForm> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: Text(
-                                      comission.comissionType ==
-                                              ComissionType.percent
-                                          ? NumberFormat.currency(
-                                                  locale: 'en-IN',
-                                                  symbol: '₹ ',
-                                                  decimalDigits: 0)
-                                              .format(
-                                                  (comission.comission.value *
-                                                      sellingPrice /
-                                                      100))
-                                          : NumberFormat.currency(
-                                                  locale: 'en-IN',
-                                                  symbol: '₹ ',
-                                                  decimalDigits: 0)
-                                              .format(
-                                                  comission.comission.value),
-                                      style:
-                                          Theme.of(context).textTheme.bodyText2,
+                                      comission.comissionType == ComissionType.percent
+                                          ? NumberFormat.currency(locale: 'en-IN', symbol: '₹ ', decimalDigits: 0)
+                                              .format((comission.comission.value * sellingPrice / 100))
+                                          : NumberFormat.currency(locale: 'en-IN', symbol: '₹ ', decimalDigits: 0).format(comission.comission.value),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                     ),
                                   ),
                                 ),
@@ -317,20 +275,9 @@ class _SaleFormState extends State<SaleForm> {
               child: Column(
                 children: [
                   const SizedBox(height: 30),
-                  TileFormField(
-                      controller: TextEditingController(text: widget.lead.name),
-                      title: "Buyer Name",
-                      enabled: false),
-                  TileFormField(
-                      controller:
-                          TextEditingController(text: widget.lead.phoneNumber),
-                      title: "Buyer Contact",
-                      enabled: false),
-                  TileFormField(
-                      controller:
-                          TextEditingController(text: widget.lead.governmentId),
-                      title: "Buyer ID",
-                      enabled: false),
+                  TileFormField(controller: TextEditingController(text: widget.lead.name), title: "Buyer Name", enabled: false),
+                  TileFormField(controller: TextEditingController(text: widget.lead.phoneNumber), title: "Buyer Contact", enabled: false),
+                  TileFormField(controller: TextEditingController(text: widget.lead.governmentId), title: "Buyer ID", enabled: false),
                   TileFormField(
                     enabled: false,
                     controller: TextEditingController(
@@ -373,12 +320,9 @@ class _SaleFormState extends State<SaleForm> {
                         if (costPerSqft.text.isEmpty) {
                           sellingAmount.text = "0";
                         }
-                        double sellingAmounts = double.parse(
-                                property!.buildUpArea!.replaceAll(",", "")) *
-                            double.parse(costPerSqft.text.replaceAll(",", ""));
-                        final formatter = NumberFormat.currency(
-                                locale: 'en_IN', symbol: '', decimalDigits: 0)
-                            .format(sellingAmounts);
+                        double sellingAmounts =
+                            double.parse(property!.buildUpArea!.replaceAll(",", "")) * double.parse(costPerSqft.text.replaceAll(",", ""));
+                        final formatter = NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 0).format(sellingAmounts);
                         sellingAmount.text = formatter.toString();
                       });
                     },
@@ -424,19 +368,9 @@ class _SaleFormState extends State<SaleForm> {
                     height: 5,
                   ),
                   const Divider(),
-                  getComission(
-                      comission: staffComission,
-                      title: 'STAFF COMMISSION',
-                      name: widget.lead.staff?.firstName ?? '',
-                      isStaff: true),
-                  getComission(
-                      comission: agentComission,
-                      title: 'AGENT COMMISSION',
-                      name: widget.lead.agent?.firstName ?? ''),
-                  getComission(
-                      comission: superAgentComission,
-                      title: 'SUPER AGENT COMMISSION',
-                      name: widget.lead.agent?.superAgent?.firstName ?? ''),
+                  getComission(comission: staffComission, title: 'STAFF COMMISSION', name: widget.lead.staff?.firstName ?? '', isStaff: true),
+                  getComission(comission: agentComission, title: 'AGENT COMMISSION', name: widget.lead.agent?.firstName ?? ''),
+                  getComission(comission: superAgentComission, title: 'SUPER AGENT COMMISSION', name: widget.lead.agent?.superAgent?.firstName ?? ''),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: SizedBox(
@@ -451,9 +385,7 @@ class _SaleFormState extends State<SaleForm> {
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0))),
+                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                           content: SizedBox(
                                               height: 150,
                                               width: 400,
@@ -473,107 +405,78 @@ class _SaleFormState extends State<SaleForm> {
                                                   // ),
                                                   const SizedBox(height: 10),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text("Selling Amount"),
-                                                      Text(sellingAmount.text)
-                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [Text("Selling Amount"), Text(sellingAmount.text)],
                                                   ),
                                                   const SizedBox(height: 10),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      const Text(
-                                                          'Staff Commission'),
-                                                      Text(staffComission
-                                                          .value.text)
-                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [const Text('Staff Commission'), Text(staffComission.value.text)],
                                                   ),
                                                   const SizedBox(height: 10),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      const Text(
-                                                          'Agent Commission'),
-                                                      Text(agentComission
-                                                          .value.text)
-                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [const Text('Agent Commission'), Text(agentComission.value.text)],
                                                   ),
                                                   const SizedBox(height: 10),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      const Text(
-                                                          'Super Agent Commission'),
-                                                      Text(superAgentComission
-                                                          .value.text)
-                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [const Text('Super Agent Commission'), Text(superAgentComission.value.text)],
                                                   ),
                                                 ],
                                               )),
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.pop(
-                                                    context, 'Cancel');
+                                                Navigator.pop(context, 'Cancel');
                                               },
                                               child: const Text('Cancel'),
                                             ),
                                             TextButton(
-                                              onPressed: () {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
+                                              onPressed: () async {
+                                                if (_formKey.currentState!.validate()) {
                                                   var future;
                                                   var lead = widget.lead;
                                                   if (AppSession().isAdmin) {
-                                                    lead.leadStatus =
-                                                        LeadStatus.sold;
-                                                    lead.soldOn = DateTime.now()
-                                                        .trimTime();
-                                                  } else if (widget
-                                                          .lead.leadStatus !=
-                                                      LeadStatus.sold) {
-                                                    lead.leadStatus = LeadStatus
-                                                        .pendingApproval;
+                                                    lead.leadStatus = LeadStatus.sold;
+                                                    lead.soldOn = DateTime.now().trimTime();
+                                                  } else if (widget.lead.leadStatus != LeadStatus.sold) {
+                                                    lead.leadStatus = LeadStatus.pendingApproval;
                                                   }
-                                                  lead.staffComission =
-                                                      staffComission.comission;
-                                                  lead.agentComission =
-                                                      agentComission.comission;
-                                                  lead.superAgentComission =
-                                                      superAgentComission
-                                                          .comission;
-                                                  lead.sellingAmount =
-                                                      double.parse(sellingAmount
-                                                          .text
-                                                          .replaceAll(",", ""));
+                                                  lead.staffComission = staffComission.comission;
+                                                  lead.agentComission = agentComission.comission;
+                                                  lead.superAgentComission = superAgentComission.comission;
+                                                  lead.sellingAmount = double.parse(sellingAmount.text.replaceAll(",", ""));
                                                   print(lead.toJson());
-                                                  
-                                                  lead.propertyRef.get().then((value) => Property.fromSnapshot(value)).then((value) {
 
-                                                    
-                                                  });
-
-                                                  future = lead.reference
-                                                      .update(lead.toJson())
-                                                      .then((value) => Result(
-                                                          tilte: 'Success',
-                                                          message:
-                                                              "Record saved succesfully"))
-                                                      .onError((error,
-                                                              stackTrace) =>
-                                                          Result(
-                                                              tilte: 'Failed',
-                                                              message:
-                                                                  "Record is not updated \n ${error.toString()}"));
+                                                  future = lead.propertyRef
+                                                      .get()
+                                                      .then((value) => Property.fromSnapshot(value))
+                                                      .then((property) async {
+                                                        if (property.isSold) {
+                                                          throw Exception("Property already sold");
+                                                        } else {
+                                                          property.isSold = true;
+                                                          property.sellingAmounts = lead.sellingAmount;
+                                                          property.sellingAmount = lead.sellingAmount;
+                                                          property.staffComission = lead.staffComission;
+                                                          property.agentComission = lead.agentComission;
+                                                          property.superAgentComission = lead.superAgentComission;
+                                                        }
+                                                        var batch = FirebaseFirestore.instance.batch();
+                                                        await property.projectRef.collection('leads').get().then((value) {
+                                                          for (var element in value.docs) {
+                                                            if (element.reference != lead.reference) {
+                                                              batch.update(element.reference, {"isParentPropertySold": true});
+                                                            }
+                                                          }
+                                                        });
+                                                        batch.update(lead.reference, lead.toJson());
+                                                        return batch.commit();
+                                                      })
+                                                      .then((value) => Result(tilte: 'Success', message: "Record saved succesfully"))
+                                                      .onError((error, stackTrace) =>
+                                                          Result(tilte: 'Failed', message: "Record is not updated\n${error.toString()}"));
 
                                                   showFutureDialog2(
                                                     context,
@@ -584,26 +487,18 @@ class _SaleFormState extends State<SaleForm> {
                                               child: const Text('OK'),
                                             ),
                                           ],
-                                          title: const Text('Are you sure?',
-                                              textAlign: TextAlign.center),
-                                          titlePadding:
-                                              const EdgeInsets.all(16),
-                                          titleTextStyle: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 22),
+                                          title: const Text('Are you sure?', textAlign: TextAlign.center),
+                                          titlePadding: const EdgeInsets.all(16),
+                                          titleTextStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
                                         );
                                       });
                                 }
                               },
-                              child: Text(
-                                  widget.lead.leadStatus == LeadStatus.lead
-                                      ? "MARK PROPERTY AS SOLD"
-                                      : (widget.lead.leadStatus ==
-                                              LeadStatus.pendingApproval
-                                          ? (AppSession().isAdmin
-                                              ? "SAVE AND APPROVE"
-                                              : "SAVE")
-                                          : "SAVE")),
+                              child: Text(widget.lead.leadStatus == LeadStatus.lead
+                                  ? "MARK PROPERTY AS SOLD"
+                                  : (widget.lead.leadStatus == LeadStatus.pendingApproval
+                                      ? (AppSession().isAdmin ? "SAVE AND APPROVE" : "SAVE")
+                                      : "SAVE")),
                             ),
                     ),
                   )
