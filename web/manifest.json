@@ -1,6 +1,6 @@
 {
-    "name": "real_estate_admin",
-    "short_name": "real_estate_admin",
+    "name": "mma_admin",
+    "short_name": "mma_admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hexcode",
