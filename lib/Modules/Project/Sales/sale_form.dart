@@ -447,7 +447,7 @@ class _SaleFormState extends State<SaleForm> {
                                                   lead.agentComission = agentComission.comission;
                                                   lead.superAgentComission = superAgentComission.comission;
                                                   lead.sellingAmount = double.parse(sellingAmount.text.replaceAll(",", ""));
-                                                  print(lead.toJson());
+                                                  // print(lead.toJson());
 
                                                   future = lead.propertyRef
                                                       .get()

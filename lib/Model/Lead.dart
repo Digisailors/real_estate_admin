@@ -204,11 +204,11 @@ class Lead {
       query = query.where("isParentPropertySold", isEqualTo: false);
     }
     if (agent != null) {
-      print(agent.reference);
+      // print(agent.reference);
       query = query.where('agentRef', isEqualTo: agent.reference);
     }
     if (staff != null) {
-      print(staff.reference);
+      // print(staff.reference);
       query = query.where('staffRef', isEqualTo: staff.reference);
     }
     if (search.isNotEmpty) {
