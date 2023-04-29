@@ -22,7 +22,8 @@ import 'Sales/sale_form.dart';
 class PropertyView extends StatefulWidget {
   const PropertyView({
     Key? key,
-    required this.property, required this.projectName,
+    required this.property,
+    required this.projectName,
   }) : super(key: key);
 
   final Property property;
@@ -762,7 +763,36 @@ class _PropertyViewState extends State<PropertyView> {
                                               );
                                             }
                                             if (e.leadStatus ==
-                                                LeadStatus.pendingApproval) {
+                                                    LeadStatus
+                                                        .pendingApproval &&
+                                                e.isParentPropertySold ==
+                                                    true) {
+                                              return AlertDialog(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                title: const Text(
+                                                    "Operation Not Allowed"),
+                                                content: const Text(
+                                                    "Edit operation on sold transaction is not permitted"),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed:
+                                                          Navigator.of(context)
+                                                              .pop,
+                                                      child: const Text("Okay"))
+                                                ],
+                                              );
+                                            }
+
+                                            if (e.leadStatus ==
+                                                    LeadStatus
+                                                        .pendingApproval &&
+                                                e.isParentPropertySold ==
+                                                    false) {
                                               return AlertDialog(
                                                 shape:
                                                     const RoundedRectangleBorder(
