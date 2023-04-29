@@ -63,7 +63,7 @@ class _PropertyViewState extends State<PropertyView> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Feature',
+              'Features',
               style: getText(context).headline5!.apply(
                     color: Colors.lightBlue,
                   ),

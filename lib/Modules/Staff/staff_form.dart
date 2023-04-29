@@ -45,10 +45,10 @@ class _StaffFormState extends State<StaffForm> {
               Row(
                 children: [
                   Expanded(
-                    child: TileFormField(validator: requiredValidator, controller: controller.firstName, title: "First Name"),
+                    child: TileFormField(validator: requiredValidator, controller: controller.firstName, title: "FIRST NAME"),
                   ),
                   Expanded(
-                    child: TileFormField(controller: controller.lastName, title: "Last Name"),
+                    child: TileFormField(controller: controller.lastName, title: "LAST NAME"),
                   ),
                 ],
               ),
