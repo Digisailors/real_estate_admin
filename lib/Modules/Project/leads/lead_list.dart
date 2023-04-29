@@ -165,7 +165,11 @@ class _LeadListState extends State<LeadList> {
             // child: Container(),
             child: StreamBuilder<List<Lead>>(
                 stream: Lead.getLeads(
-                    agent: agent, staff: staff, search: searchController.text),
+                  agent: agent,
+                  staff: staff,
+                  search: searchController.text,
+                  showONlySold: true,
+                ),
                 builder: (context, AsyncSnapshot<List<Lead>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.active &&
                       snapshot.hasData) {
@@ -214,7 +218,7 @@ class LeadListSource extends DataTableSource {
   final BuildContext context;
   LeadListSource(this.leads, {required this.context});
 
-  getColor(Lead lead) {
+  Color getColor(Lead lead) {
     switch (lead.leadStatus) {
       case LeadStatus.lead:
         return Colors.transparent;

@@ -30,12 +30,13 @@ class Lead {
   Property? parentProperty;
   int propertyID;
   String? propertyName;
-  DocumentReference get propertyRef =>
-      FirebaseFirestore.instance.doc(reference.path.split('/leads').first);
+  DocumentReference get propertyRef => FirebaseFirestore.instance.doc(reference.path.split('/leads').first);
 
   Agent? agent;
   Staff? staff;
   DateTime? soldOn;
+
+  bool isParentPropertySold;
 
   Lead({
     this.soldOn,
@@ -58,6 +59,8 @@ class Lead {
     this.governmentId,
     required this.reference,
     this.leadStatus = LeadStatus.lead,
+    required this.isParentPropertySold,
+    this.costPerSqft,
   });
 
   void assignStaff(DocumentReference staffRefence) async {
@@ -73,15 +76,10 @@ class Lead {
   }
 
   loadReferences() {
-    staff = AppSession()
-        .staffs
-        .firstWhereOrNull((element) => element.reference == staffRef);
-    agent = AppSession()
-        .agents
-        .firstWhereOrNull((element) => element.reference == agentRef);
+    staff = AppSession().staffs.firstWhereOrNull((element) => element.reference == staffRef);
+    agent = AppSession().agents.firstWhereOrNull((element) => element.reference == agentRef);
     if (agent != null && agent!.superAgentReference != null) {
-      agent!.superAgent = AppSession().agents.firstWhereOrNull(
-          (element) => element.reference == agent!.superAgentReference);
+      agent!.superAgent = AppSession().agents.firstWhereOrNull((element) => element.reference == agent!.superAgentReference);
     }
   }
 
@@ -130,6 +128,8 @@ class Lead {
         'propertyID': propertyID,
         'propertyName': propertyName,
         "search": search,
+        "isParentPropertySold": isParentPropertySold,
+        "costPerSqft": costPerSqft,
       };
   factory Lead.fromJson(json, DocumentReference reference) {
     return Lead(
@@ -149,48 +149,17 @@ class Lead {
       leadStatus: LeadStatus.values.elementAt(json["leadStatus"]),
       agent: json["agent"] != null ? Agent.fromJson(json["agent"]) : null,
       staff: json["staff"] != null ? Staff.fromJson(json["staff"]) : null,
-      agentComission: json['agentComission'] != null
-          ? Commission.fromJson(json['agentComission'])
-          : null,
-      staffComission: json['staffComission'] != null
-          ? Commission.fromJson(json['staffComission'])
-          : null,
-      superAgentComission: json['superAgentComission'] != null
-          ? Commission.fromJson(json['superAgentComission'])
-          : null,
+      agentComission: json['agentComission'] != null ? Commission.fromJson(json['agentComission']) : null,
+      staffComission: json['staffComission'] != null ? Commission.fromJson(json['staffComission']) : null,
+      superAgentComission: json['superAgentComission'] != null ? Commission.fromJson(json['superAgentComission']) : null,
       sellingAmount: json['sellingAmount'],
+      costPerSqft: json['costPerSqft'],
+      isParentPropertySold: json['isParentPropertySold'] ?? false,
     );
   }
   factory Lead.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Map<String, dynamic> json = snapshot.data()!;
-    return Lead(
-      soldOn: json["soldOn"]?.toDate(),
-      propertyID: json['propertyID'],
-      propertyName: json['propertyName'],
-      parentProperty: json['parentProperty'],
-      name: json["name"],
-      phoneNumber: json["phoneNumber"],
-      address: json["address"],
-      email: json["email"],
-      enquiryDate: json["enquiryDate"].toDate(),
-      governmentId: json['governmentId'],
-      agentRef: json["agentRef"],
-      staffRef: json["staffRef"],
-      reference: snapshot.reference,
-      leadStatus: LeadStatus.values.elementAt(json["leadStatus"]),
-      agent: json["agent"] != null ? Agent.fromJson(json["agent"]) : null,
-      staff: json["staff"] != null ? Staff.fromJson(json["staff"]) : null,
-      agentComission: json['agentComission'] != null
-          ? Commission.fromJson(json['agentComission'])
-          : null,
-      staffComission: json['staffComission'] != null
-          ? Commission.fromJson(json['staffComission'])
-          : null,
-      superAgentComission: json['superAgentComission'] != null
-          ? Commission.fromJson(json['superAgentComission'])
-          : null,
-      sellingAmount: json['sellingAmount'],
-    );
+    return Lead.fromJson(json, snapshot.reference);
   }
 
   double get staffComissionAmount {
@@ -229,29 +198,28 @@ class Lead {
     }
   }
 
-  static Stream<List<Lead>> getLeads({Agent? agent, Staff? staff, String search = ""}) {
-    var query = FirebaseFirestore.instance
-        .collectionGroup('leads')
-        .where('leadStatus', isEqualTo: LeadStatus.lead.index);
+  static Stream<List<Lead>> getLeads({Agent? agent, Staff? staff, String search = "", bool showONlySold = false}) {
+    var query = FirebaseFirestore.instance.collectionGroup('leads').where('leadStatus', isEqualTo: LeadStatus.lead.index);
+    if (showONlySold) {
+      query = query.where("isParentPropertySold", isEqualTo: false);
+    }
     if (agent != null) {
-      print(agent.reference);
+      // print(agent.reference);
       query = query.where('agentRef', isEqualTo: agent.reference);
     }
     if (staff != null) {
-      print(staff.reference);
+      // print(staff.reference);
       query = query.where('staffRef', isEqualTo: staff.reference);
     }
-     if (search.isNotEmpty) {
-      query = query.where('search',
-          arrayContains: search.toLowerCase().trim());
+    if (search.isNotEmpty) {
+      query = query.where('search', arrayContains: search.toLowerCase().trim());
     }
     return query.snapshots().map((event) {
       return event.docs.map((e) => Lead.fromSnapshot(e)).toList();
     });
   }
 
-  static Stream<List<Lead>> getSales(
-      {Agent? agent, Staff? staff, LeadStatus? leadStatus}) {
+  static Stream<List<Lead>> getSales({Agent? agent, Staff? staff, LeadStatus? leadStatus}) {
     var query = FirebaseFirestore.instance.collectionGroup('leads');
     if (leadStatus == null) {
       query = query.where('leadStatus', isNotEqualTo: LeadStatus.lead.index);
@@ -284,9 +252,7 @@ class Lead {
       this.agentComission = agentComission;
       this.superAgentComission = superAgentComission;
       leadStatus = LeadStatus.pendingApproval;
-      reference.update(toJson()).then((value) => Result(
-          tilte: "Lead Modified",
-          message: "The Lead is moved to Sales List for approval"));
+      reference.update(toJson()).then((value) => Result(tilte: "Lead Modified", message: "The Lead is moved to Sales List for approval"));
     } else {
       return convertToSale(
         agentComission: agentComission,
@@ -315,9 +281,7 @@ class Lead {
       if (value.exists) {
         var property = Property.fromSnapshot(value);
         if (property.isSold) {
-          return Result(
-              tilte: Result.failure,
-              message: "The Property has been already sold");
+          return Result(tilte: Result.failure, message: "The Property has been already sold");
         } else {
           return FirebaseFirestore.instance
               .runTransaction((transaction) async {
@@ -325,37 +289,24 @@ class Lead {
                 transaction.update(reference, toJson());
                 transaction.update(propertyRef, {'isSold': true});
                 if (staffRef != null) {
-                  transaction.update(staffRef!, {
-                    'commissionAmount':
-                        FieldValue.increment(staffComissionAmount)
-                  });
+                  transaction.update(staffRef!, {'commissionAmount': FieldValue.increment(staffComissionAmount)});
                 }
                 if (agent?.reference != null) {
                   transaction.update(agent!.reference, {
-                    'commissionAmount':
-                        FieldValue.increment(agentComissionAmount),
-                    'sharedComissionAmount':
-                        FieldValue.increment(superAgentComissionAmount),
+                    'commissionAmount': FieldValue.increment(agentComissionAmount),
+                    'sharedComissionAmount': FieldValue.increment(superAgentComissionAmount),
                   });
                 }
                 if (agent?.superAgentReference != null) {
-                  transaction.update(agent!.superAgentReference!, {
-                    'commissionAmount':
-                        FieldValue.increment(superAgentComissionAmount)
-                  });
+                  transaction.update(agent!.superAgentReference!, {'commissionAmount': FieldValue.increment(superAgentComissionAmount)});
                 }
                 return transaction;
               })
-              .then((value) => Result(
-                  tilte: Result.success,
-                  message: "The property is now marked as sold"))
-              .onError((error, stackTrace) =>
-                  Result(tilte: Result.failure, message: error.toString()));
+              .then((value) => Result(tilte: Result.success, message: "The property is now marked as sold"))
+              .onError((error, stackTrace) => Result(tilte: Result.failure, message: error.toString()));
         }
       } else {
-        return Result(
-            tilte: Result.failure,
-            message: "Error occured, Could not load property");
+        return Result(tilte: Result.failure, message: "Error occured, Could not load property");
       }
     });
   }

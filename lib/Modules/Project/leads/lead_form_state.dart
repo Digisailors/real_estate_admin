@@ -22,6 +22,7 @@ class LeadFormController {
   LeadStatus leadStatus = LeadStatus.lead;
   int? propertyID;
   String? propertyName;
+  bool isParentPropertySold = false;
 
   ComissionController staffComission = ComissionController();
   ComissionController agentComission = ComissionController();
@@ -57,6 +58,7 @@ class LeadFormController {
     controller.propertyID = lead.propertyID;
     controller.propertyName = lead.propertyName;
     controller.soldOn = lead.soldOn;
+    controller.isParentPropertySold = lead.isParentPropertySold;
     return controller;
   }
 
@@ -64,7 +66,7 @@ class LeadFormController {
     return Lead(
       soldOn: soldOn,
       propertyID: propertyID!,
-      propertyName : propertyName,
+      propertyName: propertyName,
       name: name.text,
       enquiryDate: enquiryDate,
       agentRef: agentRef,
@@ -81,6 +83,7 @@ class LeadFormController {
       sellingAmount: double.tryParse(sellingAmount.text) ?? 0.0,
       staffComission: staffComission.comission,
       superAgentComission: superAgentComission.comission,
+      isParentPropertySold: isParentPropertySold,
     );
   }
 }

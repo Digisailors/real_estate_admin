@@ -221,7 +221,8 @@ class StaffListSource extends DataTableSource {
         DataCell(Text(e.phoneNumber)),
         DataCell(Text(e.panCardNumber ?? '')),
         DataCell(Text(e.email)),
-        DataCell(Text(NumberFormat.currency(locale: 'en-IN', decimalDigits: 0)
+        DataCell(Text(NumberFormat.currency(
+                locale: 'en-IN', decimalDigits: 0, symbol: '₹ ')
             .format(e.commissionAmount))),
         DataCell(Text(e.leadCount.toString())),
         DataCell(Text(e.successfullLeadCount.toString())),
