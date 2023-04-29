@@ -257,22 +257,7 @@ class _PropertyListState extends State<PropertyList> {
                                                         Provider.of<
                                                                 ProjectController>(
                                                             context);
-                                                    return ListTile(
-                                                      selected: selectedProperty
-                                                              ?.reference ==
-                                                          property.reference,
-                                                      title:
-                                                          Text(property.title),
-                                                      subtitle: Text(
-                                                        NumberFormat.currency(
-                                                          locale: 'en-IN',
-                                                          symbol: '₹',
-                                                          decimalDigits: 0,
-                                                        ).format(property
-                                                            .propertyAmounts),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
+                                                    return InkWell(
                                                       onTap: () {
                                                         selectedIndex = index;
                                                         if (constraints
@@ -288,90 +273,145 @@ class _PropertyListState extends State<PropertyList> {
                                                                 () {});
                                                           }
                                                         } else {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      PropertyView(
-                                                                          property:
-                                                                              property)));
+                                                          Navigator.of(context).push(MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  PropertyView(
+                                                                      projectName: widget
+                                                                          .project
+                                                                          .name,
+                                                                      property:
+                                                                          property)));
                                                         }
                                                       },
-                                                      trailing: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
+                                                      child: Stack(
                                                         children: [
-                                                          !AppSession().isAdmin
-                                                              ? Container()
-                                                              : IconButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    showAlertDialog(
-                                                                      context:
-                                                                          context,
-                                                                      message:
-                                                                          "Do you really want to delete?",
-                                                                      onPressed:
-                                                                          () {
-                                                                        var future = property
-                                                                            .reference
-                                                                            .delete()
-                                                                            .then((value) =>
-                                                                                Result.completed("Property Deleted Successfully"))
-                                                                            .onError((error, stcak) {
-                                                                          if (error
-                                                                              is FirebaseException) {
-                                                                            return Result(
-                                                                                tilte: error.code,
-                                                                                message: error.message ?? '');
-                                                                          } else {
-                                                                            return Result(
-                                                                                tilte: 'Failed',
-                                                                                message: error.toString());
-                                                                          }
-                                                                        });
-                                                                        showFutureDialog3(
-                                                                            context,
-                                                                            future:
-                                                                                future);
-                                                                      },
-                                                                    );
-                                                                  },
-                                                                  icon: const Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      color: Colors
-                                                                          .red)),
-                                                          const SizedBox(
-                                                              width: 8),
-                                                          !AppSession().isAdmin
-                                                              ? Container()
-                                                              : IconButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return AlertDialog(
-                                                                            shape:
-                                                                                const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                                                            content: SizedBox(
-                                                                                height: 800,
-                                                                                width: 600,
-                                                                                child: PropertyForm(
-                                                                                  property: property,
-                                                                                  project: projectController.projectFormData.object,
-                                                                                  propertyName: widget.project.name,
-                                                                                )),
+                                                          ListTile(
+                                                            tileColor: property
+                                                                    .isSold
+                                                                ? Colors
+                                                                    .green[100]
+                                                                : Colors.white,
+                                                            selected: selectedProperty
+                                                                    ?.reference ==
+                                                                property
+                                                                    .reference,
+                                                            title: Text(
+                                                                property.title),
+                                                            subtitle: Text(
+                                                              NumberFormat
+                                                                  .currency(
+                                                                locale: 'en-IN',
+                                                                symbol: '₹',
+                                                                decimalDigits:
+                                                                    0,
+                                                              ).format(property
+                                                                  .propertyAmounts),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            onTap: () {
+                                                              selectedIndex =
+                                                                  index;
+                                                              if (constraints
+                                                                      .maxWidth >
+                                                                  860) {
+                                                                reload(() {
+                                                                  selectedProperty =
+                                                                      property;
+                                                                });
+                                                                if (reloadPropertyView !=
+                                                                    null) {
+                                                                  reloadPropertyView!(
+                                                                      () {});
+                                                                }
+                                                              } else {
+                                                                Navigator.of(context).push(MaterialPageRoute(
+                                                                    builder: (context) => PropertyView(
+                                                                        projectName: widget
+                                                                            .project
+                                                                            .name,
+                                                                        property:
+                                                                            property)));
+                                                              }
+                                                            },
+                                                            trailing: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                !AppSession()
+                                                                        .isAdmin
+                                                                    ? Container()
+                                                                    : IconButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          showAlertDialog(
+                                                                            context:
+                                                                                context,
+                                                                            message:
+                                                                                "Do you really want to delete?",
+                                                                            onPressed:
+                                                                                () {
+                                                                              var future = property.reference.delete().then((value) => Result.completed("Property Deleted Successfully")).onError((error, stcak) {
+                                                                                if (error is FirebaseException) {
+                                                                                  return Result(tilte: error.code, message: error.message ?? '');
+                                                                                } else {
+                                                                                  return Result(tilte: 'Failed', message: error.toString());
+                                                                                }
+                                                                              });
+                                                                              showFutureDialog3(context, future: future);
+                                                                            },
                                                                           );
-                                                                        });
-                                                                  },
-                                                                  icon: const Icon(
-                                                                      Icons
-                                                                          .edit,
-                                                                      color: Colors
-                                                                          .black)),
+                                                                        },
+                                                                        icon: const Icon(
+                                                                            Icons
+                                                                                .delete,
+                                                                            color:
+                                                                                Colors.red)),
+                                                                const SizedBox(
+                                                                    width: 8),
+                                                                !AppSession()
+                                                                        .isAdmin
+                                                                    ? Container()
+                                                                    : IconButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          showDialog(
+                                                                              context: context,
+                                                                              builder: (context) {
+                                                                                return AlertDialog(
+                                                                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                                                                  content: SizedBox(
+                                                                                      height: 800,
+                                                                                      width: 600,
+                                                                                      child: PropertyForm(
+                                                                                        property: property,
+                                                                                        project: projectController.projectFormData.object,
+                                                                                        propertyName: widget.project.name,
+                                                                                      )),
+                                                                                );
+                                                                              });
+                                                                        },
+                                                                        icon: const Icon(
+                                                                            Icons
+                                                                                .edit,
+                                                                            color:
+                                                                                Colors.black)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Positioned.fill(
+                                                              child: property
+                                                                      .isSold
+                                                                  ? Opacity(
+                                                                      opacity:
+                                                                          0.5,
+                                                                      child: Image
+                                                                          .asset(
+                                                                              'assets/sold.png'),
+                                                                    )
+                                                                  : Container()),
                                                         ],
                                                       ),
                                                     );
@@ -410,6 +450,7 @@ class _PropertyListState extends State<PropertyList> {
                                   );
                                 } else {
                                   return PropertyView(
+                                    projectName: widget.project.name,
                                     property: snapshot1.data![selectedIndex!],
                                   );
                                 }
@@ -438,6 +479,7 @@ class PropertyTile extends StatelessWidget {
     return Container(
       color: selected ? Colors.blue : Colors.white,
       child: Card(
+        color: property.isSold ? Colors.green[100] : Colors.white,
         shape: RoundedRectangleBorder(),
         borderOnForeground: true,
         child: Padding(

@@ -26,7 +26,7 @@ class AgentReferrals extends StatelessWidget {
               ),
               Expanded(
                 child: ListTile(
-                  title: const Text("COMISSION EARNED "),
+                  title: const Text("COMMISSION EARNED "),
                   subtitle: Text(agent.sharedComissionAmount.toString()),
                 ),
               ),
@@ -69,7 +69,7 @@ class AgentReferrals extends StatelessWidget {
                                   DataColumn(label: Text("S.No")),
                                   DataColumn(label: Text("Agent")),
                                   // DataColumn(label: Text("Successfull\n Leads")),
-                                  DataColumn(label: Text("Comission\n Earned")),
+                                  DataColumn(label: Text("Commission\n Earned")),
                                 ],
                                 rows: agents!
                                     .map((e) => DataRow(

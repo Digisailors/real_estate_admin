@@ -16,7 +16,7 @@ class TileFormField extends StatelessWidget {
     this.enabled,
     this.validator,
     this.obscureText = false,
-    this.prefixText,
+    this.prefixText, this.initialValue,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -31,6 +31,7 @@ class TileFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool obscureText;
   final String? prefixText;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +40,7 @@ class TileFormField extends StatelessWidget {
       subtitle: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: TextFormField(
+          initialValue: initialValue,
           validator: validator,
           enabled: enabled,
           keyboardType: keyboardType,

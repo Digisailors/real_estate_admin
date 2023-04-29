@@ -15,13 +15,18 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../Model/Lead.dart';
+import '../../Model/Project.dart';
 import '../../Model/helper models/attachment.dart';
 import 'Sales/sale_form.dart';
 
 class PropertyView extends StatefulWidget {
-  const PropertyView({Key? key, required this.property}) : super(key: key);
+  const PropertyView({
+    Key? key,
+    required this.property, required this.projectName,
+  }) : super(key: key);
 
   final Property property;
+  final String projectName;
 
   @override
   State<PropertyView> createState() => _PropertyViewState();
@@ -34,6 +39,13 @@ class _PropertyViewState extends State<PropertyView> {
       ..setAttribute('download', attachment.name)
       ..click();
     anchor.remove();
+  }
+
+  @override
+  void initState() {
+    print(widget.property.parentProject?.name);
+
+    super.initState();
   }
 
   @override
@@ -58,6 +70,16 @@ class _PropertyViewState extends State<PropertyView> {
             ),
           ),
           const Spacer(),
+          StatefulBuilder(builder: (context, reload) {
+            reload(() {});
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Project Name : ${widget.projectName}',
+              ),
+            );
+          }),
+
           // Padding(
           //   padding: const EdgeInsets.all(8.0),
           //   child: TextButton.icon(
@@ -439,19 +461,19 @@ class _PropertyViewState extends State<PropertyView> {
                                       Text(widget.property.taluk ?? 'Nil'),
                                   title: const Text('Taluk'),
                                 )),
-                            Expanded(
-                                flex: 1,
-                                child: ListTile(
-                                  subtitle: Text(
-                                    NumberFormat.currency(
-                                      locale: 'en-IN',
-                                      symbol: '₹',
-                                      decimalDigits: 0,
-                                    ).format(widget.property.propertyAmount),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  title: const Text('Property Value'),
-                                ))
+                            // Expanded(
+                            //     flex: 1,
+                            //     child: ListTile(
+                            //       subtitle: Text(
+                            //         NumberFormat.currency(
+                            //           locale: 'en-IN',
+                            //           symbol: '₹',
+                            //           decimalDigits: 0,
+                            //         ).format(widget.property.propertyAmount),
+                            //         overflow: TextOverflow.ellipsis,
+                            //       ),
+                            //       title: const Text('Property Value'),
+                            //     ))
                           ],
                         ),
                         Row(

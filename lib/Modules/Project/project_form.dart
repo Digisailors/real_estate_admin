@@ -118,51 +118,43 @@ class ProjectForm extends StatelessWidget {
                       validator: requiredValidator,
                       controller: controller.name,
                       title: 'Project Name'),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                          child: TileFormField(
-                              validator: requiredValidator,
-                              controller: controller.location,
-                              title: 'Project Location')),
-                      Expanded(
-                        child: ListTile(
-                          title: const Text('Project Type'),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<String>(
-                                isDense: true,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder()),
-                                value: controller.type,
-                                items: const [
-                                  DropdownMenuItem<String>(
-                                    value: 'House',
-                                    child: Text("Individual House"),
-                                  ),
-                                  DropdownMenuItem(
-                                      value: 'Villa', child: Text("Villa")),
-                                  DropdownMenuItem(
-                                      value: 'Shop', child: Text("Commercial Building")),
-                                  DropdownMenuItem(
-                                      value: 'Building',
-                                      child: Text("Apartments")),
-                                  DropdownMenuItem(
-                                      value: 'Land', child: Text("Land")),
-                                  DropdownMenuItem(
-                                      value: 'Plots', child: Text("Plots")),
-                                  DropdownMenuItem(
-                                      value: 'FormLand', child: Text("Form Land")),
-                                ],
-                                onChanged: controller.onChanged,
-                              ),
+                  TileFormField(
+                      validator: requiredValidator,
+                      controller: controller.location,
+                      title: 'Project Location'),
+                  ListTile(
+                    title: const Text('Project Type'),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField<String>(
+                          isDense: true,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
+                          value: controller.type,
+                          items: const [
+                            DropdownMenuItem<String>(
+                              value: 'House',
+                              child: Text("Individual House"),
                             ),
-                          ),
+                            DropdownMenuItem(
+                                value: 'Villa', child: Text("Villa")),
+                            DropdownMenuItem(
+                                value: 'Shop', child: Text("Commercial Building")),
+                            DropdownMenuItem(
+                                value: 'Building',
+                                child: Text("Apartments")),
+                            DropdownMenuItem(
+                                value: 'Land', child: Text("Land")),
+                            DropdownMenuItem(
+                                value: 'Plots', child: Text("Plots")),
+                            DropdownMenuItem(
+                                value: 'FormLand', child: Text("Form Land")),
+                          ],
+                          onChanged: controller.onChanged,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   Container(
                     height: 60,

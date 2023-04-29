@@ -194,7 +194,7 @@ class _LeadListState extends State<AgentLeads> {
                                     ],
                                   ),
                                   ListTile(
-                                    title: const Text("COMISSION EARNED"),
+                                    title: const Text("COMMISSION EARNED"),
                                     subtitle: Text(successlist
                                         .fold<double>(0, (double previousValue, element) => previousValue + element.agentComissionAmount)
                                         .toString()),

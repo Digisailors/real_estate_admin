@@ -57,7 +57,7 @@ class ComissionTile extends StatelessWidget {
                       onChanged: (val) {
                         reload(() {});
                       },
-                      title: "COMISSION",
+                      title: "COMMISSION",
                     ),
                   ),
                   const SizedBox(width: 10),

@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate_admin/Model/Agent.dart';
+import 'package:real_estate_admin/Model/Project.dart';
 import 'package:real_estate_admin/Model/Property.dart';
 import 'package:real_estate_admin/Model/Staff.dart';
 import 'package:real_estate_admin/Modules/Project/Sales/sale_form.dart';
@@ -164,20 +165,33 @@ class _LeadListState extends State<LeadList> {
             // child: Container(),
             child: StreamBuilder<List<Lead>>(
                 stream: Lead.getLeads(
-                    agent: agent, staff: staff, search: searchController.text),
+                  agent: agent,
+                  staff: staff,
+                  search: searchController.text,
+                  showONlySold: true,
+                ),
                 builder: (context, AsyncSnapshot<List<Lead>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.active &&
                       snapshot.hasData) {
-                    return SizedBox(
-                      width: double.maxFinite,
-                      child: PaginatedDataTable(
-                        dragStartBehavior: DragStartBehavior.start,
-                        rowsPerPage:
-                            (Get.height ~/ kMinInteractiveDimension) - 7,
-                        columns: LeadListSource.getColumns(),
-                        source: LeadListSource(
-                          snapshot.data ?? [],
-                          context: context,
+                    return Card(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.maxFinite,
+                              child: PaginatedDataTable(
+                                showFirstLastButtons: true,
+                                dragStartBehavior: DragStartBehavior.start,
+                                rowsPerPage: 20,
+                                // (Get.height ~/ kMinInteractiveDimension) - 7,
+                                columns: LeadListSource.getColumns(),
+                                source: LeadListSource(
+                                  snapshot.data ?? [],
+                                  context: context,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -204,7 +218,7 @@ class LeadListSource extends DataTableSource {
   final BuildContext context;
   LeadListSource(this.leads, {required this.context});
 
-  getColor(Lead lead) {
+  Color getColor(Lead lead) {
     switch (lead.leadStatus) {
       case LeadStatus.lead:
         return Colors.transparent;
@@ -277,24 +291,31 @@ class LeadListSource extends DataTableSource {
         DataCell(Text(_lead.enquiryDate.toString().substring(0, 10))),
         DataCell(TextButton(
           onPressed: () {
-            _lead.propertyRef.get().then((value) {
+            _lead.propertyRef.get().then((value) async {
               var property = Property.fromSnapshot(value);
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
-                      content: SizedBox(
-                        height: 800,
-                        width: 600,
-                        child: PropertyView(
-                          property: property,
+              property.projectRef
+                  .get()
+                  .then((value) =>
+                      Project.fromJson(value.data() as Map<String, dynamic>))
+                  .then((project) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        content: SizedBox(
+                          height: 800,
+                          width: 600,
+                          child: PropertyView(
+                            projectName: project.name,
+                            property: property,
+                          ),
                         ),
-                      ),
-                    );
-                  });
+                      );
+                    });
+              });
             });
           },
           // child: Text(_lead.parentProperty?.title ?? ""),

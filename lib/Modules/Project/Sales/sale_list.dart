@@ -207,24 +207,29 @@ class _SaleListState extends State<SaleList> {
                               .jumpTo(_scrollController.offset + offset);
                         }
                       },
-                      child: Table(
-                        children: [
-                          TableRow(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
-                              PaginatedDataTable(
-                                controller: _scrollController,
-                                rowsPerPage:
-                                    (Get.height ~/ kMinInteractiveDimension) -
-                                        7,
-                                columns: SaleListSourse.getColumns(),
-                                source: SaleListSourse(
-                                  snapshot.data!,
-                                  context: context,
+                              SizedBox(
+                                width: double.maxFinite,
+                                child: PaginatedDataTable(
+                                  showFirstLastButtons: true,
+                                  controller: _scrollController,
+                                  rowsPerPage: 20,
+                                  // (Get.height ~/ kMinInteractiveDimension) -
+                                  //     7,
+                                  columns: SaleListSourse.getColumns(),
+                                  source: SaleListSourse(
+                                    snapshot.data!,
+                                    context: context,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     );
                   }
@@ -286,24 +291,31 @@ class SaleListSourse extends DataTableSource {
 
         DataCell(TextButton(
           onPressed: () {
-            _lead.propertyRef.get().then((value) {
+            _lead.propertyRef.get().then((value) async {
               var property = Property.fromSnapshot(value);
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
-                      content: SizedBox(
-                        height: 800,
-                        width: 600,
-                        child: PropertyView(
-                          property: property,
+              property.projectRef
+                  .get()
+                  .then((value) =>
+                      Project.fromJson(value.data() as Map<String, dynamic>))
+                  .then((project) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        content: SizedBox(
+                          height: 800,
+                          width: 600,
+                          child: PropertyView(
+                            projectName: project.name,
+                            property: property,
+                          ),
                         ),
-                      ),
-                    );
-                  });
+                      );
+                    });
+              });
             });
           },
           child: Text(_lead.propertyName ?? ""),
@@ -322,7 +334,8 @@ class SaleListSourse extends DataTableSource {
                       info: (_lead.leadStatus == LeadStatus.sold &&
                               AppSession().isAdmin)
                           .toString());
-                  if (_lead.leadStatus == LeadStatus.sold &&
+                  if ((_lead.leadStatus == LeadStatus.sold ||
+                          _lead.leadStatus == LeadStatus.pendingApproval) &&
                       AppSession().isAdmin) {
                     return AlertDialog(
                       shape: const RoundedRectangleBorder(
@@ -382,7 +395,7 @@ class SaleListSourse extends DataTableSource {
       const DataColumn(label: Text("Agent Commission")),
 
       const DataColumn(label: Text("Super Agent")),
-      const DataColumn(label: Text("Super agent Commission")),
+      const DataColumn(label: Text("Super Agent Commission")),
       const DataColumn(label: Text("Date")),
       const DataColumn(label: Text("Property")),
       const DataColumn(label: Text("Edit")),
