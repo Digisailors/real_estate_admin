@@ -114,7 +114,13 @@ class ProgressCard extends StatelessWidget {
                                   ]
                                 : [
                                     TableRow(children: [
-                                      Text(
+                                      Tooltip(
+                                        message: NumberFormat.currency(
+                                          locale: 'en-IN',
+                                          symbol: '₹',
+                                          decimalDigits: 0,
+                                        ).format(numerator),
+                                        child: Text(
                                           NumberFormat.currency(
                                             locale: 'en-IN',
                                             symbol: '₹',
@@ -122,7 +128,10 @@ class ProgressCard extends StatelessWidget {
                                           ).format(numerator),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .headline6,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                                     ]),
                                     TableRow(children: [
                                       Text(neumeratorTitle,
@@ -133,7 +142,13 @@ class ProgressCard extends StatelessWidget {
                                     const TableRow(
                                         children: [SizedBox(height: 8)]),
                                     TableRow(children: [
-                                      Text(
+                                      Tooltip(
+                                        message: NumberFormat.currency(
+                                          locale: 'en-IN',
+                                          symbol: '₹',
+                                          decimalDigits: 0,
+                                        ).format(denominator),
+                                        child: Text(
                                           NumberFormat.currency(
                                             locale: 'en-IN',
                                             symbol: '₹',
@@ -141,7 +156,10 @@ class ProgressCard extends StatelessWidget {
                                           ).format(denominator),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .headline6,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                                     ]),
                                     TableRow(children: [
                                       Text(denominatorTitle,

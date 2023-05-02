@@ -187,9 +187,11 @@ class _PropertyListState extends State<PropertyList> {
                                           icon: const Icon(Icons.search)),
                                     ),
                                   ),
+                                SizedBox(height: 20,),
+                              const Divider(),                                  
                                 ],
                               ),
-                              const Divider(),
+                            
                               Expanded(
                                 child: StreamBuilder<List<Property>>(
                                     stream: controller.getPropertiesAsStream(

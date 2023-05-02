@@ -46,13 +46,13 @@ class _AgentFormState extends State<AgentForm> {
                   Expanded(
                     child: TileFormField(
                       controller: controller.firstName,
-                      title: "First Name",
+                      title: "FIRST NAME",
                       validator: requiredValidator,
                     ),
                   ),
                   Expanded(
                     child: TileFormField(
-                        controller: controller.lastName, title: "Last Name"),
+                        controller: controller.lastName, title: "LAST NAME"),
                   ),
                 ],
               ),
@@ -86,7 +86,12 @@ class _AgentFormState extends State<AgentForm> {
                       return 'Invalid PAN Number';
                     }
                     if (widget.agent == null) {
-                      if (AppSession().agents.where((element) => element.panCardNumber!.toLowerCase() == val.toLowerCase()).isNotEmpty) {
+                      if (AppSession()
+                          .agents
+                          .where((element) =>
+                              element.panCardNumber!.toLowerCase() ==
+                              val.toLowerCase())
+                          .isNotEmpty) {
                         return "Duplicate PAN Number";
                       }
                     }

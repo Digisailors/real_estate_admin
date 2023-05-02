@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -263,6 +265,11 @@ class SaleListSourse extends DataTableSource {
     // TODO: implement getRow
     final _lead = leads[(index)];
 
+    final isSold = _lead.propertyRef.get().then((value) async {
+      var property = Property.fromSnapshot(value);
+      return property.isSold;
+    });
+
     return DataRow.byIndex(
       color: MaterialStateProperty.all(_lead.leadStatus == LeadStatus.sold
           ? Colors.lightGreen.shade100
@@ -322,7 +329,9 @@ class SaleListSourse extends DataTableSource {
           // child: Text('P${_lead.propertyID.toString().padLeft(6, '0')}'),
         )),
         DataCell(IconButton(
-          icon: (_lead.leadStatus != LeadStatus.sold && AppSession().isAdmin)
+          icon: (_lead.leadStatus != LeadStatus.sold &&
+                  _lead.isParentPropertySold == false &&
+                  AppSession().isAdmin)
               ? const Icon(Icons.edit)
               : const Icon(Icons.visibility),
           onPressed: () {
@@ -336,6 +345,7 @@ class SaleListSourse extends DataTableSource {
                           .toString());
                   if ((_lead.leadStatus == LeadStatus.sold ||
                           _lead.leadStatus == LeadStatus.pendingApproval) &&
+                      _lead.isParentPropertySold == false &&
                       AppSession().isAdmin) {
                     return AlertDialog(
                       shape: const RoundedRectangleBorder(
