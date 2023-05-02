@@ -87,7 +87,12 @@ class _AgentFormState extends State<AgentForm> {
                       return 'Invalid PAN Number';
                     }
                     if (widget.agent == null) {
-                      if (AppSession().agents.where((element) => element.panCardNumber!.toLowerCase() == val.toLowerCase()).isNotEmpty) {
+                      if (AppSession()
+                          .agents
+                          .where((element) =>
+                              element.panCardNumber!.toLowerCase() ==
+                              val.toLowerCase())
+                          .isNotEmpty) {
                         return "Duplicate PAN Number";
                       }
                     }
