@@ -46,6 +46,7 @@ class Dashboard extends StatelessWidget {
                         }),
                         SizedBox(
                           height: Get.height * 0.4,
+                          width: constrains.maxWidth,
                           child: LeadChart(
                             dateWiseLeads: controller.dateWiseLeads,
                             title: "Lead per day",
@@ -105,15 +106,14 @@ class Dashboard extends StatelessWidget {
         ),
       ),
       Expanded(
-        child: ProgressCard(
-          isLedger: true,
+        child: ProgressCardLedger(
           valueColor: Colors.yellowAccent,
           backGroundColor: Colors.deepPurple.shade50,
           denominator: controller.comissionAmount,
           numerator: controller.soldAmount,
           neumeratorTitle: 'Pay-in',
           denominatorTitle: 'Pay-out',
-          cardTitle: 'Ledger',
+          cardTitle: 'Ledgers',
         ),
       ),
     ];
@@ -121,18 +121,36 @@ class Dashboard extends StatelessWidget {
 
   List<Widget> getChildAgentTables(DashboardController controller) {
     return [
-      AgentDataTable(
-          headColor: Colors.deepPurple.shade100,
-          agents: controller.top5AgentsByLeads,
-          num1: 0),
-      AgentDataTable(
-          headColor: Colors.pink.shade100,
-          agents: controller.top5AgentsBySuccessfull,
-          num1: 1),
-      AgentDataTable(
-          headColor: Colors.green.shade100,
-          agents: controller.top5AgentsByComission,
-          num1: 2),
+      Expanded(
+        child: Row(
+          children: [
+            AgentDataTable(
+                headColor: Colors.deepPurple.shade100,
+                agents: controller.top5AgentsByLeads,
+                num1: 0),
+          ],
+        ),
+      ),
+      Expanded(
+        child: Row(
+          children: [
+            AgentDataTable(
+                headColor: Colors.pink.shade100,
+                agents: controller.top5AgentsBySuccessfull,
+                num1: 1),
+          ],
+        ),
+      ),
+      Expanded(
+        child: Row(
+          children: [
+            AgentDataTable(
+                headColor: Colors.green.shade100,
+                agents: controller.top5AgentsByComission,
+                num1: 2),
+          ],
+        ),
+      ),
     ];
   }
 

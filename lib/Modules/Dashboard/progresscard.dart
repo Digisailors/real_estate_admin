@@ -182,3 +182,152 @@ class ProgressCard extends StatelessWidget {
     );
   }
 }
+
+class ProgressCardLedger extends StatelessWidget {
+  const ProgressCardLedger({
+    super.key,
+    required this.numerator,
+    required this.denominator,
+    required this.neumeratorTitle,
+    required this.denominatorTitle,
+    required this.cardTitle,
+    required this.valueColor,
+    required this.backGroundColor,
+  });
+
+  final double numerator;
+  final double denominator;
+  final String neumeratorTitle;
+  final String denominatorTitle;
+  final String cardTitle;
+  final Color valueColor;
+  final Color backGroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: FittedBox(
+        child: Card(
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          color: backGroundColor,
+          child: SizedBox(
+            height: 300,
+            width: 400,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    cardTitle,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                const Divider(),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Center(
+                              child: SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Image.asset('assets/gross.png'),
+
+                                //  (numerator == 0 || denominator == 0)
+                                //     ? CircularProgressIndicator(
+                                //         value: 1,
+                                //         color: Colors.grey.shade400,
+                                //         strokeWidth: 8,
+                                //       )
+                                //     : Transform.rotate(
+                                //         angle: (numerator / denominator) * 100,
+                                //         child: CircularProgressIndicator(
+                                //           color: valueColor,
+                                //           value: denominator / numerator,
+                                //           strokeWidth: 8,
+                                //           backgroundColor: Colors.blue,
+                                //         ),
+                                //       ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Tooltip(
+                                    message: NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(numerator),
+                                    child: Text(
+                                      NumberFormat.currency(
+                                        locale: 'en-IN',
+                                        symbol: '₹',
+                                        decimalDigits: 0,
+                                      ).format(numerator),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(neumeratorTitle,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
+                                  const SizedBox(height: 8),
+                                  Tooltip(
+                                    message: NumberFormat.currency(
+                                      locale: 'en-IN',
+                                      symbol: '₹',
+                                      decimalDigits: 0,
+                                    ).format(denominator),
+                                    child: Text(
+                                      NumberFormat.currency(
+                                        locale: 'en-IN',
+                                        symbol: '₹',
+                                        decimalDigits: 0,
+                                      ).format(denominator),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(denominatorTitle,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
