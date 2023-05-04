@@ -43,7 +43,7 @@ class ProgressCard extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     cardTitle,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 const Divider(),
@@ -61,25 +61,28 @@ class ProgressCard extends StatelessWidget {
                               child: SizedBox(
                                 height: 100,
                                 width: 100,
-                                child: (numerator == 0 || denominator == 0)
-                                    ? CircularProgressIndicator(
-                                        value: 1,
-                                        color: Colors.grey.shade400,
-                                        strokeWidth: 8,
-                                      )
-                                    : Transform.rotate(
-                                        angle: (numerator / denominator) * 100,
-                                        child: CircularProgressIndicator(
-                                          color: valueColor,
-                                          value: isLedger
-                                              ? denominator / numerator
-                                              : numerator / denominator,
-                                          strokeWidth: 8,
-                                          backgroundColor: isLedger
-                                              ? Colors.blue
-                                              : Colors.grey.shade400,
-                                        ),
-                                      ),
+                                child: isLedger
+                                    ? Image.asset('assets/gross.png')
+                                    : (numerator == 0 || denominator == 0)
+                                        ? CircularProgressIndicator(
+                                            value: 1,
+                                            color: Colors.grey.shade400,
+                                            strokeWidth: 8,
+                                          )
+                                        : Transform.rotate(
+                                            angle:
+                                                (numerator / denominator) * 100,
+                                            child: CircularProgressIndicator(
+                                              color: valueColor,
+                                              value: isLedger
+                                                  ? denominator / numerator
+                                                  : numerator / denominator,
+                                              strokeWidth: 8,
+                                              backgroundColor: isLedger
+                                                  ? Colors.blue
+                                                  : Colors.grey.shade400,
+                                            ),
+                                          ),
                               ),
                             ),
                           ),
@@ -105,11 +108,11 @@ class ProgressCard extends StatelessWidget {
                                       Text(neumeratorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                       Text(denominatorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ])
                                   ]
                                 : [
@@ -137,7 +140,7 @@ class ProgressCard extends StatelessWidget {
                                       Text(neumeratorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ]),
                                     const TableRow(
                                         children: [SizedBox(height: 8)]),
@@ -165,7 +168,7 @@ class ProgressCard extends StatelessWidget {
                                       Text(denominatorTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge),
+                                              .titleLarge),
                                     ]),
                                   ],
                           ),
